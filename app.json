@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "lexicogn",
+    "name": "Lexicogn",
     "slug": "lexicogn",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -27,6 +27,9 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "description": "(WIP) A vocabulary studying mobile app that makes it easy to look up and save words at the same time.",
+    "githubUrl": "https://github.com/evad1n/lexicogn",
+    "sdkVersion": "40.0.0"
   }
 }
