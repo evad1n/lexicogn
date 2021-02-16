@@ -2,7 +2,7 @@ import { StatusBar } from 'expo-status-bar';
 import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, TextInput, Button } from 'react-native';
 
-import APIS from './axios';
+import APIS from '../axios';
 
 // Use axios.all on all selected APIs
 

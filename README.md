@@ -1,2 +1,3 @@
-# vocab-app
-Keep track of and study new vocabulary words. Hopefully using react-native.
+# Lexicogn
+
+A mobile app to keep track of and study new vocabulary words.
