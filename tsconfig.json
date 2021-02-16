@@ -19,18 +19,12 @@
       "~/*": [
         "./src/*"
       ],
-      "_assets": [
-        "src/assets/*"
+      "_assets/*": [
+        "./src/assets/*"
       ],
-      "_components": [
-        "src/components/*"
+      "_components/*": [
+        "./src/components/*"
       ],
-      "_styles": [
-        "src/styles/*"
-      ],
-      "_utils": [
-        "src/utils/*"
-      ]
     }
   }
 }
