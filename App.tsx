@@ -1,25 +1,16 @@
-import { StatusBar } from 'expo-status-bar';
+import { NavigationContainer } from '@react-navigation/native';
+import { StatusBar as ExpoStatusBar } from 'expo-status-bar';
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import Search from './src/components/Search';
-// import Button from '_components/Button';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import Router from '_nav/Router';
 
 export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Lexicogn</Text>
-      <Search />
-      <StatusBar style="auto" />
-      {/* <Button></Button> */}
-    </View>
-  );
+    return (
+        <SafeAreaProvider>
+            <NavigationContainer>
+                <Router />
+            </NavigationContainer >
+            <ExpoStatusBar />
+        </SafeAreaProvider >
+    );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});

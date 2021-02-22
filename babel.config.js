@@ -6,11 +6,14 @@ module.exports = function (api) {
       [
         "module-resolver",
         {
+          root: ["."],
           alias: {
-            "@/*": './*',
-            "~/*": './src/*',
-            "_assets/*": './src/assets/*',
-            "_components/*": './src/components/*',
+            "@": '.',
+            "~": './src',
+            "_assets": './src/assets',
+            "_components": './src/components',
+            "_nav": './src/nav',
+            "_db": './src/db',
           }
         }
       ],
