@@ -1,14 +1,14 @@
 import AutoSuggestion from '@/src/components/widgets/AutoSuggestion';
 import SearchBar from '@/src/components/widgets/SearchBar';
-import React, { useEffect, useState } from 'react';
+import React, { createRef, useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
+import { ScrollView } from 'react-native-gesture-handler';
+import SearchResultCard, { WordResult } from '_components/SearchResultCard';
 import APIS from '../../axios';
 import { SearchRouteProps } from './SearchRoutes';
-import SearchResultCard, { WordResult } from '_components/SearchResultCard';
 
 
 // Use axios.all on all selected APIs
-
 
 
 export default function Search({ navigation }: SearchRouteProps<"Search">) {
@@ -17,12 +17,23 @@ export default function Search({ navigation }: SearchRouteProps<"Search">) {
     const [suggestions, setSuggestions] = useState([]);
     const [results, setResults] = useState<Array<WordResult>>([]);
 
+    let searchBar: any = createRef();
+
+    useEffect(() => {
+        const unsubscribe = navigation.addListener('focus', () => {
+            searchBar.current?.focusSearchBar();
+        });
+
+        return unsubscribe;
+    }, [navigation]);
+
     // Header search bar
     React.useLayoutEffect(() => {
         navigation.setOptions({
             headerTitle: () => (
                 <SearchBar
-                    autofocus
+                    ref={searchBar}
+                    autoFocus={true}
                     placeholder="Look up a word"
                     change={(text: string) => { setWord(text); setSearched(false); }}
                     search={(text: string) => searchWord(text)}
@@ -34,12 +45,17 @@ export default function Search({ navigation }: SearchRouteProps<"Search">) {
         });
     }, [navigation]);
 
+
+
     async function searchWord(word: string) {
+        // Clear old results
+        setResults([]);
+        setSearched(true);
         let response = await APIS.merriamWebster.get(word);
         // Set results to generic form for each API
         // Check if found
         if (response.data.length == 0 || typeof response.data[0] == "string") {
-            console.log("no")
+            console.log(results, word)
             return;
         }
         setResults([...results, {
@@ -47,9 +63,6 @@ export default function Search({ navigation }: SearchRouteProps<"Search">) {
             API: APIS.merriamWebster,
             Definition: response.data[0].shortdef[0]
         }]);
-        setSearched(true);
-        // console.log(response.data.meta.shortdef);
-        // console.log(results);
     }
 
     async function autoCompleteSuggestions(word: string) {
@@ -95,9 +108,10 @@ export default function Search({ navigation }: SearchRouteProps<"Search">) {
     }, [word]);
 
     return (
-        <View style={styles.container}>
+        <ScrollView contentContainerStyle={styles.container}
+        keyboardShouldPersistTaps={'handled'}>
             {renderResults()}
-        </View >
+        </ScrollView >
     );
 }
 

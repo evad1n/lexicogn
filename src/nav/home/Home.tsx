@@ -1,6 +1,6 @@
 import SearchBar from '@/src/components/widgets/SearchBar';
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { RouteNavProps } from '../DrawerRoutes';
 
 export default function Home({ navigation }: RouteNavProps<"Home">) {
@@ -9,11 +9,14 @@ export default function Home({ navigation }: RouteNavProps<"Home">) {
             <View style={styles.titleContainer}>
                 <Text style={styles.title}>LEXICOGN</Text>
             </View>
-            <SearchBar
-                style={styles.searchBar}
-                placeholder="Look up a word"
-                onFocus={() => navigation.navigate('Search')} />
-        </View>
+            <TouchableOpacity activeOpacity={1} onPress={() => navigation.navigate('Search')}>
+                <SearchBar
+                    style={styles.searchBar}
+                    editable={false}
+                    placeholder="Look up a word"
+                />
+            </TouchableOpacity>
+        </View >
     );
 }
 
@@ -38,4 +41,5 @@ const styles = StyleSheet.create({
     }
 });;
 
+// TODO:
 // Have random word from db be shown on startup

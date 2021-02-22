@@ -1,16 +1,32 @@
-import React, { useState } from 'react';
-import { StyleSheet, TextInput, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import React, { createRef, useImperativeHandle, useState } from 'react';
+import { StyleSheet, TextInput, View } from 'react-native';
 
-export default function SearchBar(props: any) {
+interface MyCustomComponentProps {
+    title: string;
+}
+
+interface MyRef {
+    focusSearchBar(): void;
+}
+
+const SearchBar = React.forwardRef<MyRef, any>((props, ref) => {
     const [searchText, setSearchText] = useState("");
 
+    const input: any = createRef();
+
+    const focusSearchBar = () => {
+        input.current.focus();
+    };
+
+    useImperativeHandle(ref, () => ({ focusSearchBar }));
+
     return (
-        <View style={[styles.container, styles.shadow]}>
+        <View style={[props.style, styles.container, styles.shadow]}>
             <Ionicons name="md-search" size={20} style={styles.icon} />
             <TextInput
                 {...props}
+                ref={input}
                 style={[props.style, styles.text]}
                 placeholder={props.placeholder}
                 onChangeText={text => { setSearchText(text); props.change(text); }}
@@ -19,6 +35,7 @@ export default function SearchBar(props: any) {
         </View>
     );
 }
+);
 
 const styles = StyleSheet.create({
     container: {
@@ -41,9 +58,11 @@ const styles = StyleSheet.create({
     },
     text: {
         fontSize: 20,
-        color: "#f00"
+        flex: 1,
     },
     icon: {
         paddingRight: 10
     }
 });
+
+export default SearchBar;

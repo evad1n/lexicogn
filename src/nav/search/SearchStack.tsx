@@ -1,3 +1,4 @@
+import HideKeyboard from '@/src/components/HideKeyboard';
 import SearchBar from '@/src/components/widgets/SearchBar';
 import { createStackNavigator } from '@react-navigation/stack';
 import React from 'react';
