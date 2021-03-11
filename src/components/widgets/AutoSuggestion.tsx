@@ -1,11 +1,12 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
-export default function AutoSuggestion({ text }: any) {
+export default function AutoSuggestion({ text, handlePress }: { text: string; handlePress: (word: string) => void; }) {
     return (
-        <View style={styles.container}>
+        <TouchableOpacity onPress={() => { handlePress(text); console.log(text); }} style={styles.container}>
             <Text style={styles.text}>{text}</Text>
-        </View>
+        </TouchableOpacity>
     );
 }
 
@@ -15,6 +16,6 @@ const styles = StyleSheet.create({
     },
     text: {
         fontSize: 20,
-        color: "#00c"
+        color: "#f00"
     }
 });

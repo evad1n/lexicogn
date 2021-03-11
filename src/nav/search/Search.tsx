@@ -45,8 +45,6 @@ export default function Search({ navigation }: SearchRouteProps<"Search">) {
         });
     }, [navigation]);
 
-
-
     async function searchWord(word: string) {
         // Clear old results
         setResults([]);
@@ -81,7 +79,7 @@ export default function Search({ navigation }: SearchRouteProps<"Search">) {
             } else {
                 return (
                     suggestions.map((result: any, index) => (
-                        <AutoSuggestion key={index} text={result.word} />
+                        <AutoSuggestion key={index} text={result.word} handlePress={searchWord}/>
                     ))
                 );
             }
