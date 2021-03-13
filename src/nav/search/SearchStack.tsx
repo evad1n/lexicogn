@@ -1,8 +1,5 @@
-import HideKeyboard from '@/src/components/HideKeyboard';
-import SearchBar from '@/src/components/widgets/SearchBar';
 import { createStackNavigator } from '@react-navigation/stack';
 import React from 'react';
-import { StyleSheet } from 'react-native';
 import DrawerButton from '../DrawerButton';
 import { RouteNavProps } from '../DrawerRoutes';
 import Search from './Search';

@@ -1,26 +1,25 @@
-import AutoSuggestion from '@/src/components/widgets/AutoSuggestion';
-import SearchBar from '@/src/components/widgets/SearchBar';
-import React, { createRef, useEffect, useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import { ScrollView } from 'react-native-gesture-handler';
-import SearchResultCard, { WordResult } from '_components/SearchResultCard';
-import APIS from '../../axios';
-import { SearchRouteProps } from './SearchRoutes';
-
+import AutoSuggestion from "@/src/components/widgets/AutoSuggestion";
+import SearchBar from "@/src/components/widgets/SearchBar";
+import React, { createRef, useEffect, useState } from "react";
+import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
+import { ScrollView } from "react-native-gesture-handler";
+import SearchResultCard, { WordResult } from "_components/SearchResultCard";
+import APIS from "../../axios";
+import { SearchRouteProps } from "./SearchRoutes";
 
 // Use axios.all on all selected APIs
-
 
 export default function Search({ navigation }: SearchRouteProps<"Search">) {
     const [word, setWord] = useState("");
     const [searched, setSearched] = useState(false);
+    const [loading, setLoading] = useState(false);
     const [suggestions, setSuggestions] = useState([]);
     const [results, setResults] = useState<Array<WordResult>>([]);
 
     let searchBar: any = createRef();
 
     useEffect(() => {
-        const unsubscribe = navigation.addListener('focus', () => {
+        const unsubscribe = navigation.addListener("focus", () => {
             searchBar.current?.focusSearchBar();
         });
 
@@ -35,89 +34,105 @@ export default function Search({ navigation }: SearchRouteProps<"Search">) {
                     ref={searchBar}
                     autoFocus={true}
                     placeholder="Look up a word"
-                    change={(text: string) => { setWord(text); setSearched(false); }}
-                    search={(text: string) => searchWord(text)}
+                    change={(text: string) => {
+                        setWord(text);
+                        setSearched(false);
+                    }}
+                    search={async (text: string) => await searchWord(text)}
                 />
             ),
             headerTitleContainerStyle: {
-                left: 60
+                left: 60,
             },
         });
     }, [navigation]);
 
     async function searchWord(word: string) {
         // Clear old results
-        setResults([]);
+        setResults(() => []);
         setSearched(true);
+        setLoading(() => true);
         let response = await APIS.merriamWebster.get(word);
         // Set results to generic form for each API
         // Check if found
         if (response.data.length == 0 || typeof response.data[0] == "string") {
-            console.log(results, word)
+            console.log(results, word);
             return;
         }
-        setResults([...results, {
-            Word: word,
-            API: APIS.merriamWebster,
-            Definition: response.data[0].shortdef[0]
-        }]);
+        setResults([
+            ...results,
+            {
+                Word: word,
+                API: APIS.merriamWebster,
+                Definition: response.data[0].shortdef[0],
+            },
+        ]);
+        setLoading(() => false);
     }
 
     async function autoCompleteSuggestions(word: string) {
         if (word.length > 1) {
-            let response = await APIS.autocomplete.get('', { params: { search: word } });
-            setSuggestions(response.data.docs);
-        }
-    }
-
-    function renderResults() {
-        if (!searched) {
-            if (word.length == 0) {
-                return (
-                    <Text>Search for a word to see results!</Text>
-                );
-            } else {
-                return (
-                    suggestions.map((result: any, index) => (
-                        <AutoSuggestion key={index} text={result.word} handlePress={searchWord}/>
-                    ))
-                );
-            }
-        } else {
-            if (results.length == 0) {
-                return (
-                    <Text>No results for '{word}'</Text>
-                );
-            } else {
-                return (
-                    results.map((r: WordResult, index) => (
-                        <SearchResultCard key={index} result={r}/>
-                    ))
-                );
-            }
+            let response = await APIS.autocomplete.get("", {
+                params: { search: word },
+            });
+            setSuggestions(response.data.docs.map((doc: any) => doc.word));
         }
     }
 
     // Autocomplete hook
     useEffect(() => {
         autoCompleteSuggestions(word);
-        return () => {
-        };
+        return () => { };
     }, [word]);
 
     return (
-        <ScrollView contentContainerStyle={styles.container}
-        keyboardShouldPersistTaps={'handled'}>
-            {renderResults()}
-        </ScrollView >
+        <ScrollView
+            contentContainerStyle={styles.container}
+            keyboardShouldPersistTaps={"handled"}
+        >
+            {!searched ? (
+                (word.length == 0) ? (
+                    <Text>Search for a word to see results!</Text>
+                ) : (
+                    <View style={styles.autoSuggestions}>
+                        {suggestions.map((word: string, index) => (
+                            <AutoSuggestion
+                                key={index}
+                                text={word}
+                                handlePress={async (text: string) => await searchWord(text)}
+                            />
+                        ))}
+                    </View>
+                )
+            ) : (
+                loading ? (
+                <View>
+                    <ActivityIndicator size={"large"} color="#000" />
+                </View>
+                ) : (
+                    (results.length == 0) ? (
+                        <Text>No results for '{word}'</Text>
+                    ) : (
+                        results.map((result: WordResult, index) => (
+                            <SearchResultCard key={index} result={result} />
+                        ))
+                    )
+                )
+            )}
+        </ScrollView>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
-        // backgroundColor
+        alignItems: "center",
+        justifyContent: "center",
+    },
+    autoSuggestions: {
+        paddingTop: 5,
+        flex: 1,
+        flexDirection: "row",
+        flexWrap: "wrap",
     },
 });
