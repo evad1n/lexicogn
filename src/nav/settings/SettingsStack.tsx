@@ -2,21 +2,21 @@ import { createStackNavigator } from '@react-navigation/stack';
 import React from 'react';
 import DrawerButton from '../DrawerButton';
 import { RouteNavProps } from '../DrawerRoutes';
-import Search from './Search';
-import { SearchRoute } from './SearchRoutes';
+import { SettingsRoute } from './SettingsRoutes';
+import Settings from './Settings';
 
 
-const Stack = createStackNavigator<SearchRoute>();
+const Stack = createStackNavigator<SettingsRoute>();
 
-export default function HomeStack({ navigation }: RouteNavProps<"Search">) {
+export default function HomeStack({ navigation }: RouteNavProps<"Settings">) {
     return (
         <Stack.Navigator
-            initialRouteName="Home"
+            initialRouteName="Settings"
             screenOptions={{
                 headerLeft: () => (<DrawerButton navigation={navigation} />),
             }}
         >
-            <Stack.Screen name="Home" component={Search} />
+            <Stack.Screen name="Settings" component={Settings} />
         </Stack.Navigator >
     );
 }

@@ -1,10 +1,10 @@
+import APIS from "@/src/api";
 import AutoSuggestion from "@/src/components/widgets/AutoSuggestion";
 import SearchBar from "@/src/components/widgets/SearchBar";
 import React, { createRef, useEffect, useState } from "react";
 import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import SearchResultCard, { WordResult } from "_components/SearchResultCard";
-import APIS from "../../axios";
 import { SearchRouteProps } from "./SearchRoutes";
 
 // Use axios.all on all selected APIs
@@ -16,8 +16,8 @@ export default function Search({ navigation }: SearchRouteProps<"Search">) {
     const [suggestions, setSuggestions] = useState([]);
     const [results, setResults] = useState<Array<WordResult>>([]);
 
+    // Focus search bar on load
     let searchBar: any = createRef();
-
     useEffect(() => {
         const unsubscribe = navigation.addListener("focus", () => {
             searchBar.current?.focusSearchBar();

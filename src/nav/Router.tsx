@@ -2,12 +2,16 @@
 import HomeStack from '@/src/nav/home/HomeStack';
 import SearchStack from '@/src/nav/search/SearchStack';
 import StudyStack from '@/src/nav/study/StudyStack';
+import SettingsStack from '@/src/nav/settings/SettingsStack';
 import { createDrawerNavigator, DrawerContentComponentProps, DrawerContentScrollView, DrawerItem, DrawerItemList } from '@react-navigation/drawer';
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { RouteParamList } from './DrawerRoutes';
 import { Ionicons } from '@expo/vector-icons';
 import Divider from '../components/layout/Divider';
+import { useSelector } from 'react-redux';
+import { NavigationContainer } from '@react-navigation/native';
+import { useTypedSelector } from '../store/selector';
 
 const Drawer = createDrawerNavigator<RouteParamList>();
 
@@ -36,25 +40,47 @@ const TopItems: DrawerItemConfig[] = [
 const BotItems: DrawerItemConfig[] = [
     {
         name: "Settings",
-        component: HomeStack,
+        component: SettingsStack,
         icon: "settings-outline",
         focusedIcon: "settings-sharp",
     },
 ];
 
+
+
+
 export default function Router() {
+    const theme = useTypedSelector(state => state.theme);
+
+    const navTheme = (theme: ThemePalette) => {
+        return {
+            dark: false,
+            colors: {
+                primary: theme.primary.default,
+                background: theme.primary.light,
+                card: theme.primary.default,
+                text: theme.primary.text,
+                border: theme.primary.dark,
+                notification: theme.primary.default,
+            }
+        };
+    };
+
     return (
-        <Drawer.Navigator
-            initialRouteName="Home"
-            drawerContent={(props) => <MyDrawerContent {...props} />}
-            drawerContentOptions={{
-                activeTintColor: "black",
-            }}
-        >
-            {[...TopItems, ...BotItems].map((item, index) => (
-                <Drawer.Screen {...item} key={index} />
-            ))}
-        </Drawer.Navigator>
+        <NavigationContainer theme={navTheme(theme)}>
+            <Drawer.Navigator
+                initialRouteName="Home"
+                drawerContent={(props) => <MyDrawerContent {...props} />}
+                drawerContentOptions={{
+                    activeTintColor: theme.primary.text,
+                }}
+            >
+                {[...TopItems, ...BotItems].map((item, index) => (
+                    <Drawer.Screen {...item} key={index} />
+                ))}
+            </Drawer.Navigator>
+        </NavigationContainer >
+
     );
 }
 
@@ -67,6 +93,8 @@ interface DrawerItemConfig {
 
 function DrawerSection(props: DrawerContentComponentProps & { items: DrawerItemConfig[]; } & { indexOffset?: number; }) {
     const { items, indexOffset = 0, state, navigation, style } = props;
+    const theme = useTypedSelector(state => state.theme);
+
     return (
         <View style={style}>
             {items.map((item, index) => (
@@ -74,8 +102,8 @@ function DrawerSection(props: DrawerContentComponentProps & { items: DrawerItemC
                     <DrawerItem
                         focused={state.index == index + indexOffset}
                         onPress={() => navigation.navigate(item.name)}
-                        icon={({ color, focused, size }) => <Ionicons name={focused ? item.focusedIcon : item.icon} size={size} color={color} />}
-                        label={({ color, focused }) => <Text style={{ color: color, fontWeight: focused ? "bold" : "normal", fontSize: 16 }}>{item.name}</Text>}
+                        icon={({ focused, size }) => <Ionicons name={focused ? item.focusedIcon : item.icon} size={size} color={theme.primary.text} />}
+                        label={({ focused }) => <Text style={{ color: theme.primary.text, fontWeight: focused ? "bold" : "normal", fontSize: 16 }}>{item.name}</Text>}
                         activeTintColor={"black"}
                     />
                 </React.Fragment>

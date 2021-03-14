@@ -11,12 +11,12 @@ const Stack = createStackNavigator<SearchRoute>();
 export default function HomeStack({ navigation }: RouteNavProps<"Search">) {
     return (
         <Stack.Navigator
-            initialRouteName="Home"
+            initialRouteName="Search"
             screenOptions={{
                 headerLeft: () => (<DrawerButton navigation={navigation} />),
             }}
         >
-            <Stack.Screen name="Home" component={Search} />
+            <Stack.Screen name="Search" component={Search} />
         </Stack.Navigator >
     );
 }
