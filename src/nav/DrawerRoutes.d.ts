@@ -6,6 +6,7 @@ export type RouteParamList = {
     Home: undefined;
     Search: undefined;
     Study: undefined;
+    Settings: undefined;
 };
 
 export type RouteNavProps<T extends keyof RouteParamList> = {
