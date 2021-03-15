@@ -5,7 +5,11 @@ type ColorPalette = {
     text: string;
 };
 
-type ThemePalette = {
+/**
+ * dark: whether to use status bar dark theme
+ */
+interface ThemePalette {
+    dark: boolean;
     primary: ColorPalette;
     secondary: ColorPalette;
 };
@@ -14,9 +18,15 @@ type ThemeMap = {
     [name: string]: ThemePalette;
 };
 
-type ThemeState = ThemePalette;
+/**
+ * Adds theme name to state
+ */
+interface ThemeState extends ThemePalette {
+    name: string;
+}
+
 
 type ThemeAction = {
     type: string;
-    theme: ThemePalette;
+    theme: ThemeState;
 };

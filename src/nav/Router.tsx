@@ -20,7 +20,7 @@ const TopItems: DrawerItemConfig[] = [
         name: "Home",
         component: HomeStack,
         icon: "home-outline",
-        focusedIcon: "home",
+        focusedIcon: "home-sharp",
     },
     {
         name: 'Search',
@@ -47,11 +47,10 @@ const BotItems: DrawerItemConfig[] = [
 ];
 
 
-
-
 export default function Router() {
     const theme = useTypedSelector(state => state.theme);
 
+    // https://reactnavigation.org/docs/themes/#built-in-themes
     const navTheme = (theme: ThemePalette) => {
         return {
             dark: false,
@@ -71,9 +70,6 @@ export default function Router() {
             <Drawer.Navigator
                 initialRouteName="Home"
                 drawerContent={(props) => <MyDrawerContent {...props} />}
-                drawerContentOptions={{
-                    activeTintColor: theme.primary.text,
-                }}
             >
                 {[...TopItems, ...BotItems].map((item, index) => (
                     <Drawer.Screen {...item} key={index} />
@@ -104,7 +100,7 @@ function DrawerSection(props: DrawerContentComponentProps & { items: DrawerItemC
                         onPress={() => navigation.navigate(item.name)}
                         icon={({ focused, size }) => <Ionicons name={focused ? item.focusedIcon : item.icon} size={size} color={theme.primary.text} />}
                         label={({ focused }) => <Text style={{ color: theme.primary.text, fontWeight: focused ? "bold" : "normal", fontSize: 16 }}>{item.name}</Text>}
-                        activeTintColor={"black"}
+                        activeTintColor={theme.primary.text}
                     />
                 </React.Fragment>
             ))

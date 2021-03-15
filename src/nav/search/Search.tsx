@@ -1,15 +1,19 @@
 import APIS from "@/src/api";
 import AutoSuggestion from "@/src/components/widgets/AutoSuggestion";
 import SearchBar from "@/src/components/widgets/SearchBar";
+import { useTypedSelector } from "@/src/store/selector";
 import React, { createRef, useEffect, useState } from "react";
-import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
-import { ScrollView } from "react-native-gesture-handler";
-import SearchResultCard, { WordResult } from "_components/SearchResultCard";
-import { SearchRouteProps } from "./SearchRoutes";
+import { ActivityIndicator, Dimensions, StyleSheet, Text, View } from "react-native";
+import { FlatList, ScrollView } from "react-native-gesture-handler";
+import SearchResultCard from "_components/SearchResultCard";
 
 // Use axios.all on all selected APIs
 
 export default function Search({ navigation }: SearchRouteProps<"Search">) {
+    const theme = useTypedSelector(state => state.theme);
+    // Make result card list work right
+    const { width, height } = Dimensions.get('window');
+
     const [word, setWord] = useState("");
     const [searched, setSearched] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -39,6 +43,7 @@ export default function Search({ navigation }: SearchRouteProps<"Search">) {
                         setSearched(false);
                     }}
                     search={async (text: string) => await searchWord(text)}
+                    style={{ backgroundColor: theme.primary.light }}
                 />
             ),
             headerTitleContainerStyle: {
@@ -52,7 +57,7 @@ export default function Search({ navigation }: SearchRouteProps<"Search">) {
         setResults(() => []);
         setSearched(true);
         setLoading(() => true);
-        let response = await APIS.merriamWebster.get(word);
+        let response = await APIS[1].http.get(word);
         // Set results to generic form for each API
         // Check if found
         if (response.data.length == 0 || typeof response.data[0] == "string") {
@@ -63,7 +68,12 @@ export default function Search({ navigation }: SearchRouteProps<"Search">) {
             ...results,
             {
                 Word: word,
-                API: APIS.merriamWebster,
+                API: APIS[1],
+                Definition: response.data[0].shortdef[0],
+            },
+            {
+                Word: word,
+                API: APIS[2],
                 Definition: response.data[0].shortdef[0],
             },
         ]);
@@ -72,7 +82,7 @@ export default function Search({ navigation }: SearchRouteProps<"Search">) {
 
     async function autoCompleteSuggestions(word: string) {
         if (word.length > 1) {
-            let response = await APIS.autocomplete.get("", {
+            let response = await APIS[0].http.get("", {
                 params: { search: word },
             });
             setSuggestions(response.data.docs.map((doc: any) => doc.word));
@@ -85,40 +95,63 @@ export default function Search({ navigation }: SearchRouteProps<"Search">) {
         return () => { };
     }, [word]);
 
-    return (
-        <ScrollView
-            contentContainerStyle={styles.container}
-            keyboardShouldPersistTaps={"handled"}
-        >
-            {!searched ? (
-                (word.length == 0) ? (
-                    <Text>Search for a word to see results!</Text>
-                ) : (
-                    <View style={styles.autoSuggestions}>
-                        {suggestions.map((word: string, index) => (
-                            <AutoSuggestion
-                                key={index}
-                                text={word}
-                                handlePress={async (text: string) => await searchWord(text)}
-                            />
-                        ))}
-                    </View>
-                )
-            ) : (
-                loading ? (
+
+    function renderSearching() {
+        if (word.length == 0) {
+            return (
+                <Text style={{ fontSize: 20, color: theme.primary.text }}>Search for a word to see results</Text>
+            );
+        } else {
+            return (
+                <View style={styles.autoSuggestions}>
+                    {suggestions.map((word: string, index) => (
+                        <AutoSuggestion
+                            key={index}
+                            text={word}
+                            handlePress={async (text: string) => await searchWord(text)}
+                        />
+                    ))}
+                </View>
+            );
+        }
+    }
+
+    function renderResults() {
+        if (loading) {
+            return (
                 <View>
                     <ActivityIndicator size={"large"} color="#000" />
                 </View>
-                ) : (
-                    (results.length == 0) ? (
-                        <Text>No results for '{word}'</Text>
-                    ) : (
-                        results.map((result: WordResult, index) => (
-                            <SearchResultCard key={index} result={result} />
-                        ))
-                    )
+            )
+        } else {
+            if (results.length == 0) {
+                return (
+                    <Text>No results for '{word}'</Text>
                 )
-            )}
+            } else {
+                return (
+                    <FlatList
+                        style={{
+                            width: width
+                        }}
+                        horizontal
+                        pagingEnabled
+                        showsHorizontalScrollIndicator={false}
+                        data={results}
+                        renderItem={({ item }) => <SearchResultCard item={item}/>}
+                        keyExtractor={(item: WordResult) => item.API.name}
+                    />
+                )
+            }
+        }
+    }
+
+    return (
+        <ScrollView
+            contentContainerStyle={[styles.container]}
+            keyboardShouldPersistTaps={"handled"}
+        >
+            {searched ?  renderResults() : renderSearching()}
         </ScrollView>
     );
 }

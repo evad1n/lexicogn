@@ -1,17 +1,42 @@
+import Divider from '@/src/components/layout/Divider';
+import { Ionicons } from '@expo/vector-icons';
 import React from "react";
-import { StyleSheet } from "react-native";
-import { ScrollView } from "react-native-gesture-handler";
-import { SettingsRouteProps } from "./SettingsRoutes";
+import { FlatList, StyleSheet, Text } from "react-native";
+import { TouchableOpacity } from "react-native-gesture-handler";
+
+
+const settings: SettingsType[] = [
+    {
+        name: "Theme",
+        nav: "Theme",
+        icon: "color-palette-sharp"
+    },
+    {
+        name: "idk",
+        nav: "Theme",
+        icon: "color-palette-outline"
+    },
+];
 
 export default function Settings({ navigation }: SettingsRouteProps<"Settings">) {
 
-    return (
-        <ScrollView
-            contentContainerStyle={styles.container}
-            keyboardShouldPersistTaps={"handled"}
-        >
 
-        </ScrollView>
+    const renderSettingTab = ({ item: setting }: { item: SettingsType; }) => {
+        return (
+            <TouchableOpacity onPress={() => navigation.navigate(setting.nav)} style={styles.item}>
+                <Ionicons name={setting.icon} size={30} />
+                <Text style={styles.itemText}>{setting.name}</Text>
+            </TouchableOpacity>
+        );
+    };
+
+    return (
+        <FlatList
+            data={settings}
+            renderItem={renderSettingTab}
+            keyExtractor={(item: SettingsType) => item.name}
+            ItemSeparatorComponent={Divider}
+        />
     );
 }
 
@@ -21,10 +46,15 @@ const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "center",
     },
-    autoSuggestions: {
-        paddingTop: 5,
+    item: {
+        paddingVertical: 10,
+        paddingLeft: 10,
         flex: 1,
         flexDirection: "row",
-        flexWrap: "wrap",
+        alignItems: "center"
+    },
+    itemText: {
+        paddingLeft: 10,
+        fontSize: 20
     },
 });

@@ -34,12 +34,11 @@ const styles = StyleSheet.create({
     },
     title: {
         fontSize: 50,
-        fontFamily: 'Roboto',
         fontWeight: "bold"
     },
     searchBar: {
         width: '80%',
-        padding: 5,
+        paddingVertical: 10
     }
 });
 

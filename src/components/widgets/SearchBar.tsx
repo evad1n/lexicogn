@@ -1,16 +1,15 @@
+import { useTypedSelector } from '@/src/store/selector';
 import { Ionicons } from '@expo/vector-icons';
 import React, { createRef, useImperativeHandle, useState } from 'react';
 import { StyleSheet, TextInput, View } from 'react-native';
 
-interface MyCustomComponentProps {
-    title: string;
-}
-
-interface MyRef {
+interface SearchRef {
     focusSearchBar(): void;
 }
 
-const SearchBar = React.forwardRef<MyRef, any>((props, ref) => {
+const SearchBar = React.forwardRef<SearchRef, any>((props, ref) => {
+    const theme = useTypedSelector(state => state.theme);
+
     const [searchText, setSearchText] = useState("");
 
     const input: any = createRef();
@@ -22,15 +21,17 @@ const SearchBar = React.forwardRef<MyRef, any>((props, ref) => {
     useImperativeHandle(ref, () => ({ focusSearchBar }));
 
     return (
-        <View style={[props.style, styles.container, styles.shadow]}>
+        <View style={[{ backgroundColor: theme.primary.default }, styles.container, styles.shadow, props.style]}>
             <Ionicons name="md-search" size={20} style={styles.icon} />
             <TextInput
-                {...props}
+                editable={props.editable}
                 ref={input}
-                style={[props.style, styles.text]}
+                style={styles.text}
                 placeholder={props.placeholder}
                 onChangeText={text => { setSearchText(text); props.change(text); }}
                 onSubmitEditing={() => props.search(searchText)}
+                returnKeyType="search"
+                keyboardAppearance={theme.dark ? 'dark' : 'light'}
             />
         </View>
     );
@@ -41,7 +42,6 @@ const styles = StyleSheet.create({
     container: {
         flexDirection: 'row',
         alignItems: "center",
-        backgroundColor: "#eee",
         borderRadius: 3,
         paddingVertical: 5,
         paddingHorizontal: 10,
@@ -57,6 +57,7 @@ const styles = StyleSheet.create({
         elevation: 6,
     },
     text: {
+        // padding: 5,
         fontSize: 20,
         flex: 1,
     },
