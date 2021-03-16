@@ -24,6 +24,7 @@
         "foregroundImage": "./src/assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
       },
+      // Keyboard doesn't affect layout
       "softwareKeyboardLayoutMode": "pan"
     },
     "web": {

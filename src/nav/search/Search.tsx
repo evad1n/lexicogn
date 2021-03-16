@@ -12,7 +12,7 @@ import SearchResultCard from "_components/SearchResultCard";
 export default function Search({ navigation }: SearchRouteProps<"Search">) {
     const theme = useTypedSelector(state => state.theme);
     // Make result card list work right
-    const { width, height } = Dimensions.get('window');
+    const { width } = Dimensions.get('window');
 
     const [word, setWord] = useState("");
     const [searched, setSearched] = useState(false);
@@ -148,7 +148,7 @@ export default function Search({ navigation }: SearchRouteProps<"Search">) {
 
     return (
         <ScrollView
-            contentContainerStyle={[styles.container]}
+            contentContainerStyle={styles.container}
             keyboardShouldPersistTaps={"handled"}
         >
             {searched ?  renderResults() : renderSearching()}

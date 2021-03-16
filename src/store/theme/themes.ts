@@ -18,7 +18,7 @@ const Themes: ThemeMap = {
         dark: true,
         primary: {
             default: "#000",
-            light: "#111",
+            light: "#222",
             dark: "#000",
             text: "#fff"
         },
@@ -35,7 +35,7 @@ const Themes: ThemeMap = {
             default: "#75664a",
             light: "#fbf1c7",
             dark: "#000",
-            text: "#fff"
+            text: "#000"
         },
         secondary: {
             default: "#212121",
