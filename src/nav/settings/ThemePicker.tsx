@@ -35,7 +35,7 @@ export default function ThemePicker() {
                 </View>
                 <Text style={[styles.colorTitle, { color: currentTheme.primary.text }]}>{currentTheme.name}</Text>
             </View>
-            <Divider />
+            <Divider color={currentTheme.primary.text} />
             <FlatList
                 contentContainerStyle={styles.container}
                 data={colorOptions}

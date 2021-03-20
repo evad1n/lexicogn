@@ -15,6 +15,7 @@ export default function HomeStack({ navigation }: RouteNavProps<"Study">) {
                 headerLeft: () => (<DrawerButton navigation={navigation} />),
                 headerTitle: ""
             }}
+
         >
             <Stack.Screen name="Home" component={Study} />
         </Stack.Navigator>

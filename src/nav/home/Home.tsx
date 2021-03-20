@@ -3,8 +3,9 @@ import { useTypedSelector } from '@/src/store/selector';
 import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { RouteNavProps } from '../DrawerRoutes';
+import { HomeRouteProps } from './HomeRoutes';
 
-export default function Home({ navigation }: RouteNavProps<"Home">) {
+export default function Home({ navigation }: RouteNavProps<"Search"> & HomeRouteProps<"Home">) {
     const theme = useTypedSelector(state => state.theme);
 
     return (

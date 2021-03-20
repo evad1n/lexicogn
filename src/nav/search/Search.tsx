@@ -1,11 +1,13 @@
-import APIS from "@/src/api";
-import AutoSuggestion from "@/src/components/widgets/AutoSuggestion";
-import SearchBar from "@/src/components/widgets/SearchBar";
+import APIS, { AutoComplete, WordResult } from "~/api";
+import AutoSuggestion from "_components/widgets/AutoSuggestion";
+import SearchBar from "_components/widgets/SearchBar";
 import { useTypedSelector } from "@/src/store/selector";
 import React, { createRef, useEffect, useState } from "react";
 import { ActivityIndicator, Dimensions, StyleSheet, Text, View } from "react-native";
 import { FlatList, ScrollView } from "react-native-gesture-handler";
 import SearchResultCard from "_components/SearchResultCard";
+import { SearchRouteProps } from "./SearchRoutes";
+import axios from "axios";
 
 // Use axios.all on all selected APIs
 
@@ -42,7 +44,7 @@ export default function Search({ navigation }: SearchRouteProps<"Search">) {
                         setWord(text);
                         setSearched(false);
                     }}
-                    search={async (text: string) => await searchWord(text)}
+                    search={(text: string) => searchWord(text)}
                     style={{ backgroundColor: theme.primary.light }}
                 />
             ),
@@ -50,48 +52,47 @@ export default function Search({ navigation }: SearchRouteProps<"Search">) {
                 left: 60,
             },
         });
-    }, [navigation]);
+    }, [navigation, theme]);
 
     async function searchWord(word: string) {
         // Clear old results
-        setResults(() => []);
+        setResults([]);
         setSearched(true);
-        setLoading(() => true);
-        let response = await APIS[1].http.get(word);
-        // Set results to generic form for each API
-        // Check if found
-        if (response.data.length == 0 || typeof response.data[0] == "string") {
-            console.log(results, word);
-            return;
+        setLoading(true);
+        let newResults: WordResult[] = [];
+        // Build requests
+        let requests = [];
+        for (const api of APIS) {
+            requests.push(api.get(word));
         }
-        setResults([
-            ...results,
-            {
+        // Make all requests in one
+        let responses = await axios.all(requests);
+        // Parse responses
+        for (let i = 0; i < APIS.length; i++) {
+            newResults.push({
                 Word: word,
-                API: APIS[1],
-                Definition: response.data[0].shortdef[0],
-            },
-            {
-                Word: word,
-                API: APIS[2],
-                Definition: response.data[0].shortdef[0],
-            },
-        ]);
+                API: APIS[i],
+                Definition: APIS[i].parseResponse(responses[i]),
+            });
+        }
+        setResults(() => newResults);
         setLoading(() => false);
     }
 
-    async function autoCompleteSuggestions(word: string) {
+    async function autoCompleteSuggestions() {
         if (word.length > 1) {
-            let response = await APIS[0].http.get("", {
-                params: { search: word },
-            });
-            setSuggestions(response.data.docs.map((doc: any) => doc.word));
+            let old = word.length;
+            let suggests = await AutoComplete(word);
+            // If these suggestions are still current
+            if (old == word.length) {
+                setSuggestions(() => suggests);
+            }
         }
     }
 
     // Autocomplete hook
     useEffect(() => {
-        autoCompleteSuggestions(word);
+        autoCompleteSuggestions();
         return () => { };
     }, [word]);
 
@@ -104,7 +105,7 @@ export default function Search({ navigation }: SearchRouteProps<"Search">) {
         } else {
             return (
                 <View style={styles.autoSuggestions}>
-                    {suggestions.map((word: string, index) => (
+                    {word.length > 1 && suggestions.map((word: string, index) => (
                         <AutoSuggestion
                             key={index}
                             text={word}
@@ -122,27 +123,22 @@ export default function Search({ navigation }: SearchRouteProps<"Search">) {
                 <View>
                     <ActivityIndicator size={"large"} color="#000" />
                 </View>
-            )
+            );
         } else {
-            if (results.length == 0) {
-                return (
-                    <Text>No results for '{word}'</Text>
-                )
-            } else {
-                return (
-                    <FlatList
-                        style={{
-                            width: width
-                        }}
-                        horizontal
-                        pagingEnabled
-                        showsHorizontalScrollIndicator={false}
-                        data={results}
-                        renderItem={({ item }) => <SearchResultCard item={item}/>}
-                        keyExtractor={(item: WordResult) => item.API.name}
-                    />
-                )
-            }
+            return (
+                <FlatList
+                    style={{
+                        width: width
+                    }}
+                    alwaysBounceHorizontal
+                    horizontal
+                    pagingEnabled
+                    showsHorizontalScrollIndicator={false}
+                    data={results}
+                    renderItem={({ item }) => <SearchResultCard item={item} />}
+                    keyExtractor={(item: WordResult) => item.API.name}
+                />
+            );
         }
     }
 
@@ -151,7 +147,7 @@ export default function Search({ navigation }: SearchRouteProps<"Search">) {
             contentContainerStyle={styles.container}
             keyboardShouldPersistTaps={"handled"}
         >
-            {searched ?  renderResults() : renderSearching()}
+            {searched ? renderResults() : renderSearching()}
         </ScrollView>
     );
 }

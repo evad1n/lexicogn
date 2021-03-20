@@ -5,7 +5,6 @@ import Home from './Home';
 import { RouteNavProps } from '../DrawerRoutes';
 import { HomeRoute } from './HomeRoutes';
 
-
 const Stack = createStackNavigator<HomeRoute>();
 
 export default function HomeStack({ navigation }: RouteNavProps<"Home">) {

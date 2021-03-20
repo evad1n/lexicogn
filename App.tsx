@@ -5,6 +5,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Provider } from 'react-redux';
 import Router from '_nav/Router';
 import store from '_store/store';
+import initialize from './src/initialize';
 import { useTypedSelector } from './src/store/selector';
 
 export default function App() {
@@ -13,6 +14,8 @@ export default function App() {
     async function initializeApp() {
         try {
             await preventAutoHideAsync();
+            await initialize();
+
         } catch (error) {
             throw new Error(error.message);
         }
@@ -41,20 +44,3 @@ function InnerApp() {
         </SafeAreaProvider >
     );
 }
-
-// // Load local storage theme
-// useEffect(() => {
-//     const getTheme = async () => {
-//         try {
-//             const theme = await getData("@theme");
-//             // If there is a saved theme
-//             if (theme) {
-//                 dispatch(changeTheme(theme));
-//             }
-//         } catch (error) {
-//             throw new Error(error);
-//         }
-//     };
-
-//     getTheme();
-// });

@@ -1,17 +1,24 @@
 
 import HomeStack from '@/src/nav/home/HomeStack';
 import SearchStack from '@/src/nav/search/SearchStack';
-import StudyStack from '@/src/nav/study/StudyStack';
 import SettingsStack from '@/src/nav/settings/SettingsStack';
-import { createDrawerNavigator, DrawerContentComponentProps, DrawerContentScrollView, DrawerItem, DrawerItemList } from '@react-navigation/drawer';
+import StudyStack from '@/src/nav/study/StudyStack';
+import { Ionicons } from '@expo/vector-icons';
+import { createDrawerNavigator, DrawerContentComponentProps, DrawerContentScrollView, DrawerItem } from '@react-navigation/drawer';
+import { CommonActions, StackActions, NavigationContainer, useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import { RouteParamList } from './DrawerRoutes';
-import { Ionicons } from '@expo/vector-icons';
 import Divider from '../components/layout/Divider';
-import { useSelector } from 'react-redux';
-import { NavigationContainer } from '@react-navigation/native';
 import { useTypedSelector } from '../store/selector';
+import { RouteParamList } from './DrawerRoutes';
+
+interface DrawerItemConfig {
+    name: keyof RouteParamList,
+    component: React.ComponentType<any>,
+    icon: any,
+    focusedIcon: any;
+};
+
 
 const Drawer = createDrawerNavigator<RouteParamList>();
 
@@ -80,15 +87,9 @@ export default function Router() {
     );
 }
 
-interface DrawerItemConfig {
-    name: keyof RouteParamList,
-    component: React.ComponentType<any>,
-    icon: any,
-    focusedIcon: any;
-};
-
 function DrawerSection(props: DrawerContentComponentProps & { items: DrawerItemConfig[]; } & { indexOffset?: number; }) {
     const { items, indexOffset = 0, state, navigation, style } = props;
+    // const state2 = useNavigation();
     const theme = useTypedSelector(state => state.theme);
 
     return (
@@ -97,7 +98,34 @@ function DrawerSection(props: DrawerContentComponentProps & { items: DrawerItemC
                 <React.Fragment key={index}>
                     <DrawerItem
                         focused={state.index == index + indexOffset}
-                        onPress={() => navigation.navigate(item.name)}
+                        onPress={() => {
+                            // console.log(state);
+                            navigation.reset({
+                                index: 0,
+                                routes: [{
+                                    name: "Home"
+                                }]
+                            });
+                            navigation.dispatch(
+                                CommonActions.reset({
+                                    index: state.index,
+                                    routes: [{
+                                        name: "Home",
+                                        state: {
+                                            routes: [
+                                                {
+                                                    name: "Home"
+                                                }
+                                            ],
+                                            stale: true
+                                        }
+                                    }]
+                                })
+                            );
+                            // Navigate to inner default screen
+                            navigation.navigate(item.name, { screen: item.name });
+                            // navigation.dispatch(StackActions.popToTop());
+                        }}
                         icon={({ focused, size }) => <Ionicons name={focused ? item.focusedIcon : item.icon} size={size} color={theme.primary.text} />}
                         label={({ focused }) => <Text style={{ color: theme.primary.text, fontWeight: focused ? "bold" : "normal", fontSize: 16 }}>{item.name}</Text>}
                         activeTintColor={theme.primary.text}
@@ -110,7 +138,6 @@ function DrawerSection(props: DrawerContentComponentProps & { items: DrawerItemC
 }
 
 function MyDrawerContent(props: DrawerContentComponentProps) {
-    const { state, navigation } = props;
     return (
         <View style={styles.drawer}>
             <DrawerContentScrollView {...props}>
