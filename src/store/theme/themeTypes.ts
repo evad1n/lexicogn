@@ -25,8 +25,8 @@ interface ThemeState extends ThemePalette {
     name: string;
 }
 
-
-type ThemeAction = {
-    type: string;
-    theme: ThemeState;
-};
+type ThemeAction =
+    | {
+        type: "CHANGE_THEME";
+        theme: ThemeState;
+    };

@@ -9,7 +9,7 @@ export default function DrawerButton({ navigation }: any) {
 
     useEffect(() => {
         return () => {
-            console.log("AFTER: ", navigation);
+            // console.log("AFTER: ", navigation);
         };
     }, []);
 

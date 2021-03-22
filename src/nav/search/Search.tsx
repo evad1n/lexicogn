@@ -1,13 +1,13 @@
-import APIS, { AutoComplete, WordResult } from "~/api";
-import AutoSuggestion from "_components/widgets/AutoSuggestion";
-import SearchBar from "_components/widgets/SearchBar";
 import { useTypedSelector } from "@/src/store/selector";
-import React, { createRef, useEffect, useState, useReducer } from "react";
-import { ActionSheetIOS, ActivityIndicator, Dimensions, StyleSheet, Text, View } from "react-native";
+import axios from "axios";
+import React, { createRef, useEffect, useState } from "react";
+import { ActivityIndicator, Dimensions, StyleSheet, Text, View } from "react-native";
 import { FlatList, ScrollView } from "react-native-gesture-handler";
 import SearchResultCard from "_components/SearchResultCard";
+import AutoSuggestion from "_components/widgets/AutoSuggestion";
+import SearchBar from "_components/widgets/SearchBar";
+import APIS, { AutoComplete } from "~/api";
 import { SearchRouteProps } from "./SearchRoutes";
-import axios from "axios";
 
 type State = {
     word: string,
@@ -18,13 +18,6 @@ type State = {
 
 };
 
-type Action =
-    | { type: "setWord", word: string; }
-    | { type: "setSearched", searched: boolean; }
-    | { type: "setLoading", loading: boolean; }
-    | { type: "updateResults", results: WordResult[]; }
-    | { type: "updateSuggestions", prevWordLength: number, suggestions: string[]; };
-
 const initialState: State = {
     word: "",
     searched: false,
@@ -33,48 +26,13 @@ const initialState: State = {
     suggestions: []
 };
 
-// function reducer(state: State, action: Action) {
-//     switch (action.type) {
-//         case "setWord":
-//             return { ...state, word: action.word };
-//         case "setWord":
-//             return { ...state, word: action.word };
-//         case "setWord":
-//             return { ...state, word: action.word };
-//         case "setWord":
-//             return { ...state, word: action.word };
-//         case "setWord":
-//             return { ...state, word: action.word };
-
-//         default:
-//             break;
-//     }
-//     console.log(state.length, action.prevLength);
-//     if (state.length == 0 || state.length == action.prevLength) {
-//         return action.suggestions;
-//     } else {
-//         return state;
-//     }
-// }
-
 
 export default function Search({ navigation }: SearchRouteProps<"Search">) {
     const theme = useTypedSelector(state => state.theme);
     // Make result card list work right
     const { width } = Dimensions.get('window');
 
-    // Refactor state to one object and use reducer
-    // const [state, setState] = useReducer(reducer, initialState);
     const [state, setState] = useState<State>(initialState);
-
-
-    // const [word, setWord] = useState("");
-    // const [searched, setSearched] = useState(false);
-    // const [loading, setLoading] = useState(false);
-    // const [results, setResults] = useState<Array<WordResult>>([]);
-
-    // const [suggestions, setSuggestions] = useState([]);
-    // const [suggestions, setSuggestions] = useReducer(suggestionsReducer, []);
 
     // Focus search bar on load
     let searchBar: any = createRef();
@@ -122,7 +80,7 @@ export default function Search({ navigation }: SearchRouteProps<"Search">) {
         for (let i = 0; i < APIS.length; i++) {
             newResults.push({
                 Word: word,
-                API: APIS[i],
+                API: i,
                 Definition: APIS[i].parseResponse(responses[i]),
             });
         }
@@ -134,18 +92,12 @@ export default function Search({ navigation }: SearchRouteProps<"Search">) {
             let suggests = await AutoComplete(word);
             // If these suggestions are still current
             setState((state) => {
-                console.log(state.word.length, word.length);
                 if (state.word.length == word.length) {
                     return { ...state, suggestions: suggests };
                 } else {
                     return state;
                 }
             });
-
-            // console.log(old, word.length);
-            // if (old == word.length) {
-            //     setSuggestions(() => suggests);
-            // }
         }
     }
 
@@ -195,7 +147,7 @@ export default function Search({ navigation }: SearchRouteProps<"Search">) {
                     showsHorizontalScrollIndicator={false}
                     data={state.results}
                     renderItem={({ item }) => <SearchResultCard item={item} />}
-                    keyExtractor={(item: WordResult) => item.API.name}
+                    keyExtractor={(item, index) => `${index}-api-${item.API}`}
                 />
             );
         }

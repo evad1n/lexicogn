@@ -1,11 +1,14 @@
 import store from '_store/store';
 import { getData } from './storage';
 import { changeTheme } from './store/actions/themeActions';
+import { initDB, getWords } from '_db/db';
+import { setWords } from './store/actions/wordsActions';
 
 // Load local storage theme
 async function initialize() {
     await loadTheme();
-}
+    await loadDB();
+};
 
 async function loadTheme() {
     try {
@@ -18,5 +21,17 @@ async function loadTheme() {
         throw new Error(error);
     }
 }
+
+async function loadDB() {
+    try {
+        await initDB();
+        const words = await getWords();
+        store.dispatch(setWords(words));
+    } catch (error) {
+        throw new Error(error);
+    }
+}
+
+
 
 export default initialize;

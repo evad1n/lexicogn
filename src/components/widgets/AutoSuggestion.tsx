@@ -1,12 +1,15 @@
+import { useTypedSelector } from '@/src/store/selector';
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
 export default function AutoSuggestion({ text, handlePress }: { text: string; handlePress: (word: string) => void; }) {
+    const theme = useTypedSelector(state => state.theme);
+
     return (
         <View style={styles.wrapper}>
-            <TouchableOpacity onPress={() => { handlePress(text); console.log(text); }} activeOpacity={0.8} style={[styles.container, styles.shadow]}>
-                <Text style={styles.text}>{text}</Text>
+            <TouchableOpacity onPress={() => handlePress(text)} activeOpacity={0.8} style={[styles.container, { backgroundColor: theme.primary.default }]}>
+                <Text style={[styles.text, { color: theme.primary.text }]}>{text}</Text>
             </TouchableOpacity>
         </View>
     );
@@ -23,16 +26,7 @@ const styles = StyleSheet.create({
         backgroundColor: "white",
         paddingLeft: 20,
         paddingVertical: 5,
-    },
-    shadow: {
-        shadowColor: "#000",
-        shadowOffset: {
-            width: 0,
-            height: 7,
-        },
-        shadowOpacity: 0.41,
-        shadowRadius: 9.11,
-        elevation: 6,
+        elevation: 6
     },
     text: {
         fontSize: 20,

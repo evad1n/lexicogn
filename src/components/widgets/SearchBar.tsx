@@ -21,12 +21,12 @@ const SearchBar = React.forwardRef<SearchRef, any>((props, ref) => {
     useImperativeHandle(ref, () => ({ focusSearchBar }));
 
     return (
-        <View style={[{ backgroundColor: theme.primary.default, shadowColor: "red" }, styles.container, styles.shadow, props.style]}>
+        <View style={[{ backgroundColor: theme.primary.default, shadowColor: "red" }, styles.container, props.style]}>
             <Ionicons name="md-search" size={20} style={styles.icon} color={theme.primary.text} />
             <TextInput
                 editable={props.editable}
                 ref={input}
-                style={[styles.text, searchText.length === 0 ? styles.placeholder : null]}
+                style={[styles.text, { color: theme.primary.text }, searchText.length === 0 ? styles.placeholder : null]}
                 placeholderTextColor={theme.primary.text}
                 placeholder={props.placeholder}
                 onChangeText={text => { setSearchText(text); props.change(text); }}
