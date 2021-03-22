@@ -7,6 +7,7 @@ import { useTypedSelector } from '../store/selector';
 export default function DrawerButton({ navigation }: any) {
     const theme = useTypedSelector(state => state.theme);
 
+    // FIX: nAVIGATION SUCKS
     useEffect(() => {
         return () => {
             // console.log("AFTER: ", navigation);

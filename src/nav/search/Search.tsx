@@ -27,7 +27,7 @@ const initialState: State = {
 };
 
 
-export default function Search({ navigation }: SearchRouteProps<"Search">) {
+export default function Search({ navigation }: SearchRouteProps<'search'>) {
     const theme = useTypedSelector(state => state.theme);
     // Make result card list work right
     const { width } = Dimensions.get('window');
@@ -79,9 +79,9 @@ export default function Search({ navigation }: SearchRouteProps<"Search">) {
         // Parse responses
         for (let i = 0; i < APIS.length; i++) {
             newResults.push({
-                Word: word,
-                API: i,
-                Definition: APIS[i].parseResponse(responses[i]),
+                word,
+                api: i,
+                definition: APIS[i].parseResponse(responses[i]),
             });
         }
         setState((state) => ({ ...state, results: newResults, loading: false }));
@@ -147,7 +147,7 @@ export default function Search({ navigation }: SearchRouteProps<"Search">) {
                     showsHorizontalScrollIndicator={false}
                     data={state.results}
                     renderItem={({ item }) => <SearchResultCard item={item} />}
-                    keyExtractor={(item, index) => `${index}-api-${item.API}`}
+                    keyExtractor={(item, index) => `${index}-api-${item.api}`}
                 />
             );
         }

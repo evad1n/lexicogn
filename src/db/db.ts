@@ -30,17 +30,8 @@ export async function getWords(): Promise<WordDocument[]> {
                 'SELECT * FROM words',
                 [],
                 (_, { rows }: { rows: any; }) => {
-                    // This is so dumb, because the db fields
-                    let words = (rows._array as Array<any>).map((x): WordDocument => {
-                        return {
-                            ID: x.id,
-                            Word: x.word,
-                            Definition: x.definition,
-                            API: x.api
-                        };
-                    });
-                    resolve(words);
-                    // console.log(performance.now());
+                    // Expo sqlite has completely wrong Types => rows has no member _array but it does! Awesome!
+                    resolve(rows._array);
                 },
             );
         }, (error) => {
@@ -56,7 +47,7 @@ export async function getWords(): Promise<WordDocument[]> {
 export async function insertWord(word: WordResult) {
     return new Promise<number>((resolve, reject) => {
         db.transaction(tx => {
-            tx.executeSql('INSERT INTO words (word, definition, api) values (?, ?, ?)', [word.Word, word.Definition, word.API],
+            tx.executeSql('INSERT INTO words (word, definition, api) values (?, ?, ?)', [word.word, word.definition, word.api],
                 (txObj, { insertId }) => {
                     resolve(insertId);
                 },

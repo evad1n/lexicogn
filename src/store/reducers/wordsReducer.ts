@@ -9,7 +9,7 @@ export default function wordsReducer(state: WordsState = [], action: WordsAction
             // First add to db
             insertWord(action.item).then(id => {
                 // Now add word to loaded words
-                state.push({ ...action.item, ID: id });
+                state.push({ ...action.item, id });
             }).catch(error => {
                 console.error("add word to db error:", error);
             });

@@ -1,16 +1,13 @@
-// Database type
-type WordDocument = {
-    ID: number;
-    Word: string;
-    Definition: string;
-    API: number;
+// From requests
+interface WordResult {
+    word: string;
+    definition: string;
+    api: number;
 };
 
-// From requests
-type WordResult = {
-    Word: string;
-    Definition: string;
-    API: number;
+// Database type
+interface WordDocument extends WordResult {
+    id: number;
 };
 
 type WordsState = WordDocument[];

@@ -5,7 +5,7 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { RouteNavProps } from '../DrawerRoutes';
 import { HomeRouteProps } from './HomeRoutes';
 
-export default function Home({ navigation }: RouteNavProps<"Search"> & HomeRouteProps<"Home">) {
+export default function Home({ navigation }: RouteNavProps<'search'> & HomeRouteProps<'home'>) {
     const theme = useTypedSelector(state => state.theme);
 
     return (
@@ -13,7 +13,7 @@ export default function Home({ navigation }: RouteNavProps<"Search"> & HomeRoute
             <View style={styles.titleContainer}>
                 <Text style={[styles.title, { color: theme.primary.text }]}>LEXICOGN</Text>
             </View>
-            <TouchableOpacity activeOpacity={1} onPress={() => navigation.navigate('Search')}>
+            <TouchableOpacity activeOpacity={1} onPress={() => navigation.navigate('search')}>
                 <SearchBar
                     style={styles.searchBar}
                     editable={false}

@@ -2,8 +2,8 @@ import { RouteProp } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 
 export type StudyRoute = {
-    Home: undefined;
-    Detail: undefined;
+    study: undefined;
+    detail: undefined;
 };
 
 export type StudyRouteProps<T extends keyof StudyRoute> = {

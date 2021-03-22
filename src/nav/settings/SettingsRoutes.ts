@@ -2,8 +2,8 @@ import { RouteProp } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 
 export type SettingsRoute = {
-    Settings: undefined;
-    Theme: undefined;
+    settings: undefined;
+    theme: undefined;
 };
 
 export type SettingsRouteProps<T extends keyof SettingsRoute> = {

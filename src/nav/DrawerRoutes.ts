@@ -3,10 +3,10 @@ import { DrawerNavigationProp } from "@react-navigation/drawer";
 
 // Restrict screen types
 export type RouteParamList = {
-    Home: undefined;
-    Search: undefined;
-    Study: undefined;
-    Settings: undefined;
+    home: undefined;
+    search: undefined;
+    study: undefined;
+    settings: undefined;
 };
 
 export type RouteNavProps<T extends keyof RouteParamList> = {

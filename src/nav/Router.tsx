@@ -10,7 +10,7 @@ import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import Divider from '../components/layout/Divider';
 import { useTypedSelector } from '../store/selector';
-import { RouteParamList } from './DrawerRoutes';
+import { RouteNavProps, RouteParamList } from './DrawerRoutes';
 
 interface DrawerItemConfig {
     name: keyof RouteParamList,
@@ -24,19 +24,19 @@ const Drawer = createDrawerNavigator<RouteParamList>();
 
 const TopItems: DrawerItemConfig[] = [
     {
-        name: "Home",
+        name: 'home',
         component: HomeStack,
         icon: "home-outline",
         focusedIcon: "home-sharp",
     },
     {
-        name: 'Search',
+        name: 'search',
         component: SearchStack,
         icon: "search-outline",
         focusedIcon: "search",
     },
     {
-        name: 'Study',
+        name: 'study',
         component: StudyStack,
         icon: "albums-outline",
         focusedIcon: "albums-sharp",
@@ -46,7 +46,7 @@ const TopItems: DrawerItemConfig[] = [
 
 const BotItems: DrawerItemConfig[] = [
     {
-        name: "Settings",
+        name: 'settings',
         component: SettingsStack,
         icon: "settings-outline",
         focusedIcon: "settings-sharp",
@@ -75,7 +75,7 @@ export default function Router() {
     return (
         <NavigationContainer theme={navTheme(theme)}>
             <Drawer.Navigator
-                initialRouteName="Home"
+                initialRouteName='home'
                 drawerContent={(props) => <MyDrawerContent {...props} />}
             >
                 {[...TopItems, ...BotItems].map((item, index) => (
@@ -103,18 +103,18 @@ function DrawerSection(props: DrawerContentComponentProps & { items: DrawerItemC
                             navigation.reset({
                                 index: 0,
                                 routes: [{
-                                    name: "Home"
+                                    name: 'home'
                                 }]
                             });
                             navigation.dispatch(
                                 CommonActions.reset({
                                     index: state.index,
                                     routes: [{
-                                        name: "Home",
+                                        name: 'home',
                                         state: {
                                             routes: [
                                                 {
-                                                    name: "Home"
+                                                    name: 'home'
                                                 }
                                             ],
                                             stale: true
