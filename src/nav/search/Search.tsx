@@ -92,7 +92,7 @@ export default function Search({ navigation }: SearchRouteProps<'search'>) {
             let suggests = await AutoComplete(word);
             // If these suggestions are still current
             setState((state) => {
-                if (state.word.length == word.length) {
+                if (state.word === word) {
                     return { ...state, suggestions: suggests };
                 } else {
                     return state;
