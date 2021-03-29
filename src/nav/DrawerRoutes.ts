@@ -6,6 +6,7 @@ export type RouteParamList = {
     home: undefined;
     search: undefined;
     study: undefined;
+    collection: undefined;
     settings: undefined;
 };
 

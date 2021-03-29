@@ -1,9 +1,9 @@
-import { useTypedSelector } from '@/src/store/selector';
+import { useTypedSelector } from '_store/hooks';
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
-export default function AutoSuggestion({ text, handlePress }: { text: string; handlePress: (word: string) => void; }) {
+export default function AutoSuggestion({ text, handlePress }: { text: string; handlePress: any; }) {
     const theme = useTypedSelector(state => state.theme);
 
     return (

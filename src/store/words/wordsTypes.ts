@@ -19,7 +19,7 @@ type WordsAction =
     }
     | {
         type: "ADD_WORD";
-        item: WordResult;
+        item: WordDocument;
     }
     | {
         type: "DELETE_WORD";

@@ -1,4 +1,4 @@
-import { useTypedSelector } from '@/src/store/selector';
+import { useTypedSelector } from '@/src/store/hooks';
 import React from 'react';
 import { StyleSheet, Text } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -7,10 +7,9 @@ import { StudyRouteProps } from './StudyRoutes';
 
 export default function Study({ navigation }: StudyRouteProps<'study'>) {
     const words = useTypedSelector(state => state.words);
-    console.log("words in state:", words);
 
     return (
-        <SafeAreaView style={styles.shit}>
+        <SafeAreaView style={styles.container}>
             {words.map((word, index) => (
                 <Text>{word.word} hi-- {word.definition}</Text>
             ))}
@@ -20,7 +19,7 @@ export default function Study({ navigation }: StudyRouteProps<'study'>) {
 }
 
 const styles = StyleSheet.create({
-    shit: {
+    container: {
         flex: 1,
         justifyContent: 'space-between',
         alignItems: 'center',

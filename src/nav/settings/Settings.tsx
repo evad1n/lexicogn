@@ -1,5 +1,5 @@
 import Divider from '@/src/components/layout/Divider';
-import { useTypedSelector } from '@/src/store/selector';
+import { useTypedSelector } from '_store/hooks';
 import { Ionicons } from '@expo/vector-icons';
 import React from "react";
 import { FlatList, StyleSheet, Text } from "react-native";

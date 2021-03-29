@@ -1,10 +1,10 @@
-import { useTypedSelector } from "@/src/store/selector";
+import { useTypedSelector } from "_store/hooks";
 import axios from "axios";
 import React, { createRef, useEffect, useState } from "react";
 import { ActivityIndicator, Dimensions, StyleSheet, Text, View } from "react-native";
 import { FlatList, ScrollView } from "react-native-gesture-handler";
 import SearchResultCard from "_components/SearchResultCard";
-import AutoSuggestion from "_components/widgets/AutoSuggestion";
+import ListItemButton from "_components/widgets/ListItemButton";
 import SearchBar from "_components/widgets/SearchBar";
 import APIS, { AutoComplete } from "~/api";
 import { SearchRouteProps } from "./SearchRoutes";
@@ -29,7 +29,7 @@ const initialState: State = {
 
 export default function Search({ navigation }: SearchRouteProps<'search'>) {
     const theme = useTypedSelector(state => state.theme);
-    // Make result card list work right
+    // Make result card list fit width
     const { width } = Dimensions.get('window');
 
     const [state, setState] = useState<State>(initialState);
@@ -114,17 +114,20 @@ export default function Search({ navigation }: SearchRouteProps<'search'>) {
                 <Text style={{ fontSize: 20, color: theme.primary.text }}>Search for a word to see results</Text>
             );
         } else {
-            return (
-                <View style={styles.autoSuggestions}>
-                    {state.word.length > 1 && state.suggestions.map((word: string, index) => (
-                        <AutoSuggestion
-                            key={index}
-                            text={word}
-                            handlePress={async (text: string) => await searchWord(text)}
-                        />
-                    ))}
-                </View>
-            );
+            if (state.word.length > 1) {
+                return (
+                    <View style={styles.autoSuggestions}>
+                        {state.suggestions.map((word: string, index) => (
+                            <ListItemButton
+                                key={index}
+                                text={word}
+                                handlePress={async (text: string) => await searchWord(text)}
+                            />
+                        ))}
+                    </View>
+                );
+            } else
+                return null;
         }
     }
 

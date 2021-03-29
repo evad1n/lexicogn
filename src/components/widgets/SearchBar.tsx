@@ -1,4 +1,4 @@
-import { useTypedSelector } from '@/src/store/selector';
+import { useTypedSelector } from '_store/hooks';
 import { Ionicons } from '@expo/vector-icons';
 import React, { createRef, useImperativeHandle, useState } from 'react';
 import { StyleSheet, TextInput, View } from 'react-native';

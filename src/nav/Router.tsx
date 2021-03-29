@@ -9,7 +9,8 @@ import { CommonActions, StackActions, NavigationContainer, useNavigation } from 
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import Divider from '../components/layout/Divider';
-import { useTypedSelector } from '../store/selector';
+import { useTypedSelector } from '_store/hooks';
+import CollectionStack from './collection/CollectionStack';
 import { RouteNavProps, RouteParamList } from './DrawerRoutes';
 
 interface DrawerItemConfig {
@@ -40,8 +41,13 @@ const TopItems: DrawerItemConfig[] = [
         component: StudyStack,
         icon: "albums-outline",
         focusedIcon: "albums-sharp",
+    },
+    {
+        name: 'collection',
+        component: CollectionStack,
+        icon: "book-outline",
+        focusedIcon: "book-sharp",
     }
-    // book icon for collection
 ];
 
 const BotItems: DrawerItemConfig[] = [

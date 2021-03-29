@@ -6,7 +6,7 @@ import { Provider } from 'react-redux';
 import Router from '_nav/Router';
 import store from '_store/store';
 import initialize from './src/initialize';
-import { useTypedSelector } from './src/store/selector';
+import { useTypedSelector } from './src/store/hooks';
 
 export default function App() {
     const [loading, setLoading] = useState(true);

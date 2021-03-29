@@ -5,19 +5,12 @@ export default function wordsReducer(state: WordsState = [], action: WordsAction
         case "LOAD_WORDS":
             return action.data;
         case "ADD_WORD":
-            console.log("add word:", action.item);
-            // First add to db
-            insertWord(action.item).then(id => {
-                // Now add word to loaded words
-                state.push({ ...action.item, id });
-            }).catch(error => {
-                console.error("add word to db error:", error);
-            });
-            return state;
+            console.log("add word state:", action.item);
+            return [action.item, ...state];
         case "DELETE_WORD":
-            console.log("delete word:", action.id);
-            // Deleted word from state
-            // state.push(action.item);
+            console.log("delete word state:", action.id);
+            // Delete word from state
+            return state.filter(word => word.id !== action.id);
             return state;
         default:
             return state;

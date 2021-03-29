@@ -4,24 +4,25 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import { useDispatch } from 'react-redux';
 import APIS, { APIType } from '../api';
 import { addWord } from '../store/actions/wordsActions';
-import { useTypedSelector } from '../store/selector';
+import { useTypedSelector } from '_store/hooks';
 
 export default function SearchResultCard({ item: result }: { item: WordResult; }) {
     const theme = useTypedSelector(state => state.theme);
     const { width } = Dimensions.get('window');
     const dispatch = useDispatch();
 
-    const API: APIType = APIS[result.API];
+    const API: APIType = APIS[result.api];
 
     const saveWord = () => {
         dispatch(addWord(result));
+        // Probably shoould navigate to collection detail or something here
     };
 
     const notFound = () => {
         return (
             <React.Fragment>
                 <View>
-                    <Text style={[styles.word, { color: theme.primary.text }]}>{result.Word}</Text>
+                    <Text style={[styles.word, { color: theme.primary.text }]}>{result.word}</Text>
                 </View>
                 <View style={styles.notFoundContainer}>
                     <Text style={[styles.notFound, { color: theme.primary.text }]}>No results found</Text>
@@ -35,8 +36,8 @@ export default function SearchResultCard({ item: result }: { item: WordResult; }
         return (
             <React.Fragment>
                 <View style={styles.content}>
-                    <Text style={[styles.word, { color: theme.primary.text }]}>{result.Word}</Text>
-                    <Text style={[styles.definition, { color: theme.primary.text }]}>{result.Definition}</Text>
+                    <Text style={[styles.word, { color: theme.primary.text }]}>{result.word}</Text>
+                    <Text style={[styles.definition, { color: theme.primary.text }]}>{result.definition}</Text>
                 </View>
                 <View style={styles.footer}>
                     <TouchableOpacity
@@ -56,7 +57,7 @@ export default function SearchResultCard({ item: result }: { item: WordResult; }
                 <View style={styles.header}>
                     <Text style={{ fontFamily: "monospace", color: theme.primary.text, textTransform: "capitalize", fontSize: 14 }}>{API.name.replace(/-/g, ' ')}</Text>
                 </View>
-                {result.Definition != null ? found() : notFound()}
+                {result.definition != null ? found() : notFound()}
             </View>
         </View >
     );

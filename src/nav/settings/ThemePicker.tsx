@@ -4,7 +4,7 @@ import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { FlatList, TouchableOpacity } from 'react-native-gesture-handler';
 import { useDispatch } from 'react-redux';
-import { useTypedSelector } from '@/src/store/selector';
+import { useTypedSelector } from '_store/hooks';
 import Divider from '@/src/components/layout/Divider';
 
 

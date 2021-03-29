@@ -27,7 +27,7 @@ export async function getWords(): Promise<WordDocument[]> {
     return new Promise<WordDocument[]>((resolve, reject) => {
         db.transaction(tx => {
             tx.executeSql(
-                'SELECT * FROM words',
+                'SELECT * FROM words ORDER BY word',
                 [],
                 (_, { rows }: { rows: any; }) => {
                     // Expo sqlite has completely wrong Types => rows has no member _array but it does! Awesome!
@@ -50,6 +50,25 @@ export async function insertWord(word: WordResult) {
             tx.executeSql('INSERT INTO words (word, definition, api) values (?, ?, ?)', [word.word, word.definition, word.api],
                 (txObj, { insertId }) => {
                     resolve(insertId);
+                },
+            );
+        }, (error) => {
+            reject(error);
+        });
+    });
+}
+
+// TODO: test this
+export async function deleteWord(id: Number) {
+    return new Promise<void>((resolve, reject) => {
+        db.transaction(tx => {
+            tx.executeSql('DELETE FROM words WHERE id = ?', [id],
+                (txObj, { rowsAffected }) => {
+                    console.log(rowsAffected);
+                    if (rowsAffected == 0)
+                        reject("No such id?");
+                    else
+                        resolve();
                 },
             );
         }, (error) => {

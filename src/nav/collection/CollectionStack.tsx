@@ -1,22 +1,22 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import DrawerButton from '_nav/DrawerButton';
-import Home from './Home';
+import Collection from './Collection';
 import { RouteNavProps } from '../DrawerRoutes';
-import { HomeRoute } from './HomeRoutes';
+import { CollectionRoute } from './CollectionRoutes';
 
-const Stack = createStackNavigator<HomeRoute>();
+const Stack = createStackNavigator<CollectionRoute>();
 
-export default function HomeStack({ navigation }: RouteNavProps<"home">) {
+export default function CollectionStack({ navigation }: RouteNavProps<"collection">) {
     return (
         <Stack.Navigator
-            initialRouteName="home"
+            initialRouteName="collection"
             screenOptions={{
                 headerLeft: () => (<DrawerButton navigation={navigation} />),
                 headerTitle: ""
             }}
         >
-            <Stack.Screen name="home" component={Home} />
+            <Stack.Screen name="collection" component={Collection} />
         </Stack.Navigator>
     );
 }

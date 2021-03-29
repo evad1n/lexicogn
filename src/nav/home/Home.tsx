@@ -1,5 +1,5 @@
 import SearchBar from '@/src/components/widgets/SearchBar';
-import { useTypedSelector } from '@/src/store/selector';
+import { useTypedSelector } from '_store/hooks';
 import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { RouteNavProps } from '../DrawerRoutes';
