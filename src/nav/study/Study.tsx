@@ -5,14 +5,11 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { StudyRouteProps } from './StudyRoutes';
 
 
-export default function Study({ navigation }: StudyRouteProps<'study'>) {
+export default function Study({ navigation }: StudyRouteProps<'Study'>) {
     const words = useTypedSelector(state => state.words);
 
     return (
         <SafeAreaView style={styles.container}>
-            {words.map((word, index) => (
-                <Text>{word.word} hi-- {word.definition}</Text>
-            ))}
             <Text>Hello</Text>
         </SafeAreaView>
     );

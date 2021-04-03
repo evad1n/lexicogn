@@ -7,17 +7,16 @@ import { StudyRoute } from './StudyRoutes';
 
 const Stack = createStackNavigator<StudyRoute>();
 
-export default function HomeStack({ navigation }: RouteNavProps<"study">) {
+export default function HomeStack({ navigation }: RouteNavProps<"Study">) {
     return (
         <Stack.Navigator
-            initialRouteName="study"
+            initialRouteName="Study"
             screenOptions={{
                 headerLeft: () => (<DrawerButton navigation={navigation} />),
-                headerTitle: ""
             }}
 
         >
-            <Stack.Screen name="study" component={Study} />
+            <Stack.Screen name="Study" component={Study} />
         </Stack.Navigator>
     );
 }

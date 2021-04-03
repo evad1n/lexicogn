@@ -8,15 +8,15 @@ import { SearchRoute } from './SearchRoutes';
 
 const Stack = createStackNavigator<SearchRoute>();
 
-export default function HomeStack({ navigation }: RouteNavProps<"search">) {
+export default function HomeStack({ navigation }: RouteNavProps<"Search">) {
     return (
         <Stack.Navigator
-            initialRouteName="search"
+            initialRouteName="Search"
             screenOptions={{
                 headerLeft: () => (<DrawerButton navigation={navigation} />),
             }}
         >
-            <Stack.Screen name="search" component={Search} />
+            <Stack.Screen name="Search" component={Search} />
         </Stack.Navigator >
     );
 }

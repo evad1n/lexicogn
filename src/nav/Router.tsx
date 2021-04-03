@@ -25,25 +25,25 @@ const Drawer = createDrawerNavigator<RouteParamList>();
 
 const TopItems: DrawerItemConfig[] = [
     {
-        name: 'home',
+        name: 'Home',
         component: HomeStack,
         icon: "home-outline",
         focusedIcon: "home-sharp",
     },
     {
-        name: 'search',
+        name: 'Search',
         component: SearchStack,
         icon: "search-outline",
         focusedIcon: "search",
     },
     {
-        name: 'study',
+        name: 'Study',
         component: StudyStack,
         icon: "albums-outline",
         focusedIcon: "albums-sharp",
     },
     {
-        name: 'collection',
+        name: 'Collection',
         component: CollectionStack,
         icon: "book-outline",
         focusedIcon: "book-sharp",
@@ -52,7 +52,7 @@ const TopItems: DrawerItemConfig[] = [
 
 const BotItems: DrawerItemConfig[] = [
     {
-        name: 'settings',
+        name: 'Settings',
         component: SettingsStack,
         icon: "settings-outline",
         focusedIcon: "settings-sharp",
@@ -81,7 +81,7 @@ export default function Router() {
     return (
         <NavigationContainer theme={navTheme(theme)}>
             <Drawer.Navigator
-                initialRouteName='home'
+                initialRouteName='Home'
                 drawerContent={(props) => <MyDrawerContent {...props} />}
             >
                 {[...TopItems, ...BotItems].map((item, index) => (

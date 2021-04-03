@@ -11,7 +11,6 @@ export default function wordsReducer(state: WordsState = [], action: WordsAction
             console.log("delete word state:", action.id);
             // Delete word from state
             return state.filter(word => word.id !== action.id);
-            return state;
         default:
             return state;
     }

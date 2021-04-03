@@ -1,6 +1,6 @@
 import { useTypedSelector } from "_store/hooks";
 import axios from "axios";
-import React, { createRef, useEffect, useState } from "react";
+import React, { createRef, useEffect, useLayoutEffect, useState } from "react";
 import { ActivityIndicator, Dimensions, StyleSheet, Text, View } from "react-native";
 import { FlatList, ScrollView } from "react-native-gesture-handler";
 import SearchResultCard from "_components/SearchResultCard";
@@ -8,6 +8,7 @@ import ListItemButton from "_components/widgets/ListItemButton";
 import SearchBar from "_components/widgets/SearchBar";
 import APIS, { AutoComplete } from "~/api";
 import { SearchRouteProps } from "./SearchRoutes";
+import { RouteNavProps } from "../DrawerRoutes";
 
 type State = {
     word: string,
@@ -27,7 +28,7 @@ const initialState: State = {
 };
 
 
-export default function Search({ navigation }: SearchRouteProps<'search'>) {
+export default function Search({ navigation }: SearchRouteProps<'Search'> & RouteNavProps<'Search'>) {
     const theme = useTypedSelector(state => state.theme);
     // Make result card list fit width
     const { width } = Dimensions.get('window');
@@ -45,7 +46,7 @@ export default function Search({ navigation }: SearchRouteProps<'search'>) {
     }, [navigation]);
 
     // Header search bar
-    React.useLayoutEffect(() => {
+    useLayoutEffect(() => {
         navigation.setOptions({
             headerTitle: () => (
                 <SearchBar

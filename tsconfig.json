@@ -34,6 +34,9 @@
       "_store/*": [
         "src/store/*"
       ],
+      "_styles/*": [
+        "src/styles/*"
+      ],
     }
   }
 }

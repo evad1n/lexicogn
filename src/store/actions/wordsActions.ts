@@ -1,4 +1,6 @@
-import { insertWord } from "@/src/db/db";
+import { insertWord } from "_db/db";
+import { ThunkAction } from 'redux-thunk';
+import { RootState } from "../reducers/rootReducer";
 
 /**
  * Initially set words state from database
@@ -17,7 +19,7 @@ export const setWords = (data: WordDocument[]): WordsAction => {
  * Adds the word the database, then adds to state with return new id. Will do nothing if unable to add to database
  * @param data The word to add
  */
-export const addWord = (data: WordResult): any => {
+export const addWord = (data: WordResult): ThunkAction<void, RootState, unknown, WordsAction> => {
     return async (dispatch: any) => {
         try {
             let id = await insertWord(data);

@@ -2,7 +2,7 @@ import { RouteProp } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 
 export type SearchRoute = {
-    search: undefined;
+    Search: undefined;
 };
 
 export type SearchRouteProps<T extends keyof SearchRoute> = {

@@ -4,19 +4,21 @@ import DrawerButton from '_nav/DrawerButton';
 import Collection from './Collection';
 import { RouteNavProps } from '../DrawerRoutes';
 import { CollectionRoute } from './CollectionRoutes';
+import Detail from './Detail';
 
 const Stack = createStackNavigator<CollectionRoute>();
 
-export default function CollectionStack({ navigation }: RouteNavProps<"collection">) {
+export default function CollectionStack({ navigation }: RouteNavProps<"Collection">) {
     return (
         <Stack.Navigator
-            initialRouteName="collection"
+            initialRouteName="Collection"
             screenOptions={{
                 headerLeft: () => (<DrawerButton navigation={navigation} />),
-                headerTitle: ""
             }}
+
         >
-            <Stack.Screen name="collection" component={Collection} />
+            <Stack.Screen name="Collection" component={Collection} />
+            <Stack.Screen name="Detail" component={Detail} />
         </Stack.Navigator>
     );
 }

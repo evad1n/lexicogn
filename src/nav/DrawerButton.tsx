@@ -1,7 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import React, { useEffect } from 'react';
 import { Keyboard, StyleSheet, TouchableOpacity } from 'react-native';
-import { useTypedSelector } from '../store/selector';
+import { useTypedSelector } from '_store/hooks';
 
 
 export default function DrawerButton({ navigation }: any) {
@@ -15,7 +15,7 @@ export default function DrawerButton({ navigation }: any) {
     }, []);
 
     return (
-        <TouchableOpacity onPress={() => {
+        <TouchableOpacity style={styles.width} onPress={() => {
             navigation.openDrawer();
             Keyboard.dismiss();
         }}>
@@ -28,4 +28,7 @@ const styles = StyleSheet.create({
     button: {
         marginLeft: 10,
     },
+    width: {
+        width: 40
+    }
 });

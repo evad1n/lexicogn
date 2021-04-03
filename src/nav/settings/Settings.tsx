@@ -15,17 +15,17 @@ type SettingsType = {
 const settings: SettingsType[] = [
     {
         name: "Theme",
-        nav: "theme",
+        nav: "Theme",
         icon: "color-palette-sharp"
     },
     {
         name: "idk",
-        nav: "theme",
+        nav: "Theme",
         icon: "color-palette-outline"
     },
 ];
 
-export default function Settings({ navigation }: SettingsRouteProps<'settings'>) {
+export default function Settings({ navigation }: SettingsRouteProps<'Settings'>) {
     const theme = useTypedSelector(state => state.theme);
 
     const renderSettingTab = ({ item: setting }: { item: SettingsType; }) => {

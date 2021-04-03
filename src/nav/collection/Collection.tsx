@@ -1,19 +1,19 @@
 import SearchBar from '@/src/components/widgets/SearchBar';
-import { useTypedSelector } from '_store/hooks';
 import React, { useState } from 'react';
-import { Dimensions, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Dimensions, StyleSheet, Text, View } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
-import { RouteNavProps } from '../DrawerRoutes';
-import { CollectionRouteProps } from './CollectionRoutes';
 import ListItemButton from "_components/widgets/ListItemButton";
+import { useTypedSelector } from '_store/hooks';
+import { CollectionRouteProps } from './CollectionRoutes';
 
-export default function Collection({ navigation }: CollectionRouteProps<'collection'>) {
+export default function Collection({ navigation }: CollectionRouteProps<'Collection'>) {
     const theme = useTypedSelector(state => state.theme);
     const words = useTypedSelector(state => state.words);
 
     const { width } = Dimensions.get('window');
 
-    // console.log(words);
+    console.log("=====================");
+    console.log(words);
 
 
     const [search, setSearch] = useState("");
@@ -42,41 +42,36 @@ export default function Collection({ navigation }: CollectionRouteProps<'collect
         });
     }, [navigation, theme]);
 
-    function renderCollectionList() {
+    function renderEmptyText() {
         return (
-            <FlatList
-                contentContainerStyle={{ width: width }}
-                data={words}
-                renderItem={({ item }) => <ListItemButton
-                    text={item.word}
-                    handlePress={() => navigation.navigate('detail', { id: item.id })}
-                />}
-                keyExtractor={(item, index) => `${index}`}
-            />
+            <View style={styles.emptyContainer}>
+                <Text style={styles.emptyText}>No saved words</Text>
+            </View>
         );
     }
 
     return (
-        <View style={styles.container}>
-            {words.length > 0 ?
-                // words.map((word, index) => (
-                //     <ListItemButton
-                //         key={index}
-                //         text={word.word}
-                //         handlePress={() => navigation.navigate('detail', { id: word.id })}
-                //     />
-                // ))
-                renderCollectionList()
-                :
-                <Text>No saved words</Text>
-            }
-        </View >
+        <FlatList
+            contentContainerStyle={{ flexGrow: 1, paddingTop: 5 }}
+            data={words}
+            renderItem={({ item }) => <ListItemButton
+                text={item.word}
+                handlePress={() => navigation.navigate('Detail', { word: item })}
+            />}
+            keyExtractor={(item, index) => `${index}`}
+            ListEmptyComponent={renderEmptyText}
+        />
     );
 }
 
 const styles = StyleSheet.create({
-    container: {
+    emptyContainer: {
         flex: 1,
         alignItems: 'center',
+        justifyContent: "center",
+        marginTop: "-20%"
     },
+    emptyText: {
+        fontSize: 30
+    }
 });

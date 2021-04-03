@@ -9,4 +9,7 @@ const schema =
     api INTEGER NOT NULL
     );`;
 
+export const reset =
+    `DELETE FROM words;`;
+
 export default schema;

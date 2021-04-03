@@ -15,6 +15,7 @@ module.exports = function (api) {
             "_nav": './src/nav',
             "_db": './src/db',
             "_store": './src/store',
+            "_styles": './src/styles',
           }
         }
       ],

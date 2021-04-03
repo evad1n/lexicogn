@@ -9,16 +9,16 @@ import ThemePicker from './ThemePicker';
 
 const Stack = createStackNavigator<SettingsRoute>();
 
-export default function HomeStack({ navigation }: RouteNavProps<"settings">) {
+export default function HomeStack({ navigation }: RouteNavProps<"Settings">) {
     return (
         <Stack.Navigator
-            initialRouteName="settings"
+            initialRouteName="Settings"
             screenOptions={{
                 headerLeft: () => (<DrawerButton navigation={navigation} />),
             }}
         >
-            <Stack.Screen name="settings" component={Settings} />
-            <Stack.Screen name="theme" component={ThemePicker} />
+            <Stack.Screen name="Settings" component={Settings} />
+            <Stack.Screen name="Theme" component={ThemePicker} />
         </Stack.Navigator >
     );
 }

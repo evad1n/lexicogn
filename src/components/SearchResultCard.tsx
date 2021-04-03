@@ -1,21 +1,32 @@
+import { useNavigation } from '@react-navigation/core';
 import React from 'react';
 import { Dimensions, StyleSheet, Text, View } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-import { useDispatch } from 'react-redux';
-import APIS, { APIType } from '../api';
-import { addWord } from '../store/actions/wordsActions';
-import { useTypedSelector } from '_store/hooks';
+import { useTypedDispatch, useTypedSelector } from '_store/hooks';
+import APIS, { APIType } from '~/api';
+import { insertWord } from '_db/db';
+import { textStyles } from '../styles/text';
 
 export default function SearchResultCard({ item: result }: { item: WordResult; }) {
     const theme = useTypedSelector(state => state.theme);
     const { width } = Dimensions.get('window');
-    const dispatch = useDispatch();
+    const dispatch = useTypedDispatch();
+    const navigation = useNavigation();
 
     const API: APIType = APIS[result.api];
 
-    const saveWord = () => {
-        dispatch(addWord(result));
-        // Probably shoould navigate to collection detail or something here
+    const saveWord = async () => {
+        try {
+            let id = await insertWord(result);
+            let word = { ...result, id };
+            dispatch({
+                type: "ADD_WORD",
+                item: word
+            });
+            navigation.navigate('Detail', { word: word });
+        } catch (error) {
+            console.error(error);
+        }
     };
 
     const notFound = () => {
@@ -55,7 +66,7 @@ export default function SearchResultCard({ item: result }: { item: WordResult; }
         <View style={{ width: width }}>
             <View style={[styles.container, { backgroundColor: theme.primary.default }]}>
                 <View style={styles.header}>
-                    <Text style={{ fontFamily: "monospace", color: theme.primary.text, textTransform: "capitalize", fontSize: 14 }}>{API.name.replace(/-/g, ' ')}</Text>
+                    <Text style={[textStyles.api, { color: theme.primary.text }]}>{API.name.replace(/-/g, ' ')}</Text>
                 </View>
                 {result.definition != null ? found() : notFound()}
             </View>

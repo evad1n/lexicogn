@@ -1,7 +1,7 @@
 import store from '_store/store';
 import { getData } from './storage';
 import { changeTheme } from './store/actions/themeActions';
-import { initDB, getWords } from '_db/db';
+import { initDB, getAllWords } from '_db/db';
 import { setWords } from './store/actions/wordsActions';
 
 // Load local storage theme
@@ -25,7 +25,8 @@ async function loadTheme() {
 async function loadDB() {
     try {
         await initDB();
-        const words = await getWords();
+        const words = await getAllWords();
+        console.log(words);
         store.dispatch(setWords(words));
     } catch (error) {
         throw new Error(error);
