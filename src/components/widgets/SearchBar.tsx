@@ -1,13 +1,14 @@
 import { useTypedSelector } from '_store/hooks';
 import { Ionicons } from '@expo/vector-icons';
-import React, { createRef, useImperativeHandle, useState } from 'react';
+import React, { createRef, useEffect, useImperativeHandle, useState } from 'react';
 import { StyleSheet, TextInput, View } from 'react-native';
+import { changeTheme } from '@/src/store/actions/themeActions';
 
 interface SearchRef {
     focusSearchBar(): void;
 }
 
-const SearchBar = React.forwardRef<SearchRef, any>((props, ref) => {
+const SearchBar = React.forwardRef<SearchRef, any>(({ autoFocus, editable, placeholder, onChange, onSubmit, style }, ref) => {
     const theme = useTypedSelector(state => state.theme);
 
     const [searchText, setSearchText] = useState("");
@@ -18,22 +19,34 @@ const SearchBar = React.forwardRef<SearchRef, any>((props, ref) => {
         input.current.focus();
     };
 
+    const clear = () => {
+        setSearchText("");
+    };
+
+    useEffect(() => {
+        if (editable)
+            onChange(searchText);
+    }, [searchText]);
+
     useImperativeHandle(ref, () => ({ focusSearchBar }));
 
     return (
-        <View style={[{ backgroundColor: theme.primary.default, shadowColor: "red" }, styles.container, props.style]}>
+        <View style={[{ backgroundColor: theme.primary.default, shadowColor: "red" }, styles.container, style]}>
             <Ionicons name="md-search" size={20} style={styles.icon} color={theme.primary.text} />
             <TextInput
-                editable={props.editable}
+                autoFocus={autoFocus}
+                editable={editable}
                 ref={input}
+                value={searchText}
                 style={[styles.text, { color: theme.primary.text }, searchText.length === 0 ? styles.placeholder : null]}
                 placeholderTextColor={theme.primary.text}
-                placeholder={props.placeholder}
-                onChangeText={text => { setSearchText(text); props.change(text); }}
-                onSubmitEditing={() => props.search(searchText)}
+                placeholder={placeholder}
+                onChangeText={text => setSearchText(text)}
+                onSubmitEditing={() => onSubmit(searchText)}
                 returnKeyType="search"
                 keyboardAppearance={theme.dark ? 'dark' : 'light'}
             />
+            {searchText.length > 0 && <Ionicons onPress={clear} name="close-circle" size={26} color={theme.primary.text} />}
         </View>
     );
 }

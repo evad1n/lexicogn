@@ -106,28 +106,28 @@ function DrawerSection(props: DrawerContentComponentProps & { items: DrawerItemC
                         focused={state.index == index + indexOffset}
                         onPress={() => {
                             // console.log(state);
-                            navigation.reset({
-                                index: 0,
-                                routes: [{
-                                    name: 'home'
-                                }]
-                            });
-                            navigation.dispatch(
-                                CommonActions.reset({
-                                    index: state.index,
-                                    routes: [{
-                                        name: 'home',
-                                        state: {
-                                            routes: [
-                                                {
-                                                    name: 'home'
-                                                }
-                                            ],
-                                            stale: true
-                                        }
-                                    }]
-                                })
-                            );
+                            // navigation.reset({
+                            //     index: 0,
+                            //     routes: [{
+                            //         name: 'home'
+                            //     }]
+                            // });
+                            // navigation.dispatch(
+                            //     CommonActions.reset({
+                            //         index: state.index,
+                            //         routes: [{
+                            //             name: 'home',
+                            //             state: {
+                            //                 routes: [
+                            //                     {
+                            //                         name: 'home'
+                            //                     }
+                            //                 ],
+                            //                 stale: true
+                            //             }
+                            //         }]
+                            //     })
+                            // );
                             // Navigate to inner default screen
                             navigation.navigate(item.name, { screen: item.name });
                             // navigation.dispatch(StackActions.popToTop());

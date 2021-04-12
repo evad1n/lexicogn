@@ -1,11 +1,11 @@
-import React, { useLayoutEffect } from 'react';
-import { Button, StyleSheet, Text, View } from 'react-native';
-import { CollectionRouteProps } from './CollectionRoutes';
-import APIS, { APIType } from '~/api';
-import { deleteWord } from '_db/db';
 import { useTypedDispatch, useTypedSelector } from '@/src/store/hooks';
 import { textStyles } from '@/src/styles/text';
-import { TextInput } from 'react-native-gesture-handler';
+import React from 'react';
+import { StyleSheet, Text, View } from 'react-native';
+import { TextInput, TouchableOpacity } from 'react-native-gesture-handler';
+import { deleteWord } from '_db/db';
+import APIS from '~/api';
+import { CollectionRouteProps } from './CollectionRoutes';
 
 
 export default function Detail({ route, navigation }: CollectionRouteProps<'Detail'>) {
@@ -31,14 +31,18 @@ export default function Detail({ route, navigation }: CollectionRouteProps<'Deta
     return (
         <View style={styles.container}>
             <View style={styles.content}>
-                <Text style={styles.word}>{word.word}</Text>
+                <Text style={[styles.word, { color: theme.primary.text }]}>{word.word}</Text>
                 <Text style={[textStyles.api, { color: theme.primary.text }]}>{API.name.replace(/-/g, ' ')}</Text>
-                <Text style={styles.definition}>{word.definition}</Text>
+                <Text style={[styles.definition, { color: theme.primary.text }]}>{word.definition}</Text>
                 <TextInput />
             </View>
             <View style={styles.actions}>
-                <Button title="Edit" onPress={() => console.log("edit!")} />
-                <Button title="Delete" color="red" onPress={removeWord} />
+                <TouchableOpacity style={[styles.button, { backgroundColor: theme.primary.default }]} onPress={() => console.log("edit!")} >
+                    <Text style={[styles.buttonText, { color: theme.primary.text }]}>Edit</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={[styles.button, { backgroundColor: theme.primary.default }]} onPress={removeWord} >
+                    <Text style={[styles.buttonText, { color: theme.primary.text }]}>Delete</Text>
+                </TouchableOpacity>
             </View>
         </View>
     );
@@ -47,20 +51,34 @@ export default function Detail({ route, navigation }: CollectionRouteProps<'Deta
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        padding: 20,
+        paddingHorizontal: 20,
     },
     content: {
-
+        marginTop: 5,
+        flexGrow: 1,
     },
     word: {
-        fontSize: 30,
-        textAlign: "center",
-        backgroundColor: "red"
+        fontSize: 36,
+        // textAlign: "center",
+        // marginTop
     },
     definition: {
-
+        fontSize: 20,
+        marginTop: 20
     },
     actions: {
-
+        marginBottom: 5
+    },
+    button: {
+        alignItems: 'center',
+        padding: 10,
+        marginVertical: 5,
+        elevation: 3,
+    },
+    buttonText: {
+        textTransform: "uppercase",
+        fontSize: 16,
+        fontWeight: "bold",
+        letterSpacing: 0.5
     }
 });

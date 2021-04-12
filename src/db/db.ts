@@ -33,7 +33,6 @@ export async function getAllWords(): Promise<WordDocument[]> {
                 [],
                 (_, { rows }: { rows: any; }) => {
                     // Expo sqlite has completely wrong Types => rows has no member _array but it does! Awesome!
-                    console.log(rows._array);
                     resolve(rows._array);
                 },
             );
@@ -61,15 +60,13 @@ export async function insertWord(word: WordResult) {
     });
 }
 
-// TODO: test this
 export async function deleteWord(id: Number) {
     return new Promise<void>((resolve, reject) => {
         db.transaction(tx => {
             tx.executeSql('DELETE FROM words WHERE id = ?', [id],
                 (txObj, { rowsAffected }) => {
-                    console.log(rowsAffected, id);
                     if (rowsAffected == 0)
-                        reject("No such id?");
+                        reject(`no word exists with id ${id}`);
                     else
                         resolve();
                 },

@@ -51,12 +51,12 @@ export default function Search({ navigation }: SearchRouteProps<'Search'> & Rout
             headerTitle: () => (
                 <SearchBar
                     ref={searchBar}
-                    autoFocus={true}
+                    autoFocus
                     placeholder="Look up a word"
-                    change={(text: string) => {
+                    onChange={(text: string) => {
                         setState((state) => ({ ...state, word: text, searched: false }));
                     }}
-                    search={(text: string) => searchWord(text)}
+                    onSubmit={(text: string) => searchWord(text)}
                     style={{ backgroundColor: theme.primary.light }}
                 />
             ),

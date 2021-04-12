@@ -28,7 +28,6 @@ export default function CollectionStack({ navigation }: RouteNavProps<"Collectio
                 animationEnabled: false,
                 headerTitle: () => (
                     <SearchBar
-                        autoFocus={true}
                         placeholder="Search the collection"
                         change={(text: string) => {
                             setSearch(text);

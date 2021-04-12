@@ -1,6 +1,3 @@
-import { insertWord } from "_db/db";
-import { ThunkAction } from 'redux-thunk';
-import { RootState } from "../reducers/rootReducer";
 
 /**
  * Initially set words state from database
@@ -12,35 +9,4 @@ export const setWords = (data: WordDocument[]): WordsAction => {
         type: "LOAD_WORDS",
         data: data
     };
-};
-
-
-/**
- * Adds the word the database, then adds to state with return new id. Will do nothing if unable to add to database
- * @param data The word to add
- */
-export const addWord = (data: WordResult): ThunkAction<void, RootState, unknown, WordsAction> => {
-    return async (dispatch: any) => {
-        try {
-            let id = await insertWord(data);
-            dispatch({
-                type: "ADD_WORD",
-                item: { ...data, id }
-            });
-        } catch (error) {
-            console.error(error);
-        }
-    };
-    // console.log("add word:", action.item);
-    // // First add to db
-    // insertWord(action.item).then(id => {
-    //     // Now add word to loaded words
-    //     state.push({ ...action.item, id });
-    // }).catch(error => {
-    //     console.error("add word to db error:", error);
-    // });
-    // return {
-    //     type: "ADD_WORD",
-    //     item: data
-    // };
 };
