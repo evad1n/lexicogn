@@ -19,6 +19,7 @@ export default function SearchResultCard({ item: result }: { item: WordResult; }
         try {
             let id = await insertWord(result);
             let word = { ...result, id };
+            console.log("insert", word);
             dispatch({
                 type: "ADD_WORD",
                 item: word

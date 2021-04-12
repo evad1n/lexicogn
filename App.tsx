@@ -15,7 +15,6 @@ export default function App() {
         try {
             await preventAutoHideAsync();
             await initialize();
-
         } catch (error) {
             throw new Error(error.message);
         }

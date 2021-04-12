@@ -1,3 +1,4 @@
+import { DrawerContentScrollView } from '@react-navigation/drawer';
 import * as SQLite from 'expo-sqlite';
 import schema, { reset } from './schema';
 
@@ -10,8 +11,8 @@ export async function initDB(): Promise<void> {
     return new Promise<void>((resolve, reject) => {
         // Check if the words table exists if not create it
         db.transaction(tx => {
-            tx.executeSql(reset);
-            // tx.executeSql(schema);
+            // tx.executeSql(reset);
+            tx.executeSql(schema);
         }, (error) => {
             reject(error);
         }, () => {
@@ -32,6 +33,7 @@ export async function getAllWords(): Promise<WordDocument[]> {
                 [],
                 (_, { rows }: { rows: any; }) => {
                     // Expo sqlite has completely wrong Types => rows has no member _array but it does! Awesome!
+                    console.log(rows._array);
                     resolve(rows._array);
                 },
             );
@@ -65,7 +67,7 @@ export async function deleteWord(id: Number) {
         db.transaction(tx => {
             tx.executeSql('DELETE FROM words WHERE id = ?', [id],
                 (txObj, { rowsAffected }) => {
-                    console.log(rowsAffected);
+                    console.log(rowsAffected, id);
                     if (rowsAffected == 0)
                         reject("No such id?");
                     else

@@ -3,13 +3,13 @@
  */
 const schema =
     `CREATE TABLE IF NOT EXISTS words (
-    id SERIAL PRIMARY KEY,
+    id INTEGER NOT NULL PRIMARY KEY,
     word TEXT NOT NULL,
     definition TEXT NOT NULL,
     api INTEGER NOT NULL
     );`;
 
 export const reset =
-    `DELETE FROM words;`;
+    `DROP TABLE IF EXISTS words;`;
 
 export default schema;

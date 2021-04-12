@@ -10,10 +10,8 @@ export default function Collection({ navigation }: CollectionRouteProps<'Collect
     const theme = useTypedSelector(state => state.theme);
     const words = useTypedSelector(state => state.words);
 
-    const { width } = Dimensions.get('window');
-
-    console.log("=====================");
-    console.log(words);
+    // console.log("=====================");
+    // console.log(words);
 
 
     const [search, setSearch] = useState("");
@@ -21,26 +19,6 @@ export default function Collection({ navigation }: CollectionRouteProps<'Collect
     function searchCollection(text: string) {
         console.log(text);
     }
-
-    // Header search bar
-    React.useLayoutEffect(() => {
-        navigation.setOptions({
-            headerTitle: () => (
-                <SearchBar
-                    autoFocus={true}
-                    placeholder="Search the collection"
-                    change={(text: string) => {
-                        setSearch(text);
-                    }}
-                    search={(text: string) => searchCollection(text)}
-                    style={{ backgroundColor: theme.primary.light }}
-                />
-            ),
-            headerTitleContainerStyle: {
-                left: 60,
-            },
-        });
-    }, [navigation, theme]);
 
     function renderEmptyText() {
         return (
