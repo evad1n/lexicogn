@@ -141,6 +141,7 @@ export default function Search({ navigation }: SearchRouteProps<'Search'> & Rout
             );
         } else {
             return (
+                // TODO: add custom def card
                 <FlatList
                     style={{
                         width: width

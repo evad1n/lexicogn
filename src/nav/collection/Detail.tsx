@@ -32,16 +32,18 @@ export default function Detail({ route, navigation }: CollectionRouteProps<'Deta
         <View style={styles.container}>
             <View style={styles.content}>
                 <Text style={[styles.word, { color: theme.primary.text }]}>{word.word}</Text>
+                {/* TODO: If edited display (edited); not for custom */}
                 <Text style={[textStyles.api, { color: theme.primary.text }]}>{API.name.replace(/-/g, ' ')}</Text>
                 <Text style={[styles.definition, { color: theme.primary.text }]}>{word.definition}</Text>
                 <TextInput />
             </View>
             <View style={styles.actions}>
+                {/* TODO: editing */}
                 <TouchableOpacity style={[styles.button, { backgroundColor: theme.primary.default }]} onPress={() => console.log("edit!")} >
                     <Text style={[styles.buttonText, { color: theme.primary.text }]}>Edit</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={[styles.button, { backgroundColor: theme.primary.default }]} onPress={removeWord} >
-                    <Text style={[styles.buttonText, { color: theme.primary.text }]}>Delete</Text>
+                <TouchableOpacity style={[styles.button, { backgroundColor: "#fa5a5a" }]} onPress={removeWord} >
+                    <Text style={[styles.buttonText, { color: "black" }]}>Delete</Text>
                 </TouchableOpacity>
             </View>
         </View>
@@ -59,12 +61,11 @@ const styles = StyleSheet.create({
     },
     word: {
         fontSize: 36,
-        // textAlign: "center",
-        // marginTop
+        fontWeight: "bold"
     },
     definition: {
         fontSize: 20,
-        marginTop: 20
+        marginTop: 20,
     },
     actions: {
         marginBottom: 5
@@ -77,7 +78,7 @@ const styles = StyleSheet.create({
     },
     buttonText: {
         textTransform: "uppercase",
-        fontSize: 16,
+        fontSize: 20,
         fontWeight: "bold",
         letterSpacing: 0.5
     }

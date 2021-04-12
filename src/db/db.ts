@@ -1,6 +1,5 @@
-import { DrawerContentScrollView } from '@react-navigation/drawer';
 import * as SQLite from 'expo-sqlite';
-import schema, { reset } from './schema';
+import schema from './schema';
 
 const db = SQLite.openDatabase("lexicogn.db");
 
@@ -76,3 +75,6 @@ export async function deleteWord(id: Number) {
         });
     });
 }
+
+
+// TODO: update word
