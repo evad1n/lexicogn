@@ -9,6 +9,7 @@ import SearchBar from "_components/widgets/SearchBar";
 import APIS, { AutoComplete } from "~/api";
 import { SearchRouteProps } from "./SearchRoutes";
 import { RouteNavProps } from "../DrawerRoutes";
+import useDebounce from "@/src/hooks/debounce";
 
 type State = {
     word: string,
@@ -35,6 +36,9 @@ export default function Search({ navigation }: SearchRouteProps<'Search'> & Rout
 
     const [state, setState] = useState<State>(initialState);
 
+    const [autocompleted, setAutocompleted] = useState(false);
+    const debouncedSearch = useDebounce(state.word, 200);
+
     // Focus search bar on load
     let searchBar: any = createRef();
     useEffect(() => {
@@ -55,6 +59,7 @@ export default function Search({ navigation }: SearchRouteProps<'Search'> & Rout
                     placeholder="Look up a word"
                     onChange={(text: string) => {
                         setState((state) => ({ ...state, word: text, searched: false }));
+                        setAutocompleted(false);
                     }}
                     onSubmit={(text: string) => searchWord(text)}
                     style={{ backgroundColor: theme.primary.light }}
@@ -92,21 +97,19 @@ export default function Search({ navigation }: SearchRouteProps<'Search'> & Rout
         if (word.length > 1) {
             let suggests = await AutoComplete(word);
             // If these suggestions are still current
-            setState((state) => {
-                if (state.word === word) {
+            if (word === debouncedSearch) {
+                setState((state) => {
                     return { ...state, suggestions: suggests };
-                } else {
-                    return state;
-                }
-            });
+                });
+                setAutocompleted(true);
+            }
         }
     }
 
     // Autocomplete hook
     useEffect(() => {
-        autoCompleteSuggestions(state.word);
-        return () => { };
-    }, [state.word]);
+        autoCompleteSuggestions(debouncedSearch);
+    }, [debouncedSearch]);
 
 
     function renderSearching() {
@@ -115,7 +118,7 @@ export default function Search({ navigation }: SearchRouteProps<'Search'> & Rout
                 <Text style={{ fontSize: 20, color: theme.primary.text }}>Search for a word to see results</Text>
             );
         } else {
-            if (state.word.length > 1) {
+            if (autocompleted) {
                 return (
                     <View style={styles.autoSuggestions}>
                         {state.suggestions.map((word: string, index) => (

@@ -8,7 +8,16 @@ interface SearchRef {
     focusSearchBar(): void;
 }
 
-const SearchBar = React.forwardRef<SearchRef, any>(({ autoFocus, editable, placeholder, onChange, onSubmit, style }, ref) => {
+interface SearchBarProps {
+    autoFocus: boolean,
+    editable: boolean,
+    placeholder: string,
+    onChange: (text: string) => void,
+    onSubmit: (text: string) => void,
+    style: any;
+}
+
+const SearchBar = React.forwardRef<SearchRef, any>(({ autoFocus = false, editable = true, placeholder, onChange, onSubmit, style }: SearchBarProps, ref) => {
     const theme = useTypedSelector(state => state.theme);
 
     const [searchText, setSearchText] = useState("");
