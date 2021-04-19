@@ -26,7 +26,7 @@ async function loadDB() {
     try {
         await initDB();
         const words = await getAllWords();
-        console.log(words.map(word => word.word));
+        // console.log(words.map(word => word.word));
         store.dispatch(setWords(words));
     } catch (error) {
         throw new Error(error);

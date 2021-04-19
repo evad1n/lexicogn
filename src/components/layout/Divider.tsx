@@ -1,7 +1,12 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
-export default function Divider({ vertical = false, color = "black" }: { vertical?: boolean, color?: string; }) {
+interface DividerProps {
+    vertical?: boolean,
+    color?: string;
+}
+
+export default function Divider({ vertical = false, color = "black" }: DividerProps) {
     return (
         <View style={[vertical ? styles.vertical : styles.horizontal, { borderColor: color }]}>
         </View>
@@ -10,9 +15,9 @@ export default function Divider({ vertical = false, color = "black" }: { vertica
 
 const styles = StyleSheet.create({
     vertical: {
-        borderRightWidth: StyleSheet.hairlineWidth
+        borderRightWidth: 1
     },
     horizontal: {
-        borderBottomWidth: StyleSheet.hairlineWidth
+        borderBottomWidth: 1,
     },
 });
