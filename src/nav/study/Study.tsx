@@ -1,9 +1,9 @@
 import Flashcard from '@/src/components/Flashcard';
 import { useTypedSelector } from '@/src/store/hooks';
 import React, { useState } from 'react';
-import { Button, StyleSheet, Text, View } from 'react-native';
-import { GestureHandlerStateChangeEvent, PanGestureHandler, PanGestureHandlerGestureEvent } from 'react-native-gesture-handler';
-import Swipeable from 'react-native-gesture-handler/Swipeable';
+import { Button, StyleSheet, View } from 'react-native';
+import { PanGestureHandler, PanGestureHandlerGestureEvent } from 'react-native-gesture-handler';
+import Animated, { add, concat, useValue } from 'react-native-reanimated';
 import { StudyRouteProps } from './StudyRoutes';
 
 
@@ -18,22 +18,36 @@ export default function Study({ navigation }: StudyRouteProps<'Study'>) {
         setWord(words[r]);
     }
 
-    function handleChange(event: PanGestureHandlerGestureEvent) {
-        console.log(event);
+    let animatedValue = useValue(0);
+
+    const handleGesture = Animated.event(
+        [{ nativeEvent: { absoluteY: animatedValue } }],
+        { useNativeDriver: true }
+    );
+
+    const flashcardTransform = {
+        transform: [
+            { translateY: add(animatedValue, -100) },
+            // { rotateY: concat(animatedValue, "deg") }
+        ]
+    };
+
+    function FUCK(event: PanGestureHandlerGestureEvent) {
+        // event.nativeEvent.
     }
 
     return (
-        <PanGestureHandler onGestureEvent={handleChange}>
-            <View style={styles.container}>
-                <Swipeable containerStyle={styles.cardContainer}>
+        <PanGestureHandler onGestureEvent={handleGesture}>
+            <Animated.View style={[flashcardTransform, styles.container]}>
+                <Animated.View style={[styles.cardContainer, flashcardTransform]}>
                     <Flashcard word={word} />
-                </Swipeable>
-                <Swipeable
-                    containerStyle={{ backgroundColor: "red" }}
+                </Animated.View>
+                <View
+                    style={[{ backgroundColor: "red" }]}
                 >
                     <Button onPress={randomWord} title="Random" />
-                </Swipeable>
-            </View>
+                </View>
+            </Animated.View>
         </PanGestureHandler>
     );
 }

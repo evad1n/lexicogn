@@ -44,14 +44,14 @@ export default function Flashcard({ word }: { word: WordDocument; }) {
                 toValue: 0,
                 friction: 8,
                 tension: 10,
-                useNativeDriver: false
+                useNativeDriver: true
             }).start();
         } else {
             Animated.spring(flipValue, {
                 toValue: 180,
                 friction: 8,
                 tension: 10,
-                useNativeDriver: false
+                useNativeDriver: true
             }).start();
         }
     }
@@ -80,6 +80,7 @@ const styles = StyleSheet.create({
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
+        borderRadius: 3
     },
     back: {
         position: "absolute",

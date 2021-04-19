@@ -1,6 +1,6 @@
 import { useTypedSelector } from '@/src/store/hooks';
 import React from 'react';
-import { Modal, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 interface ConfirmModalProps {
     visible: boolean,
@@ -25,12 +25,12 @@ export default function ConfirmModal({ visible, message, handleCancel, handleCon
                         <Text adjustsFontSizeToFit style={[{ color: theme.primary.text }, styles.text]}>{message}</Text>
                     </View>
                     <View style={styles.actions}>
-                        <Pressable style={[styles.button, { backgroundColor: theme.primary.default }]} onPress={handleCancel} >
+                        <TouchableOpacity style={[styles.button, { backgroundColor: theme.primary.default }]} onPress={handleCancel} >
                             <Text style={[styles.buttonText, { color: theme.primary.text }]}>Cancel</Text>
-                        </Pressable>
-                        <Pressable style={[styles.button, { backgroundColor: "#fa5a5a" }]} onPress={handleConfirm} >
+                        </TouchableOpacity>
+                        <TouchableOpacity style={[styles.button, { backgroundColor: "#fa5a5a" }]} onPress={handleConfirm} >
                             <Text style={[styles.buttonText, { color: "black" }]}>Confirm</Text>
-                        </Pressable>
+                        </TouchableOpacity>
                     </View>
                 </View>
             </View>
