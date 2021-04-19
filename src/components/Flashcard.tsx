@@ -3,7 +3,12 @@ import { Animated, StyleSheet, Text } from 'react-native';
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import { useTypedSelector } from '../store/hooks';
 
-export default function Flashcard({ word }: { word: WordDocument; }) {
+
+interface FlashcardProps {
+    word: WordDefinition;
+}
+
+export default function Flashcard({ word }: FlashcardProps) {
     const theme = useTypedSelector(state => state.theme);
 
 

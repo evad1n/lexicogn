@@ -1,4 +1,3 @@
-import { insertWord } from "@/src/db/db";
 
 export default function wordsReducer(state: WordsState = [], action: WordsAction) {
     switch (action.type) {

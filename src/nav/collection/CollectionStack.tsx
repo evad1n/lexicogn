@@ -29,10 +29,10 @@ export default function CollectionStack({ navigation }: RouteNavProps<"Collectio
                 headerTitle: () => (
                     <SearchBar
                         placeholder="Search the collection"
-                        change={(text: string) => {
+                        onChange={(text: string) => {
                             setSearch(text);
                         }}
-                        search={(text: string) => searchCollection(text)}
+                        onSubmit={(text: string) => searchCollection(text)}
                         style={{ backgroundColor: theme.primary.light }}
                     />
                 ),

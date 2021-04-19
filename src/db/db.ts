@@ -1,5 +1,5 @@
 import * as SQLite from 'expo-sqlite';
-import schema from './schema';
+import schema, { reset } from './schema';
 
 const db = SQLite.openDatabase("lexicogn.db");
 
@@ -10,7 +10,7 @@ export async function initDB(): Promise<void> {
     return new Promise<void>((resolve, reject) => {
         // Check if the words table exists if not create it
         db.transaction(tx => {
-            // tx.executeSql(reset);
+            tx.executeSql(reset);
             tx.executeSql(schema);
         }, (error) => {
             reject(error);

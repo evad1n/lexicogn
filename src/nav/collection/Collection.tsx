@@ -23,7 +23,7 @@ export default function Collection({ navigation }: CollectionRouteProps<'Collect
     function renderEmptyText() {
         return (
             <View style={styles.emptyContainer}>
-                <Text style={styles.emptyText}>No saved words</Text>
+                <Text style={[{ color: theme.primary.text }, styles.emptyText]}>No saved words</Text>
             </View>
         );
     }

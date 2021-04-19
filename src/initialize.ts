@@ -1,5 +1,5 @@
 import store from '_store/store';
-import { getData } from './storage';
+import { getData, storeData } from './storage';
 import { changeTheme } from './store/actions/themeActions';
 import { initDB, getAllWords } from '_db/db';
 import { setWords } from './store/actions/wordsActions';
@@ -26,13 +26,16 @@ async function loadDB() {
     try {
         await initDB();
         const words = await getAllWords();
-        // console.log(words.map(word => word.word));
         store.dispatch(setWords(words));
+        // Get home word here
+        if (words.length > 0) {
+            const homeWord = words[Math.floor(Math.random() * words.length)];
+            await storeData("@homeWord", homeWord);
+        }
     } catch (error) {
         throw new Error(error);
     }
 }
-
 
 
 export default initialize;

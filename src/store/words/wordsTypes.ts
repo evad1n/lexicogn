@@ -1,7 +1,11 @@
-// From requests
-interface WordResult {
+// Base word type
+interface WordDefinition {
     word: string;
     definition: string;
+}
+
+// From requests
+interface WordResult extends WordDefinition {
     api: number;
 };
 
@@ -9,6 +13,8 @@ interface WordResult {
 interface WordDocument extends WordResult {
     id: number;
 };
+
+
 
 type WordsState = WordDocument[];
 

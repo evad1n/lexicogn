@@ -77,13 +77,13 @@ export default function Search({ navigation }: SearchRouteProps<'Search'> & Rout
         let newResults: WordResult[] = [];
         // Build requests
         let requests = [];
-        for (const api of APIS) {
-            requests.push(api.get(word));
+        for (let i = 1; i < APIS.length; i++) {
+            requests.push(APIS[i].get(word));
         }
         // Make all requests in one
         let responses = await axios.all(requests);
         // Parse responses
-        for (let i = 0; i < APIS.length; i++) {
+        for (let i = 1; i < APIS.length; i++) {
             newResults.push({
                 word,
                 api: i,

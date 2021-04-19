@@ -1,9 +1,31 @@
 import SearchBar from '@/src/components/widgets/SearchBar';
 import { useTypedSelector } from '_store/hooks';
-import React from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { RouteNavProps } from '../DrawerRoutes';
 import { HomeRouteProps } from './HomeRoutes';
+import Flashcard from '@/src/components/Flashcard';
+import { getData } from '@/src/storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+
+// No words card
+const noWord: WordDefinition = {
+    word: "A random word!",
+    definition: "At least it would be if you had any saved words..."
+};
+
+// Show random word every time app reloads
+let shownWord: WordDefinition;
+
+async function getShownWord() {
+    shownWord = await getData("@homeWord");
+    shownWord = shownWord || noWord;
+    await AsyncStorage.removeItem("@homeWord");
+}
+
+getShownWord();
+
 
 export default function Home({ navigation }: RouteNavProps<'Home'> & HomeRouteProps<'home'>) {
     const theme = useTypedSelector(state => state.theme);
@@ -20,6 +42,9 @@ export default function Home({ navigation }: RouteNavProps<'Home'> & HomeRoutePr
                     placeholder="Look up a word"
                 />
             </TouchableOpacity>
+            {shownWord && <View style={styles.cardContainer}>
+                <Flashcard word={shownWord} />
+            </View>}
         </View >
     );
 }
@@ -30,8 +55,9 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     titleContainer: {
-        height: "50%",
-        justifyContent: "center"
+        justifyContent: "center",
+        marginTop: "20%",
+        marginBottom: "10%"
     },
     title: {
         fontSize: 50,
@@ -40,8 +66,10 @@ const styles = StyleSheet.create({
     searchBar: {
         width: '80%',
         paddingVertical: 10
+    },
+    cardContainer: {
+        marginTop: "10%",
+        width: "100%",
+        padding: 30,
     }
 });
-
-// TODO:
-// Have random word from db be shown on startup
