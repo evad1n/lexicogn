@@ -30,4 +30,8 @@ type WordsAction =
     | {
         type: "DELETE_WORD";
         id: number;
+    }
+    | {
+        type: "UPDATE_WORD";
+        item: WordDocument;
     };

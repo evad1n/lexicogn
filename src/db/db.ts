@@ -10,7 +10,7 @@ export async function initDB(): Promise<void> {
     return new Promise<void>((resolve, reject) => {
         // Check if the words table exists if not create it
         db.transaction(tx => {
-            tx.executeSql(reset);
+            // tx.executeSql(reset);
             tx.executeSql(schema);
         }, (error) => {
             reject(error);
@@ -59,7 +59,7 @@ export async function insertWord(word: WordResult) {
     });
 }
 
-export async function deleteWord(id: Number) {
+export async function deleteWord(id: number) {
     return new Promise<void>((resolve, reject) => {
         db.transaction(tx => {
             tx.executeSql('DELETE FROM words WHERE id = ?', [id],
@@ -77,4 +77,19 @@ export async function deleteWord(id: Number) {
 }
 
 
-// TODO: update word
+export async function updateWord(newDefinition: string, id: number) {
+    return new Promise<void>((resolve, reject) => {
+        db.transaction(tx => {
+            tx.executeSql('UPDATE words SET definition = ?, api = 0 WHERE id = ?', [newDefinition, id],
+                (txObj, { rowsAffected }) => {
+                    if (rowsAffected == 0)
+                        reject(`no word exists with id ${id}`);
+                    else
+                        resolve();
+                },
+            );
+        }, (error) => {
+            reject(error);
+        });
+    });
+}

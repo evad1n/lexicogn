@@ -1,10 +1,11 @@
 import ConfirmModal from '@/src/components/widgets/ConfirmModal';
 import { useTypedDispatch, useTypedSelector } from '@/src/store/hooks';
 import { textStyles } from '@/src/styles/text';
-import React, { useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { useFocusEffect } from '@react-navigation/core';
+import React, { useCallback, useEffect, useState } from 'react';
+import { BackHandler, KeyboardAvoidingView, StyleSheet, Text, View } from 'react-native';
 import { TextInput, TouchableOpacity } from 'react-native-gesture-handler';
-import { deleteWord } from '_db/db';
+import { deleteWord as deleteWordDB, updateWord as updateWordDB } from '_db/db';
 import APIS from '~/api';
 import { CollectionRouteProps } from './CollectionRoutes';
 
@@ -18,9 +19,31 @@ export default function Detail({ route, navigation }: CollectionRouteProps<'Deta
 
     const [deleteModal, setDeleteModal] = useState(false);
 
-    const removeWord = async () => {
+    const [definition, setDefinition] = useState(word.definition);
+    const [editing, setEditing] = useState(false);
+
+    // Override back button
+    useFocusEffect(
+        React.useCallback(() => {
+            const onBackPress = () => {
+                if (editing) {
+                    setEditing(false);
+                    return true;
+                } else {
+                    return false;
+                }
+            };
+
+            BackHandler.addEventListener('hardwareBackPress', onBackPress);
+
+            return () =>
+                BackHandler.removeEventListener('hardwareBackPress', onBackPress);
+        }, [editing])
+    );
+
+    const deleteWord = async () => {
         try {
-            await deleteWord(word.id);
+            await deleteWordDB(word.id);
             dispatch({
                 type: 'DELETE_WORD',
                 id: word.id
@@ -31,27 +54,71 @@ export default function Detail({ route, navigation }: CollectionRouteProps<'Deta
         }
     };
 
+    const updateWord = async () => {
+        console.log("update");
+        try {
+            await updateWordDB(definition, word.id);
+            dispatch({
+                type: 'UPDATE_WORD',
+                item: { ...word, definition, api: 0 }
+            });
+            setEditing(false);
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    function renderEditButton() {
+        if (editing) {
+            return (
+                <TouchableOpacity
+                    style={[styles.button, { backgroundColor: "#0bb03c" }]}
+                    onPress={updateWord}
+                >
+                    <Text style={[styles.buttonText, { color: "black" }]}>Save</Text>
+                </TouchableOpacity>
+            );
+        } else {
+            return (
+                <TouchableOpacity
+                    style={[styles.button, { backgroundColor: theme.primary.default }]}
+                    onPress={() => setEditing(true)}
+                >
+                    <Text style={[styles.buttonText, { color: theme.primary.text }]}>Edit</Text>
+                </TouchableOpacity>
+            );
+        }
+    }
+
+    const textBackgroundColor = editing ? { backgroundColor: theme.primary.default } : null;
+
     return (
         <View style={styles.container}>
             <ConfirmModal
                 visible={deleteModal}
                 message={`Are you sure you want to delete ${word.word}?`}
                 handleCancel={() => setDeleteModal(false)}
-                handleConfirm={removeWord}
+                handleConfirm={deleteWord}
             />
             <View style={styles.content}>
                 <Text style={[styles.word, { color: theme.primary.text }]}>{word.word}</Text>
-                {/* TODO: If edited display (edited); not for custom */}
                 <Text style={[textStyles.api, { color: theme.primary.text }]}>{API.name.replace(/-/g, ' ')}</Text>
-                <Text style={[styles.definition, { color: theme.primary.text }]}>{word.definition}</Text>
-                <TextInput />
+                <KeyboardAvoidingView style={[textBackgroundColor, styles.definitionInput]}>
+                    <TextInput
+                        style={[styles.definition, { color: theme.primary.text, marginLeft: editing ? 0 : -10 }]}
+                        multiline
+                        onChangeText={(text) => setDefinition(text)}
+                        value={definition}
+                        editable={editing}
+                    />
+                </KeyboardAvoidingView>
             </View>
             <View style={styles.actions}>
-                {/* TODO: editing */}
-                <TouchableOpacity style={[styles.button, { backgroundColor: theme.primary.default }]} onPress={() => console.log("edit!")} >
-                    <Text style={[styles.buttonText, { color: theme.primary.text }]}>Edit</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={[styles.button, { backgroundColor: "#fa5a5a" }]} onPress={() => setDeleteModal(true)} >
+                {renderEditButton()}
+                <TouchableOpacity
+                    style={[styles.button, { backgroundColor: "#fa5a5a" }]}
+                    onPress={() => setDeleteModal(true)}
+                >
                     <Text style={[styles.buttonText, { color: "black" }]}>Delete</Text>
                 </TouchableOpacity>
             </View>
@@ -67,14 +134,20 @@ const styles = StyleSheet.create({
     content: {
         marginTop: 5,
         flexGrow: 1,
+        display: "flex",
     },
     word: {
         fontSize: 36,
         fontWeight: "bold"
     },
+    definitionInput: {
+        flexGrow: 1,
+        marginTop: 10,
+        marginBottom: 20,
+    },
     definition: {
         fontSize: 20,
-        marginTop: 20,
+        padding: 10,
     },
     actions: {
         marginBottom: 5

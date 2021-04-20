@@ -23,7 +23,7 @@ export default function SearchResultCard({ item: result }: { item: WordResult; }
                 type: "ADD_WORD",
                 item: word
             });
-            navigation.navigate('Detail', { word: word });
+            navigation.navigate('Collection', { screen: "Detail", params: { word: word } });
         } catch (error) {
             console.error(error);
         }

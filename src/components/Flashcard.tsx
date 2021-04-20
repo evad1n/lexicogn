@@ -85,11 +85,13 @@ const styles = StyleSheet.create({
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        borderRadius: 3
+        borderRadius: 3,
+        // borderColor: "black",
+        // borderWidth: 1
     },
     back: {
         position: "absolute",
-        top: 0
+        top: 0,
     },
     text: {
         fontSize: 30,

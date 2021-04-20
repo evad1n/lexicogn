@@ -1,7 +1,7 @@
 import { useTypedSelector } from "_store/hooks";
 import axios from "axios";
 import React, { createRef, useEffect, useLayoutEffect, useState } from "react";
-import { ActivityIndicator, Dimensions, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, Dimensions, KeyboardAvoidingView, StyleSheet, Text, View } from "react-native";
 import { FlatList, ScrollView } from "react-native-gesture-handler";
 import SearchResultCard from "_components/SearchResultCard";
 import ListItemButton from "_components/widgets/ListItemButton";
@@ -10,6 +10,7 @@ import APIS, { AutoComplete } from "~/api";
 import { SearchRouteProps } from "./SearchRoutes";
 import { RouteNavProps } from "../DrawerRoutes";
 import useDebounce from "@/src/hooks/debounce";
+import CustomResultCard from "@/src/components/CustomResultCard";
 
 type State = {
     word: string,
@@ -87,7 +88,7 @@ export default function Search({ navigation }: SearchRouteProps<'Search'> & Rout
             newResults.push({
                 word,
                 api: i,
-                definition: APIS[i].parseResponse(responses[i]),
+                definition: APIS[i].parseResponse(responses[i - 1]),
             });
         }
         setState((state) => ({ ...state, results: newResults, loading: false }));
@@ -115,7 +116,7 @@ export default function Search({ navigation }: SearchRouteProps<'Search'> & Rout
     function renderSearching() {
         if (state.word.length == 0) {
             return (
-                <Text style={{ fontSize: 20, color: theme.primary.text }}>Search for a word to see results</Text>
+                <Text style={{ marginBottom: "50%", fontSize: 20, color: theme.primary.text }}>Search for a word to see results</Text>
             );
         } else {
             if (autocompleted) {
@@ -156,6 +157,7 @@ export default function Search({ navigation }: SearchRouteProps<'Search'> & Rout
                     data={state.results}
                     renderItem={({ item }) => <SearchResultCard item={item} />}
                     keyExtractor={(item, index) => `${index}-api-${item.api}`}
+                    ListFooterComponent={<CustomResultCard word={state.word} />}
                 />
             );
         }

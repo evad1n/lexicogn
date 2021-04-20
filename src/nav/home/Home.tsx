@@ -20,7 +20,6 @@ let shownWord: WordDefinition;
 
 async function getShownWord() {
     shownWord = await getData("@homeWord");
-    shownWord = shownWord || noWord;
     await AsyncStorage.removeItem("@homeWord");
 }
 
@@ -42,9 +41,9 @@ export default function Home({ navigation }: RouteNavProps<'Home'> & HomeRoutePr
                     placeholder="Look up a word"
                 />
             </TouchableOpacity>
-            {shownWord && <View style={styles.cardContainer}>
-                <Flashcard word={shownWord} />
-            </View>}
+            <View style={styles.cardContainer}>
+                <Flashcard word={shownWord || noWord} />
+            </View>
         </View >
     );
 }
