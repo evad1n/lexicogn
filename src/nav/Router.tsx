@@ -95,7 +95,6 @@ export default function Router() {
 
 function DrawerSection(props: DrawerContentComponentProps & { items: DrawerItemConfig[]; } & { indexOffset?: number; }) {
     const { items, indexOffset = 0, state, navigation, style } = props;
-    // const state2 = useNavigation();
     const theme = useTypedSelector(state => state.theme);
 
     return (

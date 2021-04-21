@@ -1,6 +1,7 @@
 import ConfirmModal from '@/src/components/widgets/ConfirmModal';
 import { useTypedDispatch, useTypedSelector } from '@/src/store/hooks';
-import { textStyles } from '@/src/styles/text';
+import buttonStyles from '@/src/styles/button';
+import textStyles from '@/src/styles/text';
 import { useFocusEffect } from '@react-navigation/core';
 import React, { useCallback, useEffect, useState } from 'react';
 import { BackHandler, KeyboardAvoidingView, StyleSheet, Text, View } from 'react-native';
@@ -72,7 +73,7 @@ export default function Detail({ route, navigation }: CollectionRouteProps<'Deta
         if (editing) {
             return (
                 <TouchableOpacity
-                    style={[styles.button, { backgroundColor: "#0bb03c" }]}
+                    style={[buttonStyles.container, { backgroundColor: "#0bb03c" }]}
                     onPress={updateWord}
                 >
                     <Text style={[styles.buttonText, { color: "black" }]}>Save</Text>
