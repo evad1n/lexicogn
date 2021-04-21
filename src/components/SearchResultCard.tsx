@@ -5,7 +5,7 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import { useTypedDispatch, useTypedSelector } from '_store/hooks';
 import APIS, { APIType } from '~/api';
 import { insertWord } from '_db/db';
-import { textStyles } from '../styles/text';
+import textStyles from '../styles/text';
 
 export default function SearchResultCard({ item: result }: { item: WordResult; }) {
     const theme = useTypedSelector(state => state.theme);

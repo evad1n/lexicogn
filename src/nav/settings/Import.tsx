@@ -1,3 +1,4 @@
+import { insertWord } from '@/src/db/db';
 import buttonStyles from '@/src/styles/button';
 import * as DocumentPicker from 'expo-document-picker';
 import * as FileSystem from 'expo-file-system';
@@ -5,7 +6,7 @@ import React, { useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useTypedSelector } from '_store/hooks';
+import { useTypedDispatch, useTypedSelector } from '_store/hooks';
 
 const exampleJSON = `
 [
@@ -31,25 +32,44 @@ type Item = {
 
 export default function Import() {
     const theme = useTypedSelector(state => state.theme);
+    const dispatch = useTypedDispatch();
 
-    const [error, setError] = useState("");
+    const [error, setError] = useState("Any errors will appear here");
 
     async function uploadFile() {
         try {
             // Restrict file type to JSON, and get cached URI
-            const { uri }: any = await DocumentPicker.getDocumentAsync({ type: "application/json" });
-            const data = await FileSystem.readAsStringAsync(uri);
-            const ooga = "booga.3..j717jd";
-            // const words = JSON.parse(data);
-            const words = JSON.parse(ooga);
-            for (const d of words) {
-                console.log(d);
+            const result: any = await DocumentPicker.getDocumentAsync({ type: "application/json" });
+            if (result.type == 'cancel')
+                return;
+            const data = await FileSystem.readAsStringAsync(result.uri);
+            const words = JSON.parse(data);
+            for (const word of words) {
+                // Process each word
+                saveWord(word);
             }
+
+            // Show success message!
+            alert("Success!");
         } catch (error) {
             console.log(error);
             setError(error.toString());
         }
     }
+
+    async function saveWord(word: WordDefinition) {
+        try {
+            let id = await insertWord({ ...word, api: 0 });
+            let wordDoc = { ...word, api: 0, id };
+            dispatch({
+                type: "ADD_WORD",
+                item: wordDoc
+            });
+        } catch (error) {
+            // Bubble error up
+            throw Error(error);
+        }
+    };
 
     return (
         <View style={{ flex: 1 }}>
@@ -68,7 +88,7 @@ export default function Import() {
                 <TouchableOpacity style={[buttonStyles.container, styles.button, { backgroundColor: theme.primary.default }]} onPress={uploadFile}>
                     <Text style={[buttonStyles.text, styles.buttonText, { color: theme.primary.text }]}>Upload</Text>
                 </TouchableOpacity>
-                <Text style={{ fontSize: 30 }}>{error}</Text>
+                <Text style={styles.errors}>{error}</Text>
             </ScrollView>
         </View>
     );
@@ -94,7 +114,7 @@ const styles = StyleSheet.create({
         textAlign: "center"
     },
     button: {
-
+        paddingHorizontal: 30
     },
     buttonText: {
 
@@ -103,5 +123,9 @@ const styles = StyleSheet.create({
         fontFamily: "monospace",
         paddingHorizontal: 10,
         marginVertical: 10
+    },
+    errors: {
+        marginTop: 10,
+        fontSize: 16,
     }
 });
