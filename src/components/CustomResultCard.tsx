@@ -81,9 +81,11 @@ const styles = StyleSheet.create({
         elevation: 5
     },
     header: {
-        marginBottom: 10
+        marginBottom: 10,
+        paddingLeft: 5
     },
     content: {
+        paddingLeft: 5
     },
     word: {
         fontSize: 30,

@@ -1,5 +1,8 @@
 .expo
 
+# API keys
+secrets.ts
+
 # Logs
 logs
 *.log
