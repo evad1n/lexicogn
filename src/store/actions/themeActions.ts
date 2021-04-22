@@ -1,5 +1,4 @@
 import { storeData } from '@/src/storage';
-import Themes from '@/src/themes';
 
 export const changeTheme = (name: ThemeName): ThemeAction => {
     // Persist theme

@@ -8,7 +8,7 @@ const initialTheme: ThemeState = {
         ...Themes["light"],
     },
     custom: {
-        dark: true,
+        dark: false,
         primary: {
             default: "rgb(220,220,220)",
             light: "rgb(255,255,255)",

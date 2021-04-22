@@ -1,6 +1,7 @@
 import { storeData } from '@/src/storage';
 import buttonStyles from '@/src/styles/button';
 import Slider from '@brlja/react-native-slider';
+import CheckBox from 'react-native-bouncy-checkbox';
 import React, { useEffect, useMemo, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
@@ -48,10 +49,12 @@ const sliderRadius = 30;
 
 export default function CustomThemePicker() {
     const currentTheme = useCurrentTheme();
+    const customTheme = useCustomTheme();
     const dispatch = useTypedDispatch();
 
     const [color, setColor] = useState<ColorState>(initialState);
-    const [theme, setTheme] = useState<ColorPalette>(useCustomTheme().primary);
+    const [theme, setTheme] = useState<ColorPalette>(customTheme.primary);
+    const [dark, setDark] = useState(customTheme.dark);
     const [selected, setSelected] = useState<Selected>(null);
 
     useEffect(() => {
@@ -90,7 +93,7 @@ export default function CustomThemePicker() {
         try {
             await storeData("@customTheme", theme);
             dispatch(changeCustomTheme({
-                dark: true,
+                dark,
                 primary: theme
             }));
         } catch (error) {
@@ -152,6 +155,16 @@ export default function CustomThemePicker() {
                         color="blue"
                         initialValue={color.blue}
                     />
+                </View>
+                <View style={styles.checkboxContainer}>
+                    <CheckBox
+                        size={30}
+                        iconStyle={{ borderColor: currentTheme.primary.text, borderWidth: 2 }}
+                        fillColor={currentTheme.primary.dark}
+                        isChecked={dark}
+                        onPress={(val: boolean = false) => setDark(val)}
+                    />
+                    <Text style={[styles.checkboxText, { color: currentTheme.primary.text }]}>Dark Theme</Text>
                 </View>
                 <View style={styles.button}>
                     <TouchableOpacity
@@ -242,6 +255,16 @@ const styles = StyleSheet.create({
         borderRadius: 50,
         borderColor: "#222",
         borderWidth: 2,
+    },
+    checkboxContainer: {
+        flexDirection: "row",
+        alignItems: "center"
+    },
+    checkbox: {
+    },
+    checkboxText: {
+        fontSize: 20,
+        fontWeight: "bold"
     },
     button: {
         paddingHorizontal: 20,
