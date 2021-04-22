@@ -5,7 +5,7 @@ const buttonStyles = StyleSheet.create({
         alignItems: 'center',
         padding: 10,
         marginVertical: 5,
-        elevation: 3,
+        elevation: 5,
         borderRadius: 3
     },
     text: {

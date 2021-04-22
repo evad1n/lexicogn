@@ -1,4 +1,4 @@
-import { useTypedSelector } from '@/src/store/hooks';
+import { useCurrentTheme } from '_store/hooks';
 import React from 'react';
 import { Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
@@ -10,7 +10,7 @@ interface ConfirmModalProps {
 }
 
 export default function ConfirmModal({ visible, message, handleCancel, handleConfirm }: ConfirmModalProps) {
-    const theme = useTypedSelector(state => state.theme);
+    const theme = useCurrentTheme();
 
     return (
         <Modal

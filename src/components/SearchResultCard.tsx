@@ -2,13 +2,13 @@ import { useNavigation } from '@react-navigation/core';
 import React from 'react';
 import { Dimensions, StyleSheet, Text, View } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-import { useTypedDispatch, useTypedSelector } from '_store/hooks';
-import APIS, { APIType } from '~/api';
 import { insertWord } from '_db/db';
+import { useCurrentTheme, useTypedDispatch } from '_store/hooks';
+import APIS, { APIType } from '~/api';
 import textStyles from '../styles/text';
 
 export default function SearchResultCard({ item: result }: { item: WordResult; }) {
-    const theme = useTypedSelector(state => state.theme);
+    const theme = useCurrentTheme();
     const { width } = Dimensions.get('window');
     const dispatch = useTypedDispatch();
     const navigation = useNavigation();

@@ -1,16 +1,16 @@
-import { useTypedSelector } from "_store/hooks";
+import CustomResultCard from "@/src/components/CustomResultCard";
+import useDebounce from "@/src/hooks/debounce";
+import { useCurrentTheme } from "@/src/store/hooks";
 import axios from "axios";
 import React, { createRef, useEffect, useLayoutEffect, useState } from "react";
-import { ActivityIndicator, Dimensions, KeyboardAvoidingView, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, Dimensions, StyleSheet, Text, View } from "react-native";
 import { FlatList, ScrollView } from "react-native-gesture-handler";
 import SearchResultCard from "_components/SearchResultCard";
 import ListItemButton from "_components/widgets/ListItemButton";
 import SearchBar from "_components/widgets/SearchBar";
 import APIS, { AutoComplete } from "~/api";
-import { SearchRouteProps } from "./SearchRoutes";
 import { RouteNavProps } from "../DrawerRoutes";
-import useDebounce from "@/src/hooks/debounce";
-import CustomResultCard from "@/src/components/CustomResultCard";
+import { SearchRouteProps } from "./SearchRoutes";
 
 type State = {
     word: string,
@@ -31,7 +31,7 @@ const initialState: State = {
 
 
 export default function Search({ navigation }: SearchRouteProps<'Search'> & RouteNavProps<'Search'>) {
-    const theme = useTypedSelector(state => state.theme);
+    const theme = useCurrentTheme();
     // Make result card list fit width
     const { width } = Dimensions.get('window');
 
@@ -145,7 +145,6 @@ export default function Search({ navigation }: SearchRouteProps<'Search'> & Rout
             );
         } else {
             return (
-                // TODO: add custom def card
                 <FlatList
                     style={{
                         width: width

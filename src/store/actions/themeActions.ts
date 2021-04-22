@@ -1,15 +1,22 @@
 import { storeData } from '@/src/storage';
-import themes from '../theme/themes';
+import Themes from '@/src/themes';
 
-export const changeTheme = (name: string): ThemeAction => {
+export const changeTheme = (name: ThemeName): ThemeAction => {
     // Persist theme
     storeData('@theme', name);
 
     return {
         type: 'CHANGE_THEME',
-        theme: {
-            name: name,
-            ...themes[name],
-        }
+        name
+    };
+};
+
+export const changeCustomTheme = (theme: ThemePalette): ThemeAction => {
+    // Persist custom theme
+    storeData('@customTheme', theme);
+
+    return {
+        type: 'CHANGE_CUSTOM_THEME',
+        theme
     };
 };

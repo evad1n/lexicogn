@@ -4,7 +4,7 @@ import schema, { reset } from './schema';
 const db = SQLite.openDatabase("lexicogn.db");
 
 /**
- * Creates database tables if they don't exist according to the schema
+ * ### Creates database tables if they don't exist according to the schema
  */
 export async function initDB(): Promise<void> {
     return new Promise<void>((resolve, reject) => {
@@ -21,8 +21,8 @@ export async function initDB(): Promise<void> {
 }
 
 /**
- * 
- * @returns All words in the database
+ * ### Gets all words in alphabetical order
+ * @returns {Promise<WordDocument[]>} All words in the database
  */
 export async function getAllWords(): Promise<WordDocument[]> {
     return new Promise<WordDocument[]>((resolve, reject) => {
@@ -42,8 +42,9 @@ export async function getAllWords(): Promise<WordDocument[]> {
 }
 
 /**
- *
- * @returns The last inserted id
+ * ### Insert a word into the database
+ * @param {WordResult} word The word object to insert
+ * @returns {Promise<number>}
  */
 export async function insertWord(word: WordResult) {
     return new Promise<number>((resolve, reject) => {
@@ -59,6 +60,12 @@ export async function insertWord(word: WordResult) {
     });
 }
 
+/**
+ * ### Delete a word from the database
+ * 
+ * @param {number} id The id of the word to delete
+ * @returns {Promise<void>}
+ */
 export async function deleteWord(id: number) {
     return new Promise<void>((resolve, reject) => {
         db.transaction(tx => {
@@ -76,7 +83,12 @@ export async function deleteWord(id: number) {
     });
 }
 
-
+/**
+ * ### Update a word in the database
+ * @param newDefinition The updated definition
+ * @param id The id of the word to update
+ * @returns {Promise<void>} 
+ */
 export async function updateWord(newDefinition: string, id: number) {
     return new Promise<void>((resolve, reject) => {
         db.transaction(tx => {

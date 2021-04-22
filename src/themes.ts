@@ -7,12 +7,6 @@ const Themes: ThemeMap = {
             dark: "#c7c7c7",
             text: "#000"
         },
-        secondary: {
-            default: "#212121",
-            light: "#484848",
-            dark: "#000",
-            text: "#fff"
-        }
     },
     "dark": {
         dark: true,
@@ -22,27 +16,24 @@ const Themes: ThemeMap = {
             dark: "#000",
             text: "#fff"
         },
-        secondary: {
-            default: "#212121",
-            light: "#484848",
-            dark: "#000",
-            text: "#fff"
-        }
     },
     "cozy": {
-        dark: true,
+        dark: false,
         primary: {
             default: "#75664a",
             light: "#fbf1c7",
             dark: "#000",
             text: "#000"
         },
-        secondary: {
-            default: "#212121",
-            light: "#484848",
-            dark: "#000",
+    },
+    "grey": {
+        dark: true,
+        primary: {
+            default: "#666",
+            light: "#888",
+            dark: "#444",
             text: "#fff"
-        }
+        },
     },
 };
 

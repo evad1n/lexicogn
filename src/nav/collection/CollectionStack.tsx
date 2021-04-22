@@ -5,14 +5,14 @@ import Collection from './Collection';
 import { RouteNavProps } from '../DrawerRoutes';
 import { CollectionRoute } from './CollectionRoutes';
 import Detail from './Detail';
-import { useTypedSelector } from '@/src/store/hooks';
+import { useCurrentTheme, useWords } from '_store/hooks';
 import SearchBar from '@/src/components/widgets/SearchBar';
 
 const Stack = createStackNavigator<CollectionRoute>();
 
 export default function CollectionStack({ navigation }: RouteNavProps<"Collection">) {
-    const theme = useTypedSelector(state => state.theme);
-    const words = useTypedSelector(state => state.words);
+    const theme = useCurrentTheme();
+    const words = useWords();
 
     const [search, setSearch] = useState("");
 

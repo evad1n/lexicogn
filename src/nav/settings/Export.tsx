@@ -3,7 +3,7 @@ import * as FileSystem from 'expo-file-system';
 import React, { useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-import { useTypedSelector } from '_store/hooks';
+import { useCurrentTheme } from '_store/hooks';
 
 const tempFileName = "words_export.json";
 

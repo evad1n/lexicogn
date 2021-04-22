@@ -9,9 +9,10 @@ import { CommonActions, StackActions, NavigationContainer, useNavigation } from 
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import Divider from '../components/layout/Divider';
-import { useTypedSelector } from '_store/hooks';
+import { useCurrentTheme } from '_store/hooks';
 import CollectionStack from './collection/CollectionStack';
 import { RouteNavProps, RouteParamList } from './DrawerRoutes';
+import themeReducer from '../store/reducers/themeReducer';
 
 interface DrawerItemConfig {
     name: keyof RouteParamList,
@@ -61,7 +62,7 @@ const BotItems: DrawerItemConfig[] = [
 
 
 export default function Router() {
-    const theme = useTypedSelector(state => state.theme);
+    const theme = useCurrentTheme();
 
     // https://reactnavigation.org/docs/themes/#built-in-themes
     const navTheme = (theme: ThemePalette) => {
@@ -95,7 +96,7 @@ export default function Router() {
 
 function DrawerSection(props: DrawerContentComponentProps & { items: DrawerItemConfig[]; } & { indexOffset?: number; }) {
     const { items, indexOffset = 0, state, navigation, style } = props;
-    const theme = useTypedSelector(state => state.theme);
+    const theme = useCurrentTheme();
 
     return (
         <View style={style}>
@@ -104,32 +105,8 @@ function DrawerSection(props: DrawerContentComponentProps & { items: DrawerItemC
                     <DrawerItem
                         focused={state.index == index + indexOffset}
                         onPress={() => {
-                            // console.log(state);
-                            // navigation.reset({
-                            //     index: 0,
-                            //     routes: [{
-                            //         name: 'home'
-                            //     }]
-                            // });
-                            // navigation.dispatch(
-                            //     CommonActions.reset({
-                            //         index: state.index,
-                            //         routes: [{
-                            //             name: 'home',
-                            //             state: {
-                            //                 routes: [
-                            //                     {
-                            //                         name: 'home'
-                            //                     }
-                            //                 ],
-                            //                 stale: true
-                            //             }
-                            //         }]
-                            //     })
-                            // );
                             // Navigate to inner default screen
                             navigation.navigate(item.name, { screen: item.name });
-                            // navigation.dispatch(StackActions.popToTop());
                         }}
                         icon={({ focused, size }) => <Ionicons name={focused ? item.focusedIcon : item.icon} size={size} color={theme.primary.text} />}
                         label={({ focused }) => <Text style={{ color: theme.primary.text, fontWeight: focused ? "bold" : "normal", fontSize: 16 }}>{item.name}</Text>}
@@ -143,6 +120,8 @@ function DrawerSection(props: DrawerContentComponentProps & { items: DrawerItemC
 }
 
 function MyDrawerContent(props: DrawerContentComponentProps) {
+    const theme = useCurrentTheme();
+
     return (
         <View style={styles.drawer}>
             <DrawerContentScrollView {...props}>
@@ -150,8 +129,8 @@ function MyDrawerContent(props: DrawerContentComponentProps) {
             </DrawerContentScrollView>
             <View style={styles.footer}>
                 <DrawerSection items={BotItems} indexOffset={TopItems.length} {...props} />
-                <Divider />
-                <Text style={styles.footerText}>&copy; {new Date().getFullYear()} Will Dickinson</Text>
+                <Divider color={theme.primary.text} />
+                <Text style={[styles.footerText, { color: theme.primary.text }]}>&copy; {new Date().getFullYear()} Will Dickinson</Text>
             </View>
         </View>
     );

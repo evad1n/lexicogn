@@ -7,7 +7,7 @@ import { HomeRoute } from './HomeRoutes';
 
 const Stack = createStackNavigator<HomeRoute>();
 
-export default function HomeStack({ navigation }: RouteNavProps<"home">) {
+export default function HomeStack({ navigation }: RouteNavProps<"Home">) {
     return (
         <Stack.Navigator
             initialRouteName="home"

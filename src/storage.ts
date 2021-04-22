@@ -3,7 +3,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 // Allow keys
 type Key =
     | "@theme"
-    | "@homeWord";
+    | "@homeWord"
+    | "@customTheme";
 
 /**
  * Get data from async storage

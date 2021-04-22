@@ -8,25 +8,44 @@ type ColorPalette = {
 /**
  * dark: whether to use status bar dark theme
  */
-interface ThemePalette {
+type ThemePalette = {
     dark: boolean;
     primary: ColorPalette;
-    secondary: ColorPalette;
 };
 
+type ThemeKey =
+    | "light"
+    | "dark"
+    | "cozy"
+    | "grey";
+
+type ThemeName = ThemeKey | "custom";
+
 type ThemeMap = {
-    [name: string]: ThemePalette;
+    [key in ThemeKey]: ThemePalette;
 };
+
+/**
+ * Theme with name
+ */
+interface Theme extends ThemePalette {
+    name: string;
+}
 
 /**
  * Adds theme name to state
  */
-interface ThemeState extends ThemePalette {
-    name: string;
-}
+type ThemeState = {
+    current: Theme;
+    custom: ThemePalette;
+};
 
 type ThemeAction =
     | {
         type: "CHANGE_THEME";
-        theme: ThemeState;
+        name: ThemeName;
+    }
+    | {
+        type: "CHANGE_CUSTOM_THEME";
+        theme: ThemePalette;
     };

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Animated, StyleSheet, Text } from 'react-native';
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
-import { useTypedSelector } from '../store/hooks';
+import { useCurrentTheme } from '../store/hooks';
 
 
 interface FlashcardProps {
@@ -9,7 +9,7 @@ interface FlashcardProps {
 }
 
 export default function Flashcard({ word }: FlashcardProps) {
-    const theme = useTypedSelector(state => state.theme);
+    const theme = useCurrentTheme();
 
 
     const [flipValue, setFlipValue] = useState(new Animated.Value(0));

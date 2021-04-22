@@ -7,6 +7,7 @@ import Settings from './Settings';
 import ThemePicker from './ThemePicker';
 import Import from './Import';
 import Export from './Export';
+import CustomThemePicker from './CustomThemePicker';
 
 
 const Stack = createStackNavigator<SettingsRoute>();
@@ -21,6 +22,7 @@ export default function HomeStack({ navigation }: RouteNavProps<"Settings">) {
         >
             <Stack.Screen name="Settings" component={Settings} />
             <Stack.Screen name="Theme" component={ThemePicker} />
+            <Stack.Screen name="Custom Theme" component={CustomThemePicker} />
             <Stack.Screen name="Import" component={Import} />
             <Stack.Screen name="Export" component={Export} />
         </Stack.Navigator >

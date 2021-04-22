@@ -1,19 +1,15 @@
-import SearchBar from '@/src/components/widgets/SearchBar';
 import React, { useState } from 'react';
-import { Dimensions, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
 import ListItemButton from "_components/widgets/ListItemButton";
-import { useTypedSelector } from '_store/hooks';
+import { useCurrentTheme, useWords } from '_store/hooks';
 import { CollectionRouteProps } from './CollectionRoutes';
 
 export default function Collection({ navigation }: CollectionRouteProps<'Collection'>) {
-    const theme = useTypedSelector(state => state.theme);
-    const words = useTypedSelector(state => state.words);
+    const theme = useCurrentTheme();
+    const words = useWords();
 
-    // console.log("=====================");
-    // console.log(words);
-
-
+    // TODO: actual searching lmao
     const [search, setSearch] = useState("");
 
     function searchCollection(text: string) {

@@ -1,14 +1,15 @@
-import SearchBar from '@/src/components/widgets/SearchBar';
-import { useTypedSelector } from '_store/hooks';
-import React, { useEffect, useMemo } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { RouteNavProps } from '../DrawerRoutes';
-import { HomeRouteProps } from './HomeRoutes';
 import Flashcard from '@/src/components/Flashcard';
+import SearchBar from '@/src/components/widgets/SearchBar';
 import { getData } from '@/src/storage';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import React from 'react';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { useCurrentTheme } from '_store/hooks';
+import { RouteNavProps } from '../DrawerRoutes';
+import { HomeRouteProps } from './HomeRoutes';
 
 
+// FIX: if a word is added then reload???
 // No words card
 const noWord: WordDefinition = {
     word: "A random word!",
@@ -27,7 +28,7 @@ getShownWord();
 
 
 export default function Home({ navigation }: RouteNavProps<'Home'> & HomeRouteProps<'home'>) {
-    const theme = useTypedSelector(state => state.theme);
+    const theme = useCurrentTheme();
 
     return (
         <View style={styles.container}>

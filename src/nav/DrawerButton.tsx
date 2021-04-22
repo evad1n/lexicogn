@@ -1,11 +1,11 @@
 import { Ionicons } from '@expo/vector-icons';
 import React, { useEffect } from 'react';
 import { Keyboard, StyleSheet, TouchableOpacity } from 'react-native';
-import { useTypedSelector } from '_store/hooks';
+import { useCurrentTheme } from '_store/hooks';
 
 
 export default function DrawerButton({ navigation }: any) {
-    const theme = useTypedSelector(state => state.theme);
+    const theme = useCurrentTheme();
 
     // FIX: nAVIGATION SUCKS
     useEffect(() => {

@@ -1,10 +1,10 @@
-import { useTypedSelector } from '_store/hooks';
+import { useCurrentTheme } from '_store/hooks';
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
 export default function AutoSuggestion({ text, handlePress }: { text: string; handlePress: any; }) {
-    const theme = useTypedSelector(state => state.theme);
+    const theme = useCurrentTheme();
 
     return (
         <View style={styles.wrapper}>

@@ -1,8 +1,8 @@
 import Flashcard from '@/src/components/Flashcard';
-import { useTypedSelector } from '@/src/store/hooks';
 import React, { useRef, useState } from 'react';
 import { Animated, Button, PanResponder, StyleSheet, View } from 'react-native';
 import { PanGestureHandler } from 'react-native-gesture-handler';
+import { useCurrentTheme, useWords } from '_store/hooks';
 import { StudyRouteProps } from './StudyRoutes';
 
 const noWords: WordDefinition = {
@@ -12,7 +12,8 @@ const noWords: WordDefinition = {
 
 
 export default function Study({ navigation }: StudyRouteProps<'Study'>) {
-    const { words, theme } = useTypedSelector(state => state);
+    const words = useWords();
+    const theme = useCurrentTheme();
 
     const [word, setWord] = useState(words[Math.floor(Math.random() * words.length)]);
 

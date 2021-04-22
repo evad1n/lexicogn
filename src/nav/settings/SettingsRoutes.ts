@@ -4,6 +4,7 @@ import { StackNavigationProp } from "@react-navigation/stack";
 export type SettingsRoute = {
     Settings: undefined;
     Theme: undefined;
+    "Custom Theme": undefined;
     Import: undefined;
     Export: undefined;
 };

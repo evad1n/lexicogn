@@ -3,15 +3,15 @@ import React, { useState } from 'react';
 import { Dimensions, StyleSheet, Text, View } from 'react-native';
 import { TextInput, TouchableOpacity } from 'react-native-gesture-handler';
 import { insertWord } from '_db/db';
-import { useTypedDispatch, useTypedSelector } from '_store/hooks';
-import { textStyles } from '../styles/text';
+import { useCurrentTheme, useTypedDispatch } from '_store/hooks';
+import textStyles from '../styles/text';
 
 interface CustomResultCardProps {
     word: string;
 }
 
 export default function CustomResultCard({ word }: CustomResultCardProps) {
-    const theme = useTypedSelector(state => state.theme);
+    const theme = useCurrentTheme();
     const { width } = Dimensions.get('window');
     const dispatch = useTypedDispatch();
     const navigation = useNavigation();

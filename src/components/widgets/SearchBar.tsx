@@ -1,8 +1,8 @@
-import { useTypedSelector } from '_store/hooks';
+import { useCurrentTheme } from '_store/hooks';
 import { Ionicons } from '@expo/vector-icons';
 import React, { createRef, useEffect, useImperativeHandle, useState } from 'react';
 import { StyleSheet, TextInput, View } from 'react-native';
-import { changeTheme } from '@/src/store/actions/themeActions';
+import { changeTheme } from '_store/actions/themeActions';
 
 interface SearchRef {
     focusSearchBar(): void;
@@ -18,7 +18,7 @@ interface SearchBarProps {
 }
 
 const SearchBar = React.forwardRef<SearchRef, any>(({ autoFocus = false, editable = true, placeholder, onChange, onSubmit, style }: SearchBarProps, ref) => {
-    const theme = useTypedSelector(state => state.theme);
+    const theme = useCurrentTheme();
 
     const [searchText, setSearchText] = useState("");
 

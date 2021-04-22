@@ -5,8 +5,7 @@ import * as FileSystem from 'expo-file-system';
 import React, { useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { useTypedDispatch, useTypedSelector } from '_store/hooks';
+import { useCurrentTheme, useTypedDispatch } from '_store/hooks';
 
 const exampleJSON = `
 [
@@ -31,7 +30,7 @@ type Item = {
 `;
 
 export default function Import() {
-    const theme = useTypedSelector(state => state.theme);
+    const theme = useCurrentTheme();
     const dispatch = useTypedDispatch();
 
     const [error, setError] = useState("Any errors will appear here");

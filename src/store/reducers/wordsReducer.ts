@@ -4,6 +4,7 @@ export default function wordsReducer(state: WordsState = [], action: WordsAction
         case "LOAD_WORDS":
             return action.data;
         case "ADD_WORD":
+            // FIX: sort here?
             return [action.item, ...state];
         case "DELETE_WORD":
             return state.filter(word => word.id !== action.id);

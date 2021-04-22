@@ -1,7 +1,8 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { getAllWords, initDB } from '_db/db';
 import store from '_store/store';
 import { getData, storeData } from './storage';
-import { changeTheme } from './store/actions/themeActions';
-import { initDB, getAllWords } from '_db/db';
+import { changeCustomTheme, changeTheme } from './store/actions/themeActions';
 import { setWords } from './store/actions/wordsActions';
 
 // Load local storage theme
@@ -12,10 +13,19 @@ async function initialize() {
 
 async function loadTheme() {
     try {
+        // await AsyncStorage.removeItem("@theme");
         const theme = await getData("@theme");
+        console.log(theme);
         // If there is a saved theme
         if (theme) {
-            store.dispatch(changeTheme(theme));
+            if (theme === "custom") {
+                const customTheme = await getData("@customTheme");
+                if (customTheme) {
+                    store.dispatch(changeCustomTheme(customTheme));
+                }
+            } else {
+                store.dispatch(changeTheme(theme));
+            }
         }
     } catch (error) {
         throw new Error(error);

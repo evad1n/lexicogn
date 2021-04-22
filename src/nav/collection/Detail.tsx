@@ -1,18 +1,18 @@
 import ConfirmModal from '@/src/components/widgets/ConfirmModal';
-import { useTypedDispatch, useTypedSelector } from '@/src/store/hooks';
 import buttonStyles from '@/src/styles/button';
 import textStyles from '@/src/styles/text';
 import { useFocusEffect } from '@react-navigation/core';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { BackHandler, KeyboardAvoidingView, StyleSheet, Text, View } from 'react-native';
 import { TextInput, TouchableOpacity } from 'react-native-gesture-handler';
 import { deleteWord as deleteWordDB, updateWord as updateWordDB } from '_db/db';
+import { useCurrentTheme, useTypedDispatch } from '_store/hooks';
 import APIS from '~/api';
 import { CollectionRouteProps } from './CollectionRoutes';
 
 
 export default function Detail({ route, navigation }: CollectionRouteProps<'Detail'>) {
-    const theme = useTypedSelector(state => state.theme);
+    const theme = useCurrentTheme();
     const dispatch = useTypedDispatch();
 
     const { word } = route.params;

@@ -1,5 +1,5 @@
 import Divider from '@/src/components/layout/Divider';
-import { useTypedSelector } from '_store/hooks';
+import { useCurrentTheme } from '_store/hooks';
 import { Ionicons, AntDesign } from '@expo/vector-icons';
 import React from "react";
 import { FlatList, StyleSheet, Text } from "react-native";
@@ -31,7 +31,7 @@ const settings: SettingsType[] = [
 ];
 
 export default function Settings({ navigation }: SettingsRouteProps<'Settings'>) {
-    const theme = useTypedSelector(state => state.theme);
+    const theme = useCurrentTheme();
 
     const renderSettingTab = ({ item: setting }: { item: SettingsType; }) => {
         return (
