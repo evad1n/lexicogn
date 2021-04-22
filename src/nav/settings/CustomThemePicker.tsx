@@ -30,18 +30,11 @@ type ColorState = {
     blue: number;
 };
 
-const initialState: ColorState = {
-    red: 100,
-    green: 100,
-    blue: 100,
-};
-
 type Selected =
     | "default"
     | "light"
     | "dark"
-    | "text"
-    | null;
+    | "text";
 
 // Constants
 
@@ -52,10 +45,12 @@ export default function CustomThemePicker() {
     const customTheme = useCustomTheme();
     const dispatch = useTypedDispatch();
 
-    const [color, setColor] = useState<ColorState>(initialState);
+    const [color, setColor] = useState<ColorState>(parseColorString(currentTheme.primary.default));
     const [theme, setTheme] = useState<ColorPalette>(customTheme.primary);
     const [dark, setDark] = useState(customTheme.dark);
-    const [selected, setSelected] = useState<Selected>(null);
+    const [selected, setSelected] = useState<Selected>("default");
+
+    // TODO: Improve performance
 
     useEffect(() => {
         const currColor = `rgb(${color.red}, ${color.green}, ${color.blue})`;
@@ -102,7 +97,7 @@ export default function CustomThemePicker() {
     }
 
     function changeSelection(label: Selected) {
-        setColor(parseColorString(theme[label!]));
+        setColor(parseColorString(theme[label]));
         setSelected(label);
     }
 

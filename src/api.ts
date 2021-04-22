@@ -71,6 +71,9 @@ const APIS: APIType[] = [
     },
 ];
 
+// Maybe do this eventually?
+// https://docs.github.com/en/github/authenticating-to-github/removing-sensitive-data-from-a-repository
+
 // Google images search format
 // https://www.google.com/search?tbm=isch&q=<word>
 
