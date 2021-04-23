@@ -1,23 +1,26 @@
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 
 interface DividerProps {
+    style?: StyleProp<ViewStyle>;
     vertical?: boolean,
     color?: string;
 }
 
-export default function Divider({ vertical = false, color = "black" }: DividerProps) {
+export default function Divider({ style, vertical = false, color = "black" }: DividerProps) {
     return (
-        <View style={[vertical ? styles.vertical : styles.horizontal, { borderColor: color }]}>
+        <View style={[style, vertical ? styles.vertical : styles.horizontal, { borderColor: color }]}>
         </View>
     );
 }
 
 const styles = StyleSheet.create({
     vertical: {
-        borderRightWidth: 1
+        height: "100%",
+        borderRightWidth: 1,
     },
     horizontal: {
+        width: "100%",
         borderBottomWidth: 1,
     },
 });

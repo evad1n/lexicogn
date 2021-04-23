@@ -6,11 +6,13 @@ A mobile app to keep track of and study new vocabulary words.
 
 ## TODO
 
-- flashcard swipe gestures
-- images
 - export
+- flashcard swipe gestures
+- collection search
+- use dark theme more
+- images
 - frequencies
 
-### Low prio
+## Deploy
 
-- more color themes
+- icon/splashscreen

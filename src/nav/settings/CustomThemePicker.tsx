@@ -2,16 +2,17 @@ import { storeData } from '@/src/storage';
 import buttonStyles from '@/src/styles/button';
 import Slider from '@brlja/react-native-slider';
 import CheckBox from 'react-native-bouncy-checkbox';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
-import { changeCustomTheme } from '_store/actions/themeActions';
+import { changeCustomTheme, changeTheme } from '_store/actions/themeActions';
 import { useCurrentTheme, useCustomTheme, useTypedDispatch } from '_store/hooks';
+import Divider from '@/src/components/layout/Divider';
 
 // Component props
 
 interface ColorSliderProps {
-    onChange: (value: number) => void;
+    onChange: (color: string, value: number) => void;
     color: string;
     initialValue: number;
 }
@@ -20,6 +21,8 @@ interface ColorDisplayProps {
     label: Selected;
     bgColor: string;
     textColor?: string;
+    onSelect: (label: Selected) => void;
+    selected: Selected;
 }
 
 // State
@@ -40,124 +43,200 @@ type Selected =
 
 const sliderRadius = 30;
 
+// Helper functions
+
+function parseColorString(text: string): ColorState {
+    const rgb = text.substring(4, text.length - 1)
+        .replace(/ /g, '')
+        .split(',')
+        .map(valString => parseInt(valString));
+    return {
+        red: rgb[0],
+        green: rgb[1],
+        blue: rgb[2],
+    };
+}
+
 export default function CustomThemePicker() {
     const currentTheme = useCurrentTheme();
     const customTheme = useCustomTheme();
     const dispatch = useTypedDispatch();
 
-    const [color, setColor] = useState<ColorState>(parseColorString(currentTheme.primary.default));
-    const [theme, setTheme] = useState<ColorPalette>(customTheme.primary);
-    const [dark, setDark] = useState(customTheme.dark);
+    // Have to split these up for performance reasons
     const [selected, setSelected] = useState<Selected>("default");
+    const [startColor, setStartColor] = useState<ColorState>(parseColorString(currentTheme.primary.default));
+    // console.log("StartColor:", startColor);
 
-    // TODO: Improve performance
+    // Theme color states
+    const [defaultColor, setDefaultColor] = useState(customTheme.primary.default);
+    const [lightColor, setLightColor] = useState(customTheme.primary.light);
+    const [darkColor, setDarkColor] = useState(customTheme.primary.dark);
+    const [textColor, setTextColor] = useState(customTheme.primary.text);
+    const [isDarkTheme, setIsDarkTheme] = useState(customTheme.dark);
+
+    // Color state
+    const [red, setRed] = useState(startColor.red);
+    const [green, setGreen] = useState(startColor.green);
+    const [blue, setBlue] = useState(startColor.blue);
 
     useEffect(() => {
-        const currColor = `rgb(${color.red}, ${color.green}, ${color.blue})`;
+        const currColor = `rgb(${red}, ${green}, ${blue})`;
         switch (selected) {
             case "default":
-                setTheme({ ...theme, default: currColor });
+                setDefaultColor(currColor);
                 break;
             case "light":
-                setTheme({ ...theme, light: currColor });
+                setLightColor(currColor);
                 break;
             case "dark":
-                setTheme({ ...theme, dark: currColor });
+                setDarkColor(currColor);
                 break;
             case "text":
-                setTheme({ ...theme, text: currColor });
+                setTextColor(currColor);
                 break;
             default:
                 break;
         }
-    }, [color]);
-
-    function parseColorString(text: string): ColorState {
-        const rgb = text.substring(4, text.length - 1)
-            .replace(/ /g, '')
-            .split(',')
-            .map(valString => parseInt(valString));
-        return {
-            red: rgb[0],
-            green: rgb[1],
-            blue: rgb[2],
-        };
-    }
+    }, [red, green, blue]);
 
     async function saveCustomTheme() {
         try {
-            await storeData("@customTheme", theme);
-            dispatch(changeCustomTheme({
-                dark,
-                primary: theme
-            }));
+            const savedTheme = {
+                dark: isDarkTheme,
+                primary: {
+                    default: defaultColor,
+                    light: lightColor,
+                    dark: darkColor,
+                    text: textColor,
+                }
+            };
+            await storeData("@customTheme", savedTheme);
+            dispatch(changeCustomTheme(savedTheme));
+            dispatch(changeTheme("custom"));
         } catch (error) {
             console.error(error);
         }
     }
 
-    function changeSelection(label: Selected) {
-        setColor(parseColorString(theme[label]));
-        setSelected(label);
+    const getThemeColor = useCallback(
+        (label: Selected) => {
+            switch (label) {
+                case "default":
+                    return defaultColor;
+                case "light":
+                    return lightColor;
+                case "dark":
+                    return darkColor;
+                case "text":
+                    return textColor;
+            }
+        },
+        [defaultColor, lightColor, darkColor, textColor],
+    );
+
+    const changeSelection = useCallback(
+        (label: Selected) => {
+            const newColor = parseColorString(getThemeColor(label));
+            setSelected(label);
+
+            // Reset sliders
+            setStartColor(parseColorString(getThemeColor(label)));
+            setRed(newColor.red);
+            setGreen(newColor.green);
+            setBlue(newColor.blue);
+        },
+        [getThemeColor],
+    );
+
+    // Memoized sliderChange
+    const sliderChange = useCallback(
+        (color, val) => {
+            switch (color) {
+                case "red":
+                    setRed(val);
+                    return;
+                case "green":
+                    setGreen(val);
+                    return;
+                case "blue":
+                    setBlue(val);
+                    return;
+            }
+        },
+        [],
+    );
+
+    function renderDisplayColors() {
+        return (
+            <View style={styles.displayContainer}>
+                <ColorDisplay
+                    onSelect={changeSelection}
+                    selected={selected}
+                    label={"default"}
+                    bgColor={defaultColor}
+                    textColor={textColor}
+                />
+                <ColorDisplay
+                    onSelect={changeSelection}
+                    selected={selected}
+                    label={"light"}
+                    bgColor={lightColor}
+                    textColor={textColor}
+                />
+                <ColorDisplay
+                    onSelect={changeSelection}
+                    selected={selected}
+                    label={"dark"}
+                    bgColor={darkColor}
+                    textColor={textColor}
+                />
+                <ColorDisplay
+                    onSelect={changeSelection}
+                    selected={selected}
+                    label={"text"}
+                    bgColor={defaultColor}
+                    textColor={textColor}
+                />
+            </View>
+        );
     }
 
-    function ColorDisplay({ label, bgColor, textColor }: ColorDisplayProps) {
+    function renderSliders() {
         return (
-            <TouchableOpacity
-                onPress={() => changeSelection(label)}
-                style={[styles.colorDisplay, { backgroundColor: bgColor }, selected === label ? styles.selected : null]}
-            >
-                <Text style={[styles.colorDisplayText, { color: textColor }]}>{label}</Text>
-            </TouchableOpacity>
+            <View style={styles.sliderContainer}>
+                <ColorSlider
+                    onChange={sliderChange}
+                    color="red"
+                    initialValue={startColor.red}
+                />
+                <ColorSlider
+                    onChange={sliderChange}
+                    color="green"
+                    initialValue={startColor.green}
+                />
+                <ColorSlider
+                    onChange={sliderChange}
+                    color="blue"
+                    initialValue={startColor.blue}
+                />
+            </View>
         );
     }
 
     return (
         <View style={{ flex: 1 }}>
             <ScrollView contentContainerStyle={styles.container}>
-                <View style={styles.displayContainer}>
-                    <ColorDisplay
-                        label={"default"}
-                        bgColor={theme.default}
-                    />
-                    <ColorDisplay
-                        label={"light"}
-                        bgColor={theme.light}
-                    />
-                    <ColorDisplay
-                        label={"dark"}
-                        bgColor={theme.dark}
-                    />
-                    <ColorDisplay
-                        label={"text"}
-                        bgColor={theme.default}
-                        textColor={theme.text}
-                    />
-                </View>
-                <View style={styles.sliderContainer}>
-                    <ColorSlider
-                        onChange={(val) => setColor({ ...color, red: val })}
-                        color="red"
-                        initialValue={color.red}
-                    />
-                    <ColorSlider
-                        onChange={(val) => setColor({ ...color, green: val })}
-                        color="green"
-                        initialValue={color.green}
-                    />
-                    <ColorSlider
-                        onChange={(val) => setColor({ ...color, blue: val })}
-                        color="blue"
-                        initialValue={color.blue}
-                    />
-                </View>
+                {renderDisplayColors()}
+                <Divider style={{ marginVertical: 20 }} color={currentTheme.primary.text} />
+                {renderSliders()}
+                <Divider style={{ marginBottom: 20 }} color={currentTheme.primary.text} />
                 <View style={styles.checkboxContainer}>
                     <CheckBox
                         size={30}
                         iconStyle={{ borderColor: currentTheme.primary.text, borderWidth: 2 }}
                         fillColor={currentTheme.primary.dark}
-                        isChecked={dark}
-                        onPress={(val: boolean = false) => setDark(val)}
+                        isChecked={isDarkTheme}
+                        onPress={(val: boolean = false) => setIsDarkTheme(val)}
                     />
                     <Text style={[styles.checkboxText, { color: currentTheme.primary.text }]}>Dark Theme</Text>
                 </View>
@@ -174,8 +253,20 @@ export default function CustomThemePicker() {
     );
 }
 
+const ColorDisplay = React.memo(({ label, bgColor, textColor, onSelect, selected }: ColorDisplayProps) => {
+    return (
+        <TouchableOpacity
+            onPress={() => onSelect(label)}
+            style={[styles.colorDisplay, { backgroundColor: bgColor }, selected === label ? styles.selected : null]}
+        >
+            <Text style={[styles.colorDisplayText, { color: textColor }]}>{label}</Text>
+        </TouchableOpacity>
+    );
+});
 
-function ColorSlider({ onChange, color, initialValue }: ColorSliderProps) {
+
+const ColorSlider = React.memo(({ onChange, color, initialValue }: ColorSliderProps) => {
+
     const thumbColor = useMemo(() => {
         switch (color) {
             case "red":
@@ -191,7 +282,7 @@ function ColorSlider({ onChange, color, initialValue }: ColorSliderProps) {
 
     return (
         <Slider
-            onValueChange={onChange}
+            onValueChange={val => onChange(color, val)}
             value={initialValue}
             thumbTintColor={thumbColor}
             style={styles.slider}
@@ -205,13 +296,12 @@ function ColorSlider({ onChange, color, initialValue }: ColorSliderProps) {
             maximumTrackTintColor="#000000"
         />
     );
-}
+});
 
 const styles = StyleSheet.create({
     container: {
         alignItems: "center",
         padding: 20,
-        flex: 1
     },
     displayContainer: {
         width: "100%",
@@ -235,7 +325,6 @@ const styles = StyleSheet.create({
     },
     sliderContainer: {
         width: "100%",
-        flexGrow: 1,
         marginVertical: 10
     },
     slider: {

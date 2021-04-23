@@ -14,18 +14,16 @@ async function initialize() {
 async function loadTheme() {
     try {
         // await AsyncStorage.removeItem("@theme");
+        // await AsyncStorage.removeItem("@customTheme");
         const theme = await getData("@theme");
-        console.log(theme);
+        const customTheme = await getData("@customTheme");
+        if (customTheme) {
+            store.dispatch(changeCustomTheme(customTheme));
+        }
+        console.log("current theme: ", theme, "\ncustom theme: ", customTheme);
         // If there is a saved theme
         if (theme) {
-            if (theme === "custom") {
-                const customTheme = await getData("@customTheme");
-                if (customTheme) {
-                    store.dispatch(changeCustomTheme(customTheme));
-                }
-            } else {
-                store.dispatch(changeTheme(theme));
-            }
+            store.dispatch(changeTheme(theme));
         }
     } catch (error) {
         throw new Error(error);

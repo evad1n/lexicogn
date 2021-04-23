@@ -46,7 +46,9 @@ export default function ThemePicker({ navigation }: SettingsRouteProps<'Theme'>)
                 </View>
                 <Text style={[styles.colorTitle, { color: currentTheme.primary.text }]}>{currentTheme.name}</Text>
             </View>
-            <Divider color={currentTheme.primary.text} />
+            <View style={{ marginHorizontal: 10 }} >
+                <Divider color={currentTheme.primary.text} />
+            </View>
             <FlatList
                 contentContainerStyle={styles.colorContainer}
                 data={colorOptions}

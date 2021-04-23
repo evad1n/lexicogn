@@ -5,7 +5,7 @@ import * as MediaLibrary from 'expo-media-library';
 import * as Permissions from 'expo-permissions';
 import * as WebBrowser from 'expo-web-browser';
 import React, { useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { Alert, StyleSheet, Text, View } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { useCurrentTheme, useWords } from '_store/hooks';
 
@@ -21,7 +21,26 @@ export default function Export() {
 
     async function downloadData() {
         try {
-            // TODO: abandon if 0 words
+            // Abandon if 0 words
+            if (words.length === 0) {
+                Alert.alert(
+                    "Alert Title",
+                    "There's nothing to export!",
+                    [
+                        {
+                            text: "Ask me later",
+                            onPress: () => console.log("Ask me later pressed")
+                        },
+                        {
+                            text: "Cancel",
+                            onPress: () => console.log("Cancel Pressed"),
+                            style: "cancel"
+                        },
+                        { text: "OK", onPress: () => console.log("OK Pressed") }
+                    ]
+                );
+                return;
+            }
 
             // First write data as JSON to local file
             const rawWords = words.map(word => {
@@ -67,7 +86,7 @@ export default function Export() {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: 'center',
+        // justifyContent: 'center',
         alignItems: 'center'
     },
     button: {

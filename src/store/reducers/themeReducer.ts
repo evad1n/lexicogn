@@ -40,10 +40,7 @@ export default function themeReducer(state: ThemeState = initialTheme, action: T
             }
         case "CHANGE_CUSTOM_THEME":
             return {
-                current: {
-                    name: "custom",
-                    ...action.theme
-                },
+                ...state,
                 custom: action.theme,
             };
         default:
