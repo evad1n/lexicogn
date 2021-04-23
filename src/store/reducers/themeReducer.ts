@@ -2,7 +2,7 @@ import Themes from '../../themes';
 
 // Default to light mode
 
-const initialTheme: ThemeState = {
+const initialState: ThemeState = {
     current: {
         name: "light",
         ...Themes["light"],
@@ -18,7 +18,7 @@ const initialTheme: ThemeState = {
     }
 };
 
-export default function themeReducer(state: ThemeState = initialTheme, action: ThemeAction) {
+export default function themeReducer(state: ThemeState = initialState, action: ThemeAction): ThemeState {
     switch (action.type) {
         case "CHANGE_THEME":
             if (action.name === 'custom') {

@@ -1,34 +1,20 @@
 import Flashcard from '@/src/components/Flashcard';
 import SearchBar from '@/src/components/widgets/SearchBar';
-import { getData } from '@/src/storage';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { useCurrentTheme } from '_store/hooks';
+import { useCurrentTheme, useHomeWord } from '_store/hooks';
 import { RouteNavProps } from '../DrawerRoutes';
 import { HomeRouteProps } from './HomeRoutes';
 
-
-// FIX: if a word is added then reload???
 // No words card
 const noWord: WordDefinition = {
     word: "A random word!",
     definition: "At least it would be if you had any saved words..."
 };
 
-// Show random word every time app reloads
-let shownWord: WordDefinition;
-
-async function getShownWord() {
-    shownWord = await getData("@homeWord");
-    await AsyncStorage.removeItem("@homeWord");
-}
-
-getShownWord();
-
-
 export default function Home({ navigation }: RouteNavProps<'Home'> & HomeRouteProps<'home'>) {
     const theme = useCurrentTheme();
+    const homeWord = useHomeWord();
 
     return (
         <View style={styles.container}>
@@ -43,7 +29,7 @@ export default function Home({ navigation }: RouteNavProps<'Home'> & HomeRoutePr
                 />
             </TouchableOpacity>
             <View style={styles.cardContainer}>
-                <Flashcard word={shownWord || noWord} />
+                <Flashcard word={homeWord || noWord} />
             </View>
         </View >
     );

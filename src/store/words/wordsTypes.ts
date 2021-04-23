@@ -15,17 +15,19 @@ interface WordDocument extends WordResult {
 };
 
 
-
-type WordsState = WordDocument[];
+type WordsState = {
+    words: WordDocument[];
+    homeWord: WordDefinition | null;
+};
 
 type WordsAction =
     | {
         type: "LOAD_WORDS";
-        data: WordDocument[];
+        words: WordDocument[];
     }
     | {
         type: "ADD_WORD";
-        item: WordDocument;
+        word: WordDocument;
     }
     | {
         type: "DELETE_WORD";
@@ -33,5 +35,5 @@ type WordsAction =
     }
     | {
         type: "UPDATE_WORD";
-        item: WordDocument;
+        word: WordDocument;
     };

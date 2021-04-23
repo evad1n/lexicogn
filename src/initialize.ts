@@ -1,7 +1,6 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getAllWords, initDB } from '_db/db';
 import store from '_store/store';
-import { getData, storeData } from './storage';
+import { getData } from './storage';
 import { changeCustomTheme, changeTheme } from './store/actions/themeActions';
 import { setWords } from './store/actions/wordsActions';
 
@@ -36,11 +35,6 @@ async function loadDB() {
         await initDB();
         const words = await getAllWords();
         store.dispatch(setWords(words));
-        // Get home word here
-        if (words.length > 0) {
-            const homeWord = words[Math.floor(Math.random() * words.length)];
-            await storeData("@homeWord", homeWord);
-        }
     } catch (error) {
         throw new Error(error);
     }

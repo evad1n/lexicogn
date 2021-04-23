@@ -11,4 +11,6 @@ export const useCurrentTheme = () => useTypedSelector(state => state.theme.curre
 
 export const useCustomTheme = () => useTypedSelector(state => state.theme.custom);
 
-export const useWords = () => useTypedSelector(state => state.words);
+export const useWords = () => useTypedSelector(state => state.words.words);
+
+export const useHomeWord = () => useTypedSelector(state => state.words.homeWord);
