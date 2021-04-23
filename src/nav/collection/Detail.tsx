@@ -76,16 +76,16 @@ export default function Detail({ route, navigation }: CollectionRouteProps<'Deta
                     style={[buttonStyles.container, { backgroundColor: "#0bb03c" }]}
                     onPress={updateWord}
                 >
-                    <Text style={[styles.buttonText, { color: "black" }]}>Save</Text>
+                    <Text style={[buttonStyles.text, { color: "black" }]}>Save</Text>
                 </TouchableOpacity>
             );
         } else {
             return (
                 <TouchableOpacity
-                    style={[styles.button, { backgroundColor: theme.primary.default }]}
+                    style={[buttonStyles.container, { backgroundColor: theme.primary.default }]}
                     onPress={() => setEditing(true)}
                 >
-                    <Text style={[styles.buttonText, { color: theme.primary.text }]}>Edit</Text>
+                    <Text style={[buttonStyles.text, { color: theme.primary.text }]}>Edit</Text>
                 </TouchableOpacity>
             );
         }
@@ -104,7 +104,10 @@ export default function Detail({ route, navigation }: CollectionRouteProps<'Deta
             <View style={styles.content}>
                 <Text style={[styles.word, { color: theme.primary.text }]}>{word.word}</Text>
                 <Text style={[textStyles.api, { color: theme.primary.text }]}>{API.name.replace(/-/g, ' ')}</Text>
-                <KeyboardAvoidingView style={[textBackgroundColor, styles.definitionInput]}>
+                <KeyboardAvoidingView
+                    style={[textBackgroundColor, styles.definitionInput]}
+                    behavior="height"
+                >
                     <TextInput
                         style={[styles.definition, { color: theme.primary.text, marginLeft: editing ? 0 : -10 }]}
                         multiline
@@ -117,10 +120,10 @@ export default function Detail({ route, navigation }: CollectionRouteProps<'Deta
             <View style={styles.actions}>
                 {renderEditButton()}
                 <TouchableOpacity
-                    style={[styles.button, { backgroundColor: "#fa5a5a" }]}
+                    style={[buttonStyles.container, { backgroundColor: "#fa5a5a" }]}
                     onPress={() => setDeleteModal(true)}
                 >
-                    <Text style={[styles.buttonText, { color: "black" }]}>Delete</Text>
+                    <Text style={[buttonStyles.text, { color: "black" }]}>Delete</Text>
                 </TouchableOpacity>
             </View>
         </View>
@@ -153,17 +156,4 @@ const styles = StyleSheet.create({
     actions: {
         marginBottom: 5
     },
-    button: {
-        alignItems: 'center',
-        padding: 10,
-        marginVertical: 5,
-        elevation: 3,
-        borderRadius: 3
-    },
-    buttonText: {
-        textTransform: "uppercase",
-        fontSize: 20,
-        fontWeight: "bold",
-        letterSpacing: 0.5
-    }
 });

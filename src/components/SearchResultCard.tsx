@@ -5,6 +5,7 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import { insertWord } from '_db/db';
 import { useCurrentTheme, useTypedDispatch } from '_store/hooks';
 import APIS, { APIType } from '~/api';
+import buttonStyles from '../styles/button';
 import textStyles from '../styles/text';
 
 export default function SearchResultCard({ item: result }: { item: WordResult; }) {
@@ -50,14 +51,12 @@ export default function SearchResultCard({ item: result }: { item: WordResult; }
                     <Text style={[styles.word, { color: theme.primary.text }]}>{result.word}</Text>
                     <Text style={[styles.definition, { color: theme.primary.text }]}>{result.definition}</Text>
                 </View>
-                <View style={styles.footer}>
-                    <TouchableOpacity
-                        style={[styles.button, { backgroundColor: theme.primary.light }]}
-                        onPress={() => saveWord()}
-                    >
-                        <Text style={[styles.buttonText, { color: theme.primary.text }]}>Save Word</Text>
-                    </TouchableOpacity>
-                </View>
+                <TouchableOpacity
+                    style={[buttonStyles.container, { backgroundColor: theme.primary.light }]}
+                    onPress={() => saveWord()}
+                >
+                    <Text style={[buttonStyles.text, { color: theme.primary.text }]}>Save Word</Text>
+                </TouchableOpacity>
             </React.Fragment>
         );
     };
@@ -78,6 +77,7 @@ const styles = StyleSheet.create({
     container: {
         margin: 20,
         padding: 20,
+        paddingBottom: 10,
         flex: 1,
         borderRadius: 4,
         elevation: 5
@@ -95,20 +95,6 @@ const styles = StyleSheet.create({
     },
     definition: {
         fontSize: 20,
-    },
-    footer: {
-
-    },
-    button: {
-        alignItems: 'center',
-        padding: 10,
-        elevation: 3,
-    },
-    buttonText: {
-        textTransform: "uppercase",
-        fontSize: 16,
-        fontWeight: "bold",
-        letterSpacing: 0.5
     },
     notFoundContainer: {
         flex: 1,

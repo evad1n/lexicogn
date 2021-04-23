@@ -3,7 +3,8 @@ import { StyleSheet } from 'react-native';
 const buttonStyles = StyleSheet.create({
     container: {
         alignItems: 'center',
-        padding: 10,
+        paddingVertical: 10,
+        paddingHorizontal: 20,
         marginVertical: 5,
         elevation: 5,
         borderRadius: 3

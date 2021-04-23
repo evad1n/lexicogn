@@ -1,22 +1,21 @@
-import { useCurrentTheme } from '_store/hooks';
+import { useCurrentTheme } from '@/src/store/hooks';
+import buttonStyles from '@/src/styles/button';
 import React from 'react';
 import { Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import buttonStyles from '@/src/styles/button';
 
-interface ConfirmModalProps {
+interface CustomAlertProps {
     visible: boolean,
     message: string,
-    handleCancel: () => void,
-    handleConfirm: () => void,
+    handleClose: () => void,
 }
 
-export default function ConfirmModal({ visible, message, handleCancel, handleConfirm }: ConfirmModalProps) {
+export default function CustomAlert({ visible, message, handleClose }: CustomAlertProps) {
     const theme = useCurrentTheme();
 
     return (
         <Modal
             visible={visible}
-            onRequestClose={handleCancel}
+            onRequestClose={handleClose}
             transparent
             animationType="fade"
         >
@@ -26,11 +25,8 @@ export default function ConfirmModal({ visible, message, handleCancel, handleCon
                         <Text adjustsFontSizeToFit style={[{ color: theme.primary.text }, styles.text]}>{message}</Text>
                     </View>
                     <View style={styles.actions}>
-                        <TouchableOpacity style={[buttonStyles.container, { backgroundColor: theme.primary.default }]} onPress={handleCancel} >
-                            <Text style={[buttonStyles.text, { color: theme.primary.text }]}>Cancel</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={[buttonStyles.container, { backgroundColor: "#fa5a5a" }]} onPress={handleConfirm} >
-                            <Text style={[buttonStyles.text, { color: "black" }]}>Confirm</Text>
+                        <TouchableOpacity style={[buttonStyles.container, { backgroundColor: theme.primary.default }]} onPress={handleClose} >
+                            <Text style={[buttonStyles.text, { color: theme.primary.text }]}>OK</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
@@ -52,20 +48,18 @@ const styles = StyleSheet.create({
         padding: 20,
         display: "flex",
         alignItems: "center",
-        flexShrink: 1
+        flexShrink: 1,
     },
     prompt: {
         marginBottom: 20
     },
     text: {
         textAlign: "center",
-        fontSize: 30,
+        fontSize: 24,
         fontWeight: "700",
     },
     actions: {
         width: "100%",
         display: "flex",
-        flexDirection: "row",
-        justifyContent: "space-around",
     },
 });

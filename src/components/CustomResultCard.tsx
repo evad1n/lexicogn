@@ -4,6 +4,7 @@ import { Dimensions, StyleSheet, Text, View } from 'react-native';
 import { TextInput, TouchableOpacity } from 'react-native-gesture-handler';
 import { insertWord } from '_db/db';
 import { useCurrentTheme, useTypedDispatch } from '_store/hooks';
+import buttonStyles from '../styles/button';
 import textStyles from '../styles/text';
 
 interface CustomResultCardProps {
@@ -59,14 +60,12 @@ export default function CustomResultCard({ word }: CustomResultCardProps) {
                         value={definition}
                     />
                 </View>
-                <View style={styles.footer}>
-                    <TouchableOpacity
-                        style={[styles.button, { backgroundColor: theme.primary.light }]}
-                        onPress={() => saveWord()}
-                    >
-                        <Text style={[styles.buttonText, { color: theme.primary.text }]}>Save Word</Text>
-                    </TouchableOpacity>
-                </View>
+                <TouchableOpacity
+                    style={[buttonStyles.container, { backgroundColor: theme.primary.light }]}
+                    onPress={() => saveWord()}
+                >
+                    <Text style={[buttonStyles.text, { color: theme.primary.text }]}>Save Word</Text>
+                </TouchableOpacity>
             </View>
         </View >
     );
@@ -76,6 +75,7 @@ const styles = StyleSheet.create({
     container: {
         margin: 20,
         padding: 20,
+        paddingBottom: 10,
         flex: 1,
         borderRadius: 4,
         elevation: 5
@@ -103,20 +103,6 @@ const styles = StyleSheet.create({
     },
     placeholder: {
         opacity: 0.5
-    },
-    footer: {
-
-    },
-    button: {
-        alignItems: 'center',
-        padding: 10,
-        elevation: 3,
-    },
-    buttonText: {
-        textTransform: "uppercase",
-        fontSize: 16,
-        fontWeight: "bold",
-        letterSpacing: 0.5
     },
     notFoundContainer: {
         flex: 1,

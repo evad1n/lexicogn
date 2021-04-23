@@ -84,7 +84,7 @@ export default function Import() {
                     <Text style={{ fontWeight: "bold", textAlign: "center" }}>Example input file:</Text>
                     <Text style={[styles.code, { backgroundColor: theme.primary.default, color: theme.primary.text }]}>{exampleJSON}</Text>
                 </View>
-                <TouchableOpacity style={[buttonStyles.container, styles.button, { backgroundColor: theme.primary.default }]} onPress={uploadFile}>
+                <TouchableOpacity style={[buttonStyles.container, styles.button, { backgroundColor: theme.primary.dark }]} onPress={uploadFile}>
                     <Text style={[buttonStyles.text, styles.buttonText, { color: theme.primary.text }]}>Upload</Text>
                 </TouchableOpacity>
                 <Text style={styles.errors}>{error}</Text>

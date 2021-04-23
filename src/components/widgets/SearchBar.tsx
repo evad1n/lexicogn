@@ -1,8 +1,7 @@
-import { useCurrentTheme } from '_store/hooks';
 import { Ionicons } from '@expo/vector-icons';
-import React, { createRef, useEffect, useImperativeHandle, useState } from 'react';
+import React, { useEffect, useImperativeHandle, useRef, useState } from 'react';
 import { StyleSheet, TextInput, View } from 'react-native';
-import { changeTheme } from '_store/actions/themeActions';
+import { useCurrentTheme } from '_store/hooks';
 
 interface SearchRef {
     focusSearchBar(): void;
@@ -22,7 +21,7 @@ const SearchBar = React.forwardRef<SearchRef, any>(({ autoFocus = false, editabl
 
     const [searchText, setSearchText] = useState("");
 
-    const input: any = createRef();
+    const input: any = useRef();
 
     const focusSearchBar = () => {
         input.current.focus();
