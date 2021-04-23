@@ -7,7 +7,7 @@ import { RouteNavProps } from '../DrawerRoutes';
 import { HomeRouteProps } from './HomeRoutes';
 
 // No words card
-const noWord: WordDefinition = {
+const NO_WORDS: WordDefinition = {
     word: "A random word!",
     definition: "At least it would be if you had any saved words..."
 };
@@ -29,7 +29,7 @@ export default function Home({ navigation }: RouteNavProps<'Home'> & HomeRoutePr
                 />
             </TouchableOpacity>
             <View style={styles.cardContainer}>
-                <Flashcard word={homeWord || noWord} />
+                <Flashcard word={homeWord || NO_WORDS} />
             </View>
         </View >
     );

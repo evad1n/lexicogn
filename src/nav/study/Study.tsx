@@ -1,23 +1,37 @@
 import Flashcard from '@/src/components/Flashcard';
 import React, { useRef, useState } from 'react';
-import { Animated, Button, PanResponder, StyleSheet, View } from 'react-native';
-import { PanGestureHandler } from 'react-native-gesture-handler';
+import { Animated, Button, PanResponder, StyleSheet, useWindowDimensions, View } from 'react-native';
 import { useCurrentTheme, useWords } from '_store/hooks';
 import { StudyRouteProps } from './StudyRoutes';
 
-const noWords: WordDefinition = {
+const NO_WORDS: WordDefinition = {
     word: "You've got nothing to study!",
     definition: "Did you expect something witty here?"
 };
 
+const THRESHOLD = 200;
 
 export default function Study({ navigation }: StudyRouteProps<'Study'>) {
     const words = useWords();
     const theme = useCurrentTheme();
+    const { width, height } = useWindowDimensions();
 
     const [word, setWord] = useState(words[Math.floor(Math.random() * words.length)]);
 
 
+
+    function newCard() {
+        pan.setValue({ x: width, y: 0 });
+        // Get new word
+        randomWord();
+        Animated.spring(
+            pan, // Auto-multiplexed
+            {
+                toValue: { x: 0, y: 0 },
+                useNativeDriver: true
+            }, // Back to zero
+        ).start();
+    }
 
     function randomWord() {
         let r = Math.floor(Math.random() * words.length);
@@ -25,48 +39,68 @@ export default function Study({ navigation }: StudyRouteProps<'Study'>) {
         setWord(words[r]);
     }
 
-    let pos = new Animated.ValueXY();
-
     const pan = useRef(new Animated.ValueXY()).current;
 
-    // TODO: idk the thresholds to use for tap/move
     const panResponder = PanResponder.create({
-        onStartShouldSetPanResponder: () => false,
         onMoveShouldSetPanResponder: (e, gestureState) => {
-            return Math.abs(gestureState.dx) >= 1 || Math.abs(gestureState.dy) >= 1;
+            return (Math.pow(gestureState.dx, 2) + Math.pow(gestureState.dy, 2) >= THRESHOLD);
         },
-        onPanResponderMove: Animated.event([
-            null,
-            {
-                dx: pan.x, // x,y are Animated.Value
-                dy: pan.y,
-            },
-        ], { useNativeDriver: false }),
-        onPanResponderRelease: () => {
-            Animated.spring(
-                pan, // Auto-multiplexed
+        onPanResponderMove: (e, gestureState) => {
+            // console.log(gestureState);
+            Animated.event(
+                [
+                    null,
+                    { dx: pan.x, dy: pan.y }
+                ],
                 {
-                    toValue: { x: 0, y: 0 },
-                    useNativeDriver: true
-                }, // Back to zero'
-            ).start();
+                    useNativeDriver: false,
+                },
+            )(e, gestureState);
+        },
+        onPanResponderRelease: (e, gestureState) => {
+            if (gestureState.moveY < height * 0.2) {
+                // UP
+                Animated.timing(
+                    pan, // Auto-multiplexed
+                    {
+                        duration: 200,
+                        toValue: { x: 0, y: -height },
+                        useNativeDriver: true
+                    }, // Back to zero
+                ).start(newCard);
+            } else if (gestureState.moveY > height * 0.9) {
+                // DOWN
+                Animated.timing(
+                    pan, // Auto-multiplexed
+                    {
+                        duration: 200,
+                        toValue: { x: 0, y: height },
+                        useNativeDriver: true
+                    }, // Back to zero
+                ).start(newCard);
+            } else {
+                Animated.spring(
+                    pan, // Auto-multiplexed
+                    {
+                        toValue: { x: 0, y: 0 },
+                        useNativeDriver: true
+                    }, // Back to zero
+                ).start();
+            }
         },
     });
 
     return (
         <View style={styles.container}>
-            <PanGestureHandler >
+            <View style={styles.cardContainer}>
                 <Animated.View
                     {...panResponder.panHandlers}
-                    style={[styles.cardContainer, pan.getTranslateTransform()]}
+                    style={[styles.cardWrapper, pan.getTranslateTransform()]}
                 >
-                    <Flashcard word={word || noWords} />
+                    <Flashcard
+                        word={word || NO_WORDS}
+                    />
                 </Animated.View>
-            </PanGestureHandler >
-            <View
-                style={[{ backgroundColor: "red" }]}
-            >
-                <Button onPress={randomWord} title="Random" />
             </View>
         </View>
     );
@@ -81,7 +115,11 @@ const styles = StyleSheet.create({
     },
     cardContainer: {
         width: "100%",
-        padding: 30,
+        padding: 20,
+    },
+    cardWrapper: {
+        // Extra touch area
+        padding: 5,
     },
     noWords: {
         fontSize: 20

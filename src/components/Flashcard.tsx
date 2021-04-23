@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Animated, StyleSheet, Text } from 'react-native';
 import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
 import { useCurrentTheme } from '../store/hooks';
@@ -11,8 +11,11 @@ interface FlashcardProps {
 export default function Flashcard({ word }: FlashcardProps) {
     const theme = useCurrentTheme();
 
-
     const [flipValue, setFlipValue] = useState(new Animated.Value(0));
+
+    useEffect(() => {
+        setFlipValue(new Animated.Value(0));
+    }, [word]);
 
     let currentFlipValue = 0;
     flipValue.addListener(({ value }) => {
@@ -42,7 +45,6 @@ export default function Flashcard({ word }: FlashcardProps) {
         ]
     };
 
-    // https://reactnative.dev/docs/animated#timing
     function flipCard() {
         if (currentFlipValue >= 90) {
             Animated.spring(flipValue, {
@@ -87,7 +89,7 @@ const styles = StyleSheet.create({
         alignItems: "center",
         borderRadius: 3,
         // borderColor: "black",
-        // borderWidth: 1
+        // borderWidth: 1,
     },
     back: {
         position: "absolute",
@@ -96,6 +98,7 @@ const styles = StyleSheet.create({
     text: {
         fontSize: 30,
         textAlign: "center",
-        fontWeight: "bold"
+        fontWeight: "bold",
+        textAlignVertical: 'bottom',
     }
 });

@@ -22,7 +22,7 @@ export default function SearchResultCard({ item: result }: { item: WordResult; }
             let word = { ...result, id };
             dispatch({
                 type: "ADD_WORD",
-                item: word
+                word: word
             });
             navigation.navigate('Collection', { screen: "Detail", params: { word: word } });
         } catch (error) {

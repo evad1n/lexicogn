@@ -22,7 +22,7 @@ const Themes: ThemeMap = {
         primary: {
             default: "#75664a",
             light: "#fbf1c7",
-            dark: "#000",
+            dark: "#61553f",
             text: "#000"
         },
     },

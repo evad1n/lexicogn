@@ -30,7 +30,7 @@ export default function CustomResultCard({ word }: CustomResultCardProps) {
             let wordDoc = { ...customWordResult, id };
             dispatch({
                 type: "ADD_WORD",
-                item: wordDoc
+                word: wordDoc
             });
             navigation.navigate('Collection', { screen: "Detail", params: { word: wordDoc } });
         } catch (error) {

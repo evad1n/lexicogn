@@ -61,7 +61,7 @@ export default function Detail({ route, navigation }: CollectionRouteProps<'Deta
             await updateWordDB(definition, word.id);
             dispatch({
                 type: 'UPDATE_WORD',
-                item: { ...word, definition, api: 0 }
+                word: { ...word, definition, api: 0 }
             });
             setEditing(false);
         } catch (error) {

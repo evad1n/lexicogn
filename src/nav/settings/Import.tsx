@@ -8,7 +8,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
 import { useCurrentTheme, useTypedDispatch } from '_store/hooks';
 
-const exampleJSON = `
+const EXAMPLE_JSON = `
 [
     {
         "word": "test",
@@ -21,7 +21,7 @@ const exampleJSON = `
 ]
 `;
 
-const exampleType = `
+const EXAMPLE_TYPE = `
 type Data = Array<Item>
 
 type Item = {
@@ -71,7 +71,7 @@ export default function Import() {
             let wordDoc = { ...word, api: 0, id };
             dispatch({
                 type: "ADD_WORD",
-                item: wordDoc
+                word: wordDoc
             });
         } catch (error) {
             // Bubble error up
@@ -89,9 +89,9 @@ export default function Import() {
                     <Text style={[styles.directions, { color: theme.primary.text }]}>
                         Content should be of the following format
                     </Text>
-                    <Text style={[styles.code, { backgroundColor: theme.primary.default, color: theme.primary.text }]}>{exampleType}</Text>
+                    <Text style={[styles.code, { backgroundColor: theme.primary.default, color: theme.primary.text }]}>{EXAMPLE_TYPE}</Text>
                     <Text style={{ fontWeight: "bold", textAlign: "center" }}>Example input file:</Text>
-                    <Text style={[styles.code, { backgroundColor: theme.primary.default, color: theme.primary.text }]}>{exampleJSON}</Text>
+                    <Text style={[styles.code, { backgroundColor: theme.primary.default, color: theme.primary.text }]}>{EXAMPLE_JSON}</Text>
                 </View>
                 <TouchableOpacity style={[buttonStyles.container, styles.button, { backgroundColor: theme.primary.dark }]} onPress={uploadFile}>
                     <Text style={[buttonStyles.text, styles.buttonText, { color: theme.primary.text }]}>Upload</Text>
