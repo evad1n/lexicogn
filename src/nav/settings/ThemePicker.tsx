@@ -60,7 +60,7 @@ export default function ThemePicker({ navigation }: SettingsRouteProps<'Theme'>)
             <View style={styles.bottom}>
                 <TouchableOpacity
                     onPress={() => navigation.navigate("Custom Theme")}
-                    style={[buttonStyles.container, { backgroundColor: currentTheme.primary.default }]}
+                    style={[buttonStyles.container, { backgroundColor: currentTheme.primary.dark }]}
                 >
                     <Text style={[buttonStyles.text, { color: currentTheme.primary.text }]}>Custom</Text>
                 </TouchableOpacity>

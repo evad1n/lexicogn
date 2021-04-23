@@ -13,6 +13,7 @@ async function initialize() {
 
 async function loadTheme() {
     try {
+        // CHORE: remove on deploy
         // await AsyncStorage.removeItem("@theme");
         // await AsyncStorage.removeItem("@customTheme");
         const theme = await getData("@theme");
@@ -20,7 +21,7 @@ async function loadTheme() {
         if (customTheme) {
             store.dispatch(changeCustomTheme(customTheme));
         }
-        console.log("current theme: ", theme, "\ncustom theme: ", customTheme);
+        // console.log("current theme: ", theme, "\ncustom theme: ", customTheme);
         // If there is a saved theme
         if (theme) {
             store.dispatch(changeTheme(theme));

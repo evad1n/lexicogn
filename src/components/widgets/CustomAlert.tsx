@@ -25,7 +25,7 @@ export default function CustomAlert({ visible, message, handleClose }: CustomAle
                         <Text adjustsFontSizeToFit style={[{ color: theme.primary.text }, styles.text]}>{message}</Text>
                     </View>
                     <View style={styles.actions}>
-                        <TouchableOpacity style={[buttonStyles.container, { backgroundColor: theme.primary.default }]} onPress={handleClose} >
+                        <TouchableOpacity style={[buttonStyles.container, { backgroundColor: theme.primary.dark }]} onPress={handleClose} >
                             <Text style={[buttonStyles.text, { color: theme.primary.text }]}>OK</Text>
                         </TouchableOpacity>
                     </View>

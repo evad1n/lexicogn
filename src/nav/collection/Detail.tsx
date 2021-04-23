@@ -82,7 +82,7 @@ export default function Detail({ route, navigation }: CollectionRouteProps<'Deta
         } else {
             return (
                 <TouchableOpacity
-                    style={[buttonStyles.container, { backgroundColor: theme.primary.default }]}
+                    style={[buttonStyles.container, { backgroundColor: theme.primary.dark }]}
                     onPress={() => setEditing(true)}
                 >
                     <Text style={[buttonStyles.text, { color: theme.primary.text }]}>Edit</Text>

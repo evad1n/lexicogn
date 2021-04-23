@@ -57,7 +57,7 @@ export default function Search({ navigation }: SearchRouteProps<'Search'> & Rout
                 <SearchBar
                     ref={searchBar}
                     autoFocus
-                    placeholder="Look up a word"
+                    placeholder="Look up a word..."
                     onChange={(text: string) => {
                         setState((state) => ({ ...state, word: text, searched: false }));
                         setAutocompleted(false);

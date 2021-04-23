@@ -61,7 +61,7 @@ export default function CustomResultCard({ word }: CustomResultCardProps) {
                     />
                 </View>
                 <TouchableOpacity
-                    style={[buttonStyles.container, { backgroundColor: theme.primary.light }]}
+                    style={[buttonStyles.container, { backgroundColor: theme.primary.dark }]}
                     onPress={() => saveWord()}
                 >
                     <Text style={[buttonStyles.text, { color: theme.primary.text }]}>Save Word</Text>

@@ -26,7 +26,7 @@ export default function ConfirmModal({ visible, message, handleCancel, handleCon
                         <Text adjustsFontSizeToFit style={[{ color: theme.primary.text }, styles.text]}>{message}</Text>
                     </View>
                     <View style={styles.actions}>
-                        <TouchableOpacity style={[buttonStyles.container, { backgroundColor: theme.primary.default }]} onPress={handleCancel} >
+                        <TouchableOpacity style={[buttonStyles.container, { backgroundColor: theme.primary.dark }]} onPress={handleCancel} >
                             <Text style={[buttonStyles.text, { color: theme.primary.text }]}>Cancel</Text>
                         </TouchableOpacity>
                         <TouchableOpacity style={[buttonStyles.container, { backgroundColor: "#fa5a5a" }]} onPress={handleConfirm} >

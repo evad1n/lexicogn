@@ -1,3 +1,4 @@
+import CustomAlert from '@/src/components/widgets/CustomAlert';
 import { insertWord } from '@/src/db/db';
 import buttonStyles from '@/src/styles/button';
 import * as DocumentPicker from 'expo-document-picker';
@@ -33,6 +34,11 @@ export default function Import() {
     const theme = useCurrentTheme();
     const dispatch = useTypedDispatch();
 
+    const [modal, setModal] = useState({
+        open: false,
+        message: ""
+    });
+
     const [error, setError] = useState("Any errors will appear here");
 
     async function uploadFile() {
@@ -49,7 +55,10 @@ export default function Import() {
             }
 
             // Show success message!
-            alert("Success!");
+            setModal({
+                open: true,
+                message: "Imported successfully"
+            });
         } catch (error) {
             console.log(error);
             setError(error.toString());
@@ -89,6 +98,11 @@ export default function Import() {
                 </TouchableOpacity>
                 <Text style={styles.errors}>{error}</Text>
             </ScrollView>
+            <CustomAlert
+                message={modal.message}
+                visible={modal.open}
+                handleClose={() => setModal({ ...modal, open: false })}
+            />
         </View>
     );
 }

@@ -243,7 +243,7 @@ export default function CustomThemePicker() {
                 <View style={styles.button}>
                     <TouchableOpacity
                         onPress={saveCustomTheme}
-                        style={[buttonStyles.container, { backgroundColor: currentTheme.primary.default }]}
+                        style={[buttonStyles.container, { backgroundColor: currentTheme.primary.dark }]}
                     >
                         <Text style={[buttonStyles.text]}>Save</Text>
                     </TouchableOpacity>

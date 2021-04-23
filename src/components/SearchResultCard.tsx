@@ -52,7 +52,7 @@ export default function SearchResultCard({ item: result }: { item: WordResult; }
                     <Text style={[styles.definition, { color: theme.primary.text }]}>{result.definition}</Text>
                 </View>
                 <TouchableOpacity
-                    style={[buttonStyles.container, { backgroundColor: theme.primary.light }]}
+                    style={[buttonStyles.container, { backgroundColor: theme.primary.dark }]}
                     onPress={() => saveWord()}
                 >
                     <Text style={[buttonStyles.text, { color: theme.primary.text }]}>Save Word</Text>

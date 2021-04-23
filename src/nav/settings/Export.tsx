@@ -17,15 +17,19 @@ export default function Export() {
 
     const [fileName, setFileName] = useState(tempFileName);
 
-    const [showModal, setShowModal] = useState(false);
-    const [message, setMessage] = useState("");
+    const [modal, setModal] = useState({
+        open: false,
+        message: ""
+    });
 
     async function downloadData() {
         try {
             // Abandon if 0 words
             if (words.length === 0) {
-                setShowModal(true);
-                setMessage("There's nothing to export!");
+                setModal({
+                    open: true,
+                    message: "There's nothing to export!"
+                });
                 return;
             }
 
@@ -41,13 +45,18 @@ export default function Export() {
             if (status === "granted") {
                 const asset = await MediaLibrary.createAssetAsync(fileURI);
                 await MediaLibrary.createAlbumAsync("Download", asset, false);
-                setMessage("Exported successfully");
-            }
 
-            setShowModal(true);
+                // Show success message!
+                setModal({
+                    open: true,
+                    message: "Exported successfully"
+                });
+            }
         } catch (error) {
-            setShowModal(true);
-            setMessage(error.toString());
+            setModal({
+                open: true,
+                message: error.toString()
+            });
         }
     }
 
@@ -82,9 +91,9 @@ export default function Export() {
             {/* Bottom padding */}
             <View style={{ flex: 1.4 }}></View>
             <CustomAlert
-                message={message}
-                visible={showModal}
-                handleClose={() => setShowModal(false)}
+                message={modal.message}
+                visible={modal.open}
+                handleClose={() => setModal({ ...modal, open: false })}
             />
         </View>
     );

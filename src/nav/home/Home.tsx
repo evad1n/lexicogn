@@ -39,7 +39,7 @@ export default function Home({ navigation }: RouteNavProps<'Home'> & HomeRoutePr
                 <SearchBar
                     style={styles.searchBar}
                     editable={false}
-                    placeholder="Look up a word"
+                    placeholder="Look up a word..."
                 />
             </TouchableOpacity>
             <View style={styles.cardContainer}>
