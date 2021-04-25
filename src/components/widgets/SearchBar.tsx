@@ -54,7 +54,7 @@ const SearchBar = React.forwardRef<SearchRef, any>(({ autoFocus = false, editabl
                 returnKeyType="search"
                 keyboardAppearance={theme.dark ? 'dark' : 'light'}
             />
-            {value.length > 0 && <Ionicons onPress={onClear} name="close-circle" size={26} color={theme.primary.text} />}
+            {value.length > 0 && <Ionicons onPress={onClear} name="close" size={26} color={theme.primary.text} />}
         </View>
     );
 }

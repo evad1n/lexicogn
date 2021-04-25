@@ -63,8 +63,7 @@ export default function CustomThemePicker() {
 
     // Have to split these up for performance reasons
     const [selected, setSelected] = useState<Selected>("default");
-    const [startColor, setStartColor] = useState<ColorState>(parseColorString(currentTheme.primary.default));
-    // console.log("StartColor:", startColor);
+    const [startColor, setStartColor] = useState<ColorState>(parseColorString(customTheme.primary.default));
 
     // Theme color states
     const [defaultColor, setDefaultColor] = useState(customTheme.primary.default);

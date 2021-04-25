@@ -4,7 +4,7 @@ import { useCurrentTheme } from "@/src/store/hooks";
 import { useFocusEffect } from "@react-navigation/core";
 import axios from "axios";
 import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { ActivityIndicator, Dimensions, FlatList, ScrollView, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, Dimensions, FlatList, KeyboardAvoidingView, ScrollView, StyleSheet, Text, View } from "react-native";
 import SearchResultCard from "_components/SearchResultCard";
 import ListItemButton from "_components/widgets/ListItemButton";
 import SearchBar from "_components/widgets/SearchBar";
@@ -45,7 +45,6 @@ export default function Search({ navigation }: SearchRouteProps<'Search'> & Rout
 
     useFocusEffect(
         React.useCallback(() => {
-            // console.log("focus");
             setState(initialState);
             searchBar.current?.focusSearchBar();
         }, [])
@@ -136,7 +135,15 @@ export default function Search({ navigation }: SearchRouteProps<'Search'> & Rout
     function renderSearching() {
         if (state.word.length == 0) {
             return (
-                <Text style={{ marginBottom: "50%", fontSize: 20, color: theme.primary.text }}>Search for a word to see results</Text>
+                <KeyboardAvoidingView
+                    style={styles.keyboardView}
+                    behavior="position"
+                >
+                    <Text style={{
+                        fontSize: 24,
+                        color: theme.primary.text
+                    }}>Search for a word to see results</Text>
+                </KeyboardAvoidingView>
             );
         } else {
             if (autocompleted) {
@@ -203,5 +210,9 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: "row",
         flexWrap: "wrap",
+    },
+    keyboardView: {
+        height: "75%",
+        justifyContent: "center"
     },
 });

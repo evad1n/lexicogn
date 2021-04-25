@@ -14,7 +14,7 @@ const Themes: ThemeMap = {
         primary: {
             default: "#000",
             light: "#222",
-            dark: "#111",
+            dark: "#000",
             text: "#fff"
         },
     },
