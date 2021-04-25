@@ -27,7 +27,7 @@ export default function Detail({ route, navigation }: CollectionRouteProps<'Deta
     useLayoutEffect(() => {
         navigation.setOptions({
             headerTitle: () => (
-                <TouchableOpacity activeOpacity={1} onPress={() => navigation.navigate('Collection')}>
+                <TouchableOpacity activeOpacity={1} onPress={() => navigation.navigate('Collection', { focus: true })}>
                     <SearchBar
                         placeholder="Search the collection..."
                         editable={false}

@@ -13,6 +13,8 @@ const NO_WORDS: WordDefinition = {
 const SWIPE_THRESHOLD = 200;
 // Time for new card animation
 const NEW_CARD_DURATION = 200;
+// Threshold ratio for swipe completion
+const SWIPE_COMPLETION_RATIO = 0.25;
 
 export default function Study({ navigation }: StudyRouteProps<'Study'>) {
     const words = useWords();
@@ -78,7 +80,7 @@ export default function Study({ navigation }: StudyRouteProps<'Study'>) {
             )(e, gestureState);
         },
         onPanResponderRelease: (e, gestureState) => {
-            if (gestureState.moveY < height * 0.2) {
+            if (gestureState.dy < height * -SWIPE_COMPLETION_RATIO) {
                 // UP
                 Animated.parallel(
                     [
@@ -100,7 +102,7 @@ export default function Study({ navigation }: StudyRouteProps<'Study'>) {
                         )
                     ]
                 ).start(newCard);
-            } else if (gestureState.moveY > height * 0.9) {
+            } else if (gestureState.dy > height * SWIPE_COMPLETION_RATIO) {
                 // DOWN
                 Animated.parallel(
                     [

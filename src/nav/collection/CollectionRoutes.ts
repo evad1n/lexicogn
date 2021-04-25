@@ -2,7 +2,9 @@ import { RouteProp } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 
 export type CollectionRoute = {
-    Collection: undefined;
+    Collection: {
+        focus: boolean; // Whether to focus search input on navigate
+    } | undefined;
     Detail: {
         word: WordDocument;
     };

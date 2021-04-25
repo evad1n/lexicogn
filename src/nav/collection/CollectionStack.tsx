@@ -1,12 +1,10 @@
-import React, { useState } from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
+import React from 'react';
 import DrawerButton from '_nav/DrawerButton';
-import Collection from './Collection';
 import { RouteNavProps } from '../DrawerRoutes';
+import Collection from './Collection';
 import { CollectionRoute } from './CollectionRoutes';
 import Detail from './Detail';
-import { useCurrentTheme, useWords } from '_store/hooks';
-import SearchBar from '@/src/components/widgets/SearchBar';
 
 const Stack = createStackNavigator<CollectionRoute>();
 

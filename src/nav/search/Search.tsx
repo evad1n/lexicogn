@@ -1,8 +1,9 @@
 import CustomResultCard from "@/src/components/CustomResultCard";
 import useDebounce from "@/src/hooks/debounce";
 import { useCurrentTheme } from "@/src/store/hooks";
+import { useFocusEffect } from "@react-navigation/core";
 import axios from "axios";
-import React, { createRef, useEffect, useLayoutEffect, useState } from "react";
+import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { ActivityIndicator, Dimensions, FlatList, ScrollView, StyleSheet, Text, View } from "react-native";
 import SearchResultCard from "_components/SearchResultCard";
 import ListItemButton from "_components/widgets/ListItemButton";
@@ -39,19 +40,39 @@ export default function Search({ navigation }: SearchRouteProps<'Search'> & Rout
     const [autocompleted, setAutocompleted] = useState(false);
     const debouncedSearch = useDebounce(state.word, 200);
 
+    // Focus search bar on load
+    const searchBar: any = useRef();
+
+    useFocusEffect(
+        React.useCallback(() => {
+            // console.log("focus");
+            setState(initialState);
+            searchBar.current?.focusSearchBar();
+        }, [])
+    );
+
+    function clearSearch() {
+        setState({ ...state, word: "" });
+    }
+
+    function onChangeSearch(text: string) {
+        setState(state => ({ ...state, word: text, searched: false }));
+        setAutocompleted(false);
+    }
+
     // Header search bar
     useLayoutEffect(() => {
+        console.log("render");
         navigation.setOptions({
             headerTitle: () => (
                 <SearchBar
+                    value={state.word}
                     ref={searchBar}
                     autoFocus
                     placeholder="Look up a word..."
-                    onChange={(text: string) => {
-                        setState((state) => ({ ...state, word: text, searched: false }));
-                        setAutocompleted(false);
-                    }}
-                    onSubmit={(text: string) => searchWord(text)}
+                    onChange={onChangeSearch}
+                    onSubmit={searchWord}
+                    onClear={clearSearch}
                     style={{ backgroundColor: theme.primary.light }}
                 />
             ),
@@ -59,38 +80,38 @@ export default function Search({ navigation }: SearchRouteProps<'Search'> & Rout
                 left: 60,
             },
         });
-    }, [navigation, theme]);
 
-    // Focus search bar on load
-    let searchBar: any = createRef();
-    useEffect(() => {
-        const unsubscribe = navigation.addListener("focus", () => {
-            searchBar.current?.focusSearchBar();
+        // On leave
+        const unsubscribe = navigation.addListener('blur', () => {
+            setState(initialState);
         });
 
-        return unsubscribe;
-    }, [navigation]);
+        return () => {
+            unsubscribe();
+        };
+    }, [navigation, theme, state.word]);
+
 
     // Autocomplete hook
     useEffect(() => {
         autoCompleteSuggestions(debouncedSearch);
     }, [debouncedSearch]);
 
-    async function searchWord(word: string) {
+    async function searchWord() {
         // Clear old results
         setState((state) => ({ ...state, results: [], searched: true, loading: true }));
         let newResults: WordResult[] = [];
         // Build requests
         let requests = [];
         for (let i = 1; i < APIS.length; i++) {
-            requests.push(APIS[i].get(word));
+            requests.push(APIS[i].get(state.word));
         }
         // Make all requests in one
-        let responses = await axios.all(requests);
+        const responses = await axios.all(requests);
         // Parse responses
         for (let i = 1; i < APIS.length; i++) {
             newResults.push({
-                word,
+                word: state.word,
                 api: i,
                 definition: APIS[i].parseResponse(responses[i - 1]),
             });
@@ -125,7 +146,7 @@ export default function Search({ navigation }: SearchRouteProps<'Search'> & Rout
                             <ListItemButton
                                 key={index}
                                 text={word}
-                                handlePress={async (text: string) => await searchWord(text)}
+                                handlePress={async (text: string) => await searchWord()}
                             />
                         ))}
                     </View>
@@ -139,7 +160,7 @@ export default function Search({ navigation }: SearchRouteProps<'Search'> & Rout
         if (state.loading) {
             return (
                 <View>
-                    <ActivityIndicator size={"large"} color="#000" />
+                    <ActivityIndicator size={"large"} color={theme.primary.text} />
                 </View>
             );
         } else {

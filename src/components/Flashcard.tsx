@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Animated, StyleSheet, Text, TouchableWithoutFeedback } from 'react-native';
+import { Animated, StyleSheet, Text, TouchableWithoutFeedback, View } from 'react-native';
 import { useCurrentTheme } from '../store/hooks';
 
 
@@ -65,12 +65,14 @@ export default function Flashcard({ word }: FlashcardProps) {
 
     return (
         <TouchableWithoutFeedback onPress={flipCard} style={styles.container}>
-            <Animated.View style={[frontAnimatedStyle, { backgroundColor: theme.primary.default }, styles.flipCard]}>
-                <Text adjustsFontSizeToFit style={[{ color: theme.primary.text }, styles.text]}>{word.word}</Text>
-            </Animated.View>
-            <Animated.View style={[backAnimatedStyle, { backgroundColor: theme.primary.default }, styles.back, styles.flipCard]}>
-                <Text adjustsFontSizeToFit style={[{ color: theme.primary.text }, styles.text]}>{word.definition}</Text>
-            </Animated.View>
+            <View>
+                <Animated.View style={[frontAnimatedStyle, { backgroundColor: theme.primary.default }, styles.flipCard]}>
+                    <Text adjustsFontSizeToFit style={[{ color: theme.primary.text }, styles.text]}>{word.word}</Text>
+                </Animated.View>
+                <Animated.View style={[backAnimatedStyle, { backgroundColor: theme.primary.default }, styles.back, styles.flipCard]}>
+                    <Text adjustsFontSizeToFit style={[{ color: theme.primary.text }, styles.text]}>{word.definition}</Text>
+                </Animated.View>
+            </View>
         </TouchableWithoutFeedback>
     );
 }

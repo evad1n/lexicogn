@@ -1,3 +1,4 @@
+// TODO: fix theme colors
 const Themes: ThemeMap = {
     "light": {
         dark: false,
@@ -13,7 +14,7 @@ const Themes: ThemeMap = {
         primary: {
             default: "#000",
             light: "#222",
-            dark: "#000",
+            dark: "#111",
             text: "#fff"
         },
     },

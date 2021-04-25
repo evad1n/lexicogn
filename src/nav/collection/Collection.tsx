@@ -1,12 +1,13 @@
 import SearchBar from '@/src/components/widgets/SearchBar';
 import useDebounce from '@/src/hooks/debounce';
-import React, { useEffect, useLayoutEffect, useState } from 'react';
+import { useFocusEffect } from '@react-navigation/core';
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { FlatList, StyleSheet, Text, View } from 'react-native';
 import ListItemButton from "_components/widgets/ListItemButton";
 import { useCurrentTheme, useWords } from '_store/hooks';
 import { CollectionRouteProps } from './CollectionRoutes';
 
-export default function Collection({ navigation }: CollectionRouteProps<'Collection'>) {
+export default function Collection({ route, navigation }: CollectionRouteProps<'Collection'>) {
     const theme = useCurrentTheme();
     const words = useWords();
 
@@ -15,11 +16,26 @@ export default function Collection({ navigation }: CollectionRouteProps<'Collect
 
     const [results, setResults] = useState<WordDocument[]>([]);
 
+    // Focus search bar if requested
+    const { focus } = route.params ?? { focus: false };
+    const searchBar: any = useRef();
+
+    useFocusEffect(
+        React.useCallback(() => {
+            if (focus) {
+                searchBar.current?.clear();
+                searchBar.current?.focusSearchBar();
+            }
+        }, [focus])
+    );
+
     // Header search bar
     useLayoutEffect(() => {
+        console.log("nav change");
         navigation.setOptions({
             headerTitle: () => (
                 <SearchBar
+                    ref={searchBar}
                     placeholder="Search the collection..."
                     onChange={(text: string) => {
                         setSearch(text);

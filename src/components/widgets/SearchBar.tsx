@@ -1,6 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import React, { useEffect, useImperativeHandle, useRef, useState } from 'react';
-import { StyleSheet, TextInput, View } from 'react-native';
+import { NativeSyntheticEvent, StyleSheet, TextInput, TextInputSubmitEditingEventData, View } from 'react-native';
 import { useCurrentTheme } from '_store/hooks';
 
 interface SearchRef {
@@ -11,15 +11,15 @@ interface SearchBarProps {
     autoFocus: boolean,
     editable: boolean,
     placeholder: string,
+    value?: string;
     onChange: (text: string) => void,
-    onSubmit: (text: string) => void,
+    onSubmit: () => void,
+    onClear: () => void,
     style: any;
 }
 
-const SearchBar = React.forwardRef<SearchRef, any>(({ autoFocus = false, editable = true, placeholder, onChange, onSubmit, style }: SearchBarProps, ref) => {
+const SearchBar = React.forwardRef<SearchRef, any>(({ autoFocus = false, editable = true, placeholder, value = "", onChange, onSubmit, onClear, style }: SearchBarProps, ref) => {
     const theme = useCurrentTheme();
-
-    const [searchText, setSearchText] = useState("");
 
     const input: any = useRef();
 
@@ -27,14 +27,14 @@ const SearchBar = React.forwardRef<SearchRef, any>(({ autoFocus = false, editabl
         input.current.focus();
     };
 
-    const clear = () => {
-        setSearchText("");
-    };
+    console.log("focus:", autoFocus);
+
 
     useEffect(() => {
-        if (editable)
-            onChange(searchText);
-    }, [searchText]);
+        console.log("focus!");
+        if (autoFocus)
+            input.current.focus();
+    }, [autoFocus]);
 
     useImperativeHandle(ref, () => ({ focusSearchBar }));
 
@@ -45,16 +45,16 @@ const SearchBar = React.forwardRef<SearchRef, any>(({ autoFocus = false, editabl
                 autoFocus={autoFocus}
                 editable={editable}
                 ref={input}
-                value={searchText}
-                style={[styles.text, { color: theme.primary.text }, searchText.length === 0 ? styles.placeholder : null]}
+                value={value}
+                style={[styles.text, { color: theme.primary.text }, value.length === 0 ? styles.placeholder : null]}
                 placeholderTextColor={theme.primary.text}
                 placeholder={placeholder}
-                onChangeText={text => setSearchText(text)}
-                onSubmitEditing={() => onSubmit(searchText)}
+                onChangeText={onChange}
+                onSubmitEditing={onSubmit}
                 returnKeyType="search"
                 keyboardAppearance={theme.dark ? 'dark' : 'light'}
             />
-            {searchText.length > 0 && <Ionicons onPress={clear} name="close-circle" size={26} color={theme.primary.text} />}
+            {value.length > 0 && <Ionicons onPress={onClear} name="close-circle" size={26} color={theme.primary.text} />}
         </View>
     );
 }
