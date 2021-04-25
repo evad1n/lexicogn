@@ -11,10 +11,10 @@ interface FlashcardProps {
 export default function Flashcard({ word }: FlashcardProps) {
     const theme = useCurrentTheme();
 
-    const [flipValue, setFlipValue] = useState(new Animated.Value(0));
+    const flipValue = new Animated.Value(0);
 
     useEffect(() => {
-        setFlipValue(new Animated.Value(0));
+        flipValue.setValue(0);
     }, [word]);
 
     let currentFlipValue = 0;
@@ -88,8 +88,6 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
         borderRadius: 3,
-        // borderColor: "black",
-        // borderWidth: 1,
     },
     back: {
         position: "absolute",
