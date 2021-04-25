@@ -1,6 +1,6 @@
 import Flashcard from '@/src/components/Flashcard';
 import React, { useRef, useState } from 'react';
-import { Animated, Button, PanResponder, StyleSheet, useWindowDimensions, View } from 'react-native';
+import { Animated, PanResponder, StyleSheet, useWindowDimensions, View } from 'react-native';
 import { useCurrentTheme, useWords } from '_store/hooks';
 import { StudyRouteProps } from './StudyRoutes';
 
@@ -135,6 +135,7 @@ export default function Study({ navigation }: StudyRouteProps<'Study'>) {
                         Animated.timing(
                             border, // Auto-multiplexed
                             {
+                                duration: 200,
                                 toValue: 0,
                                 useNativeDriver: false
                             }, // Back to zero
@@ -148,9 +149,9 @@ export default function Study({ navigation }: StudyRouteProps<'Study'>) {
     const borderInterpolate = border.interpolate({
         inputRange: [
             -180,
-            -1,
+            -30,
             0,
-            1,
+            30,
             180,
         ],
         outputRange: [
@@ -166,7 +167,6 @@ export default function Study({ navigation }: StudyRouteProps<'Study'>) {
     const borderStyle = {
         backgroundColor: borderInterpolate
     };
-
 
     return (
         <View style={styles.container}>

@@ -1,7 +1,6 @@
 import { useCurrentTheme } from '_store/hooks';
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 export default function AutoSuggestion({ text, handlePress }: { text: string; handlePress: any; }) {
     const theme = useCurrentTheme();

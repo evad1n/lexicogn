@@ -1,7 +1,6 @@
 import { useNavigation } from '@react-navigation/core';
 import React from 'react';
-import { Dimensions, StyleSheet, Text, View } from 'react-native';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import { Dimensions, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { insertWord } from '_db/db';
 import { useCurrentTheme, useTypedDispatch } from '_store/hooks';
 import APIS, { APIType } from '~/api';

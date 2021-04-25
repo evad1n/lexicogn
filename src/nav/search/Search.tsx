@@ -3,8 +3,7 @@ import useDebounce from "@/src/hooks/debounce";
 import { useCurrentTheme } from "@/src/store/hooks";
 import axios from "axios";
 import React, { createRef, useEffect, useLayoutEffect, useState } from "react";
-import { ActivityIndicator, Dimensions, StyleSheet, Text, View } from "react-native";
-import { FlatList, ScrollView } from "react-native-gesture-handler";
+import { ActivityIndicator, Dimensions, FlatList, ScrollView, StyleSheet, Text, View } from "react-native";
 import SearchResultCard from "_components/SearchResultCard";
 import ListItemButton from "_components/widgets/ListItemButton";
 import SearchBar from "_components/widgets/SearchBar";
@@ -40,16 +39,6 @@ export default function Search({ navigation }: SearchRouteProps<'Search'> & Rout
     const [autocompleted, setAutocompleted] = useState(false);
     const debouncedSearch = useDebounce(state.word, 200);
 
-    // Focus search bar on load
-    let searchBar: any = createRef();
-    useEffect(() => {
-        const unsubscribe = navigation.addListener("focus", () => {
-            searchBar.current?.focusSearchBar();
-        });
-
-        return unsubscribe;
-    }, [navigation]);
-
     // Header search bar
     useLayoutEffect(() => {
         navigation.setOptions({
@@ -71,6 +60,21 @@ export default function Search({ navigation }: SearchRouteProps<'Search'> & Rout
             },
         });
     }, [navigation, theme]);
+
+    // Focus search bar on load
+    let searchBar: any = createRef();
+    useEffect(() => {
+        const unsubscribe = navigation.addListener("focus", () => {
+            searchBar.current?.focusSearchBar();
+        });
+
+        return unsubscribe;
+    }, [navigation]);
+
+    // Autocomplete hook
+    useEffect(() => {
+        autoCompleteSuggestions(debouncedSearch);
+    }, [debouncedSearch]);
 
     async function searchWord(word: string) {
         // Clear old results
@@ -94,11 +98,11 @@ export default function Search({ navigation }: SearchRouteProps<'Search'> & Rout
         setState((state) => ({ ...state, results: newResults, loading: false }));
     }
 
-    async function autoCompleteSuggestions(word: string) {
-        if (word.length > 1) {
-            let suggests = await AutoComplete(word);
+    async function autoCompleteSuggestions(text: string) {
+        if (text.length > 1) {
+            let suggests = await AutoComplete(text);
             // If these suggestions are still current
-            if (word === debouncedSearch) {
+            if (text === debouncedSearch) {
                 setState((state) => {
                     return { ...state, suggestions: suggests };
                 });
@@ -106,11 +110,6 @@ export default function Search({ navigation }: SearchRouteProps<'Search'> & Rout
             }
         }
     }
-
-    // Autocomplete hook
-    useEffect(() => {
-        autoCompleteSuggestions(debouncedSearch);
-    }, [debouncedSearch]);
 
 
     function renderSearching() {

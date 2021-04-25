@@ -1,7 +1,6 @@
 import { useNavigation } from '@react-navigation/core';
 import React, { useState } from 'react';
-import { Dimensions, StyleSheet, Text, View } from 'react-native';
-import { TextInput, TouchableOpacity } from 'react-native-gesture-handler';
+import { Dimensions, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { insertWord } from '_db/db';
 import { useCurrentTheme, useTypedDispatch } from '_store/hooks';
 import buttonStyles from '../styles/button';

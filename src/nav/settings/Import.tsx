@@ -4,8 +4,7 @@ import buttonStyles from '@/src/styles/button';
 import * as DocumentPicker from 'expo-document-picker';
 import * as FileSystem from 'expo-file-system';
 import React, { useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useCurrentTheme, useTypedDispatch } from '_store/hooks';
 
 const EXAMPLE_JSON = `

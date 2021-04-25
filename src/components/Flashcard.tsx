@@ -1,6 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { Animated, StyleSheet, Text } from 'react-native';
-import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
+import React, { useEffect } from 'react';
+import { Animated, StyleSheet, Text, TouchableWithoutFeedback } from 'react-native';
 import { useCurrentTheme } from '../store/hooks';
 
 

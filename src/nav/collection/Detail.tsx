@@ -1,10 +1,10 @@
 import ConfirmModal from '@/src/components/widgets/ConfirmModal';
+import SearchBar from '@/src/components/widgets/SearchBar';
 import buttonStyles from '@/src/styles/button';
 import textStyles from '@/src/styles/text';
 import { useFocusEffect } from '@react-navigation/core';
-import React, { useState } from 'react';
-import { BackHandler, KeyboardAvoidingView, StyleSheet, Text, View } from 'react-native';
-import { TextInput, TouchableOpacity } from 'react-native-gesture-handler';
+import React, { useLayoutEffect, useState } from 'react';
+import { BackHandler, KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { deleteWord as deleteWordDB, updateWord as updateWordDB } from '_db/db';
 import { useCurrentTheme, useTypedDispatch } from '_store/hooks';
 import APIS from '~/api';
@@ -22,6 +22,25 @@ export default function Detail({ route, navigation }: CollectionRouteProps<'Deta
 
     const [definition, setDefinition] = useState(word.definition);
     const [editing, setEditing] = useState(false);
+
+    // Header search bar
+    useLayoutEffect(() => {
+        navigation.setOptions({
+            headerTitle: () => (
+                <TouchableOpacity activeOpacity={1} onPress={() => navigation.navigate('Collection')}>
+                    <SearchBar
+                        placeholder="Search the collection..."
+                        editable={false}
+                        style={{ backgroundColor: theme.primary.light }}
+                    />
+                </TouchableOpacity>
+
+            ),
+            headerTitleContainerStyle: {
+                left: 60,
+            },
+        });
+    }, [navigation, theme]);
 
     // Override back button
     useFocusEffect(

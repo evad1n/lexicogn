@@ -4,8 +4,7 @@ import * as FileSystem from 'expo-file-system';
 import * as MediaLibrary from 'expo-media-library';
 import * as Permissions from 'expo-permissions';
 import React, { useCallback, useRef, useState } from 'react';
-import { KeyboardAvoidingView, NativeSyntheticEvent, StyleSheet, Text, TextInputSubmitEditingEventData, View } from 'react-native';
-import { TextInput, TouchableOpacity } from 'react-native-gesture-handler';
+import { KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { useCurrentTheme, useWords } from '_store/hooks';
 
 // Create file name w/ date
