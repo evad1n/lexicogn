@@ -49,6 +49,7 @@ export default function ThemePicker({ navigation }: SettingsRouteProps<'Theme'>)
                 <Divider color={currentTheme.primary.text} />
             </View>
             <FlatList
+                style={{ borderBottomWidth: 0 }}
                 contentContainerStyle={styles.colorContainer}
                 data={colorOptions}
                 renderItem={renderPalette}
@@ -56,6 +57,9 @@ export default function ThemePicker({ navigation }: SettingsRouteProps<'Theme'>)
                 numColumns={4}
                 ListFooterComponent={renderCustomPalette}
             />
+            <View style={{ marginHorizontal: 0 }} >
+                <Divider color={currentTheme.primary.text} />
+            </View>
             <View style={styles.bottom}>
                 <TouchableOpacity
                     onPress={() => navigation.navigate("Custom Theme")}
@@ -106,6 +110,6 @@ const styles = StyleSheet.create({
     },
     bottom: {
         paddingHorizontal: 20,
-        marginVertical: 10
+        marginVertical: 10,
     }
 });

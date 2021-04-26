@@ -18,22 +18,40 @@ const Themes: ThemeMap = {
             text: "#fff"
         },
     },
-    "cozy": {
+    "dimmed": {
+        dark: true,
+        primary: {
+            default: "#333",
+            light: "#555",
+            dark: "#333",
+            text: "#fff"
+        },
+    },
+    "rust": {
         dark: false,
         primary: {
-            default: "#75664a",
-            light: "#fbf1c7",
-            dark: "#61553f",
+            default: "#3b2e2a",
+            light: "#e1e1db",
+            dark: "#333",
             text: "#000"
         },
     },
-    "grey": {
+    "ocean": {
         dark: true,
         primary: {
-            default: "#666",
-            light: "#888",
-            dark: "#444",
+            default: "#001869",
+            light: "#2a45a1",
+            dark: "#1f44c2",
             text: "#fff"
+        },
+    },
+    "green": {
+        dark: false,
+        primary: {
+            default: "#95c96d",
+            light: "#cff0b6",
+            dark: "#82b85a",
+            text: "#000"
         },
     },
 };

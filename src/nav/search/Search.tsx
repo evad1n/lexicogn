@@ -4,7 +4,7 @@ import { useCurrentTheme } from "@/src/store/hooks";
 import { useFocusEffect } from "@react-navigation/core";
 import axios from "axios";
 import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { ActivityIndicator, Dimensions, FlatList, KeyboardAvoidingView, ScrollView, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, Dimensions, FlatList, Keyboard, KeyboardAvoidingView, ScrollView, StyleSheet, Text, View } from "react-native";
 import SearchResultCard from "_components/SearchResultCard";
 import ListItemButton from "_components/widgets/ListItemButton";
 import SearchBar from "_components/widgets/SearchBar";
@@ -18,7 +18,7 @@ type State = {
     loading: boolean,
     results: WordResult[],
     suggestions: string[];
-
+    keyboardOpen: boolean;
 };
 
 const initialState: State = {
@@ -26,7 +26,8 @@ const initialState: State = {
     searched: false,
     loading: false,
     results: [],
-    suggestions: []
+    suggestions: [],
+    keyboardOpen: false
 };
 
 
@@ -50,8 +51,26 @@ export default function Search({ navigation }: SearchRouteProps<'Search'> & Rout
         }, [])
     );
 
+    function openKeyboard() {
+        setState(state => ({ ...state, keyboardOpen: true }));
+    }
+    function closeKeyboard() {
+        setState(state => ({ ...state, keyboardOpen: false }));
+    }
+
+    useEffect(() => {
+        Keyboard.addListener("keyboardDidShow", openKeyboard);
+        Keyboard.addListener("keyboardDidHide", closeKeyboard);
+
+        // cleanup function
+        return () => {
+            Keyboard.removeListener("keyboardDidShow", openKeyboard);
+            Keyboard.removeListener("keyboardDidHide", closeKeyboard);
+        };
+    }, []);
+
     function clearSearch() {
-        setState({ ...state, word: "" });
+        setState({ ...state, word: "", searched: false, loading: false });
     }
 
     function onChangeSearch(text: string) {
@@ -61,7 +80,6 @@ export default function Search({ navigation }: SearchRouteProps<'Search'> & Rout
 
     // Header search bar
     useLayoutEffect(() => {
-        console.log("render");
         navigation.setOptions({
             headerTitle: () => (
                 <SearchBar
@@ -70,7 +88,7 @@ export default function Search({ navigation }: SearchRouteProps<'Search'> & Rout
                     autoFocus
                     placeholder="Look up a word..."
                     onChange={onChangeSearch}
-                    onSubmit={searchWord}
+                    onSubmit={() => searchWord(state.word)}
                     onClear={clearSearch}
                     style={{ backgroundColor: theme.primary.light }}
                 />
@@ -96,21 +114,21 @@ export default function Search({ navigation }: SearchRouteProps<'Search'> & Rout
         autoCompleteSuggestions(debouncedSearch);
     }, [debouncedSearch]);
 
-    async function searchWord() {
+    async function searchWord(text: string) {
         // Clear old results
-        setState((state) => ({ ...state, results: [], searched: true, loading: true }));
+        setState((state) => ({ ...state, word: text, results: [], searched: true, loading: true }));
         let newResults: WordResult[] = [];
         // Build requests
         let requests = [];
         for (let i = 1; i < APIS.length; i++) {
-            requests.push(APIS[i].get(state.word));
+            requests.push(APIS[i].get(text));
         }
         // Make all requests in one
         const responses = await axios.all(requests);
         // Parse responses
         for (let i = 1; i < APIS.length; i++) {
             newResults.push({
-                word: state.word,
+                word: text,
                 api: i,
                 definition: APIS[i].parseResponse(responses[i - 1]),
             });
@@ -131,32 +149,42 @@ export default function Search({ navigation }: SearchRouteProps<'Search'> & Rout
         }
     }
 
+    function renderNoCompletions() {
+        return (
+            <View
+                style={[styles.emptyContainer, state.keyboardOpen ? styles.keyboardView : null]}
+            >
+                <Text style={[styles.emptyText, { color: theme.primary.text }]}>No suggestions for '{state.word}'</Text>
+            </View>
+        );
+    }
 
     function renderSearching() {
         if (state.word.length == 0) {
             return (
-                <KeyboardAvoidingView
-                    style={styles.keyboardView}
-                    behavior="position"
+                <View
+                    style={[styles.emptyContainer, state.keyboardOpen ? styles.keyboardView : null]}
                 >
-                    <Text style={{
-                        fontSize: 24,
-                        color: theme.primary.text
-                    }}>Search for a word to see results</Text>
-                </KeyboardAvoidingView>
+                    <Text style={[styles.emptyText, { color: theme.primary.text }]}>Search for a word to see results</Text>
+                </View>
             );
         } else {
             if (autocompleted) {
                 return (
-                    <View style={styles.autoSuggestions}>
-                        {state.suggestions.map((word: string, index) => (
-                            <ListItemButton
-                                key={index}
-                                text={word}
-                                handlePress={async (text: string) => await searchWord()}
-                            />
-                        ))}
-                    </View>
+                    <FlatList
+                        keyboardShouldPersistTaps="handled"
+                        contentContainerStyle={styles.autoSuggestions}
+                        data={state.suggestions}
+                        renderItem={({ item }) => <ListItemButton
+                            text={item}
+                            handlePress={(text: string) => {
+                                Keyboard.dismiss();
+                                searchWord(text);
+                            }}
+                        />}
+                        keyExtractor={(item, index) => `${index}`}
+                        ListEmptyComponent={renderNoCompletions}
+                    />
                 );
             } else
                 return null;
@@ -166,7 +194,9 @@ export default function Search({ navigation }: SearchRouteProps<'Search'> & Rout
     function renderResults() {
         if (state.loading) {
             return (
-                <View>
+                <View
+                    style={[styles.emptyContainer, state.keyboardOpen ? styles.keyboardView : null]}
+                >
                     <ActivityIndicator size={"large"} color={theme.primary.text} />
                 </View>
             );
@@ -190,29 +220,26 @@ export default function Search({ navigation }: SearchRouteProps<'Search'> & Rout
     }
 
     return (
-        <ScrollView
-            contentContainerStyle={styles.container}
-            keyboardShouldPersistTaps={"handled"}
-        >
-            {state.searched ? renderResults() : renderSearching()}
-        </ScrollView>
+        <React.Fragment>
+            { state.searched ? renderResults() : renderSearching()}
+        </React.Fragment>
     );
 }
 
 const styles = StyleSheet.create({
-    container: {
+    emptyContainer: {
         flex: 1,
         alignItems: "center",
         justifyContent: "center",
     },
+    emptyText: {
+        fontSize: 24,
+    },
     autoSuggestions: {
-        paddingTop: 5,
-        flex: 1,
-        flexDirection: "row",
-        flexWrap: "wrap",
+        padding: 5,
+        flexGrow: 1,
     },
     keyboardView: {
-        height: "75%",
-        justifyContent: "center"
+        marginBottom: "50%"
     },
 });

@@ -16,8 +16,10 @@ type ThemePalette = {
 type ThemeKey =
     | "light"
     | "dark"
-    | "cozy"
-    | "grey";
+    | "dimmed"
+    | "rust"
+    | "ocean"
+    | "green";
 
 type ThemeName = ThemeKey | "custom";
 

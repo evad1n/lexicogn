@@ -27,11 +27,11 @@ const SearchBar = React.forwardRef<SearchRef, any>(({ autoFocus = false, editabl
         input.current.focus();
     };
 
-    console.log("focus:", autoFocus);
+    // console.log("focus:", autoFocus);
 
 
     useEffect(() => {
-        console.log("focus!");
+        // console.log("focus!");
         if (autoFocus)
             input.current.focus();
     }, [autoFocus]);
