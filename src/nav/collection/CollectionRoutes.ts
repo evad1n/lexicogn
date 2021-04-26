@@ -4,6 +4,7 @@ import { StackNavigationProp } from "@react-navigation/stack";
 export type CollectionRoute = {
     Collection: {
         focus: boolean; // Whether to focus search input on navigate
+        search: string;
     } | undefined;
     Detail: {
         word: WordDocument;

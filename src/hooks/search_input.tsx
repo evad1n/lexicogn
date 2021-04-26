@@ -1,16 +1,19 @@
-import React, { createContext, useContext, useRef } from "react";
+import React, { createContext, useContext, useRef, useState } from "react";
+import { TextInput } from "react-native";
 
 interface SearchInputState {
     focus: () => void;
     blur: () => void;
-    inputRef: any;
+    inputRef: React.LegacyRef<TextInput> | undefined;
+    setRef: any;
 }
 
 // const searchContext = createContext<SearchInputState>(undefined!);
 const searchContext = createContext<SearchInputState>({
     focus: () => null,
     blur: () => null,
-    inputRef: null
+    inputRef: null,
+    setRef: null
 });
 
 export function ProvideSearchInput({ children }: any) {
@@ -25,23 +28,30 @@ export const useSearchInput = () => {
 };
 
 function useProvideSearchInput(): SearchInputState {
-    const inputRef: any = useRef();
+    const [inputRef, setInputRef] = useState<any>(null);
+    console.log("rerender context");
 
     function focus() {
-        if (inputRef.current) {
-            inputRef.current.focus();
+        if (inputRef) {
+            inputRef.focus();
         }
     }
 
     function blur() {
-        if (inputRef.current) {
-            inputRef.current.blur();
+        if (inputRef) {
+            inputRef.blur();
         }
+    }
+
+    function setRef(ref: any) {
+        console.log("ref is set");
+        setInputRef(ref);
     }
 
     return {
         focus,
         blur,
-        inputRef
+        inputRef,
+        setRef
     };
 }

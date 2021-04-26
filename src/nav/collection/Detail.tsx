@@ -30,7 +30,8 @@ export default function Detail({ route, navigation }: CollectionRouteProps<'Deta
                 <TouchableOpacity
                     activeOpacity={1}
                     onPress={() => navigation.navigate('Collection', {
-                        focus: true
+                        focus: true,
+                        search: search ?? ""
                     })}
                 >
                     <SearchBar

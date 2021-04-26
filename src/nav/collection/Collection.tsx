@@ -11,25 +11,29 @@ import { CollectionRouteProps } from './CollectionRoutes';
 export default function Collection({ route, navigation }: CollectionRouteProps<'Collection'>) {
     const theme = useCurrentTheme();
     const words = useWords();
-    const { focus } = useSearchInput();
+    const { inputRef, focus } = useSearchInput();
+
+
+
+    // Route params
+    useFocusEffect(
+        React.useCallback(() => {
+            // Focus search bar if requested
+            if (route.params) {
+                if (route.params.focus ?? false) {
+                    // FIX: searchbar wont rerender
+                    console.log("trying to focus");
+                    focus();
+                }
+                setSearch(route.params.search ?? "");
+            }
+        }, [route.params, focus, inputRef])
+    );
 
     const [search, setSearch] = useState("");
     const debouncedSearch = useDebounce(search, 200);
 
     const [results, setResults] = useState<WordDocument[]>([]);
-
-    // Focus search bar if requested
-    const autoFocus = route.params ? route.params.focus : false;
-
-    // FIX: inputRef isn't set yet so....
-    useFocusEffect(
-        React.useCallback(() => {
-            console.log("focus attempt:", autoFocus);
-            if (autoFocus) {
-                focus();
-            }
-        }, [autoFocus, focus])
-    );
 
     function onChangeSearch(text: string) {
         setSearch(text);
@@ -56,16 +60,6 @@ export default function Collection({ route, navigation }: CollectionRouteProps<'
                 left: 60,
             },
         });
-
-        // On leave
-        // FIX: set it back or smth
-        const unsubscribe = navigation.addListener('blur', () => {
-            setSearch("");
-        });
-
-        return () => {
-            unsubscribe();
-        };
     }, [navigation, theme, search]);
 
     // Autocomplete hook

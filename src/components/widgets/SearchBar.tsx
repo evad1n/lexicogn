@@ -1,6 +1,7 @@
 import { useSearchInput } from '@/src/hooks/search_input';
 import { Ionicons } from '@expo/vector-icons';
-import React from 'react';
+import { useFocusEffect } from '@react-navigation/core';
+import React, { useEffect, useRef } from 'react';
 import { StyleProp, StyleSheet, TextInput, ViewStyle } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { useCurrentTheme } from '_store/hooks';
@@ -18,7 +19,15 @@ interface SearchBarProps {
 
 export default function SearchBar({ style, autoFocus = false, editable = true, placeholder, value = "", onChange, onSubmit, onClear, }: SearchBarProps) {
     const theme = useCurrentTheme();
-    const { inputRef, focus } = useSearchInput();
+    const { inputRef, setRef, focus } = useSearchInput();
+
+    const searchRef: any = useRef();
+
+    useFocusEffect(
+        React.useCallback(() => {
+            setRef(searchRef.current);
+        }, [searchRef, inputRef])
+    );
 
     return (
         <TouchableOpacity
@@ -31,7 +40,7 @@ export default function SearchBar({ style, autoFocus = false, editable = true, p
             <TextInput
                 autoFocus={autoFocus}
                 editable={editable}
-                ref={inputRef}
+                ref={searchRef}
                 value={value}
                 style={[styles.text, { color: theme.primary.text }, value.length === 0 ? styles.placeholder : null]}
                 placeholderTextColor={theme.primary.text}
