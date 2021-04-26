@@ -1,10 +1,11 @@
 import CustomResultCard from "@/src/components/CustomResultCard";
 import useDebounce from "@/src/hooks/debounce";
+import { useSearchInput } from "@/src/hooks/search_input";
 import { useCurrentTheme } from "@/src/store/hooks";
 import { useFocusEffect } from "@react-navigation/core";
 import axios from "axios";
-import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { ActivityIndicator, Dimensions, FlatList, Keyboard, KeyboardAvoidingView, ScrollView, StyleSheet, Text, View } from "react-native";
+import React, { useEffect, useLayoutEffect, useState } from "react";
+import { ActivityIndicator, Dimensions, FlatList, Keyboard, StyleSheet, Text, View } from "react-native";
 import SearchResultCard from "_components/SearchResultCard";
 import ListItemButton from "_components/widgets/ListItemButton";
 import SearchBar from "_components/widgets/SearchBar";
@@ -36,19 +37,18 @@ export default function Search({ navigation }: SearchRouteProps<'Search'> & Rout
     // Make result card list fit width
     const { width } = Dimensions.get('window');
 
+    const { focus } = useSearchInput();
+
     const [state, setState] = useState<State>(initialState);
 
     const [autocompleted, setAutocompleted] = useState(false);
     const debouncedSearch = useDebounce(state.word, 200);
 
     // Focus search bar on load
-    const searchBar: any = useRef();
-
     useFocusEffect(
         React.useCallback(() => {
-            setState(initialState);
-            searchBar.current?.focusSearchBar();
-        }, [])
+            focus();
+        }, [focus])
     );
 
     function openKeyboard() {
@@ -69,13 +69,13 @@ export default function Search({ navigation }: SearchRouteProps<'Search'> & Rout
         };
     }, []);
 
-    function clearSearch() {
-        setState({ ...state, word: "", searched: false, loading: false });
-    }
-
     function onChangeSearch(text: string) {
         setState(state => ({ ...state, word: text, searched: false }));
         setAutocompleted(false);
+    }
+
+    function clearSearch() {
+        setState({ ...state, word: "", searched: false, loading: false });
     }
 
     // Header search bar
@@ -84,8 +84,6 @@ export default function Search({ navigation }: SearchRouteProps<'Search'> & Rout
             headerTitle: () => (
                 <SearchBar
                     value={state.word}
-                    ref={searchBar}
-                    autoFocus
                     placeholder="Look up a word..."
                     onChange={onChangeSearch}
                     onSubmit={() => searchWord(state.word)}

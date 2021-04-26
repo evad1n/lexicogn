@@ -7,28 +7,20 @@ import { useCurrentTheme } from '_store/hooks';
 export default function DrawerButton({ navigation }: any) {
     const theme = useCurrentTheme();
 
-    // FIX: nAVIGATION SUCKS
-    useEffect(() => {
-        return () => {
-            // console.log("AFTER: ", navigation);
-        };
-    }, []);
-
     return (
         <TouchableOpacity style={styles.width} onPress={() => {
-            navigation.openDrawer();
             Keyboard.dismiss();
+            navigation.openDrawer();
         }}>
-            <Ionicons name="menu" size={36} style={styles.button} color={theme.primary.text} />
+            <Ionicons name="menu" size={36} color={theme.primary.text} />
         </TouchableOpacity>
     );
 }
 
 const styles = StyleSheet.create({
-    button: {
-        marginLeft: 10,
-    },
     width: {
-        width: 40
+        width: 60,
+        paddingHorizontal: 10,
+        paddingVertical: 8,
     }
 });

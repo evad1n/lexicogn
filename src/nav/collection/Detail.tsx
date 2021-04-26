@@ -15,7 +15,7 @@ export default function Detail({ route, navigation }: CollectionRouteProps<'Deta
     const theme = useCurrentTheme();
     const dispatch = useTypedDispatch();
 
-    const { word } = route.params;
+    const { word, search } = route.params;
     const API = APIS[word.api];
 
     const [deleteModal, setDeleteModal] = useState(false);
@@ -27,14 +27,19 @@ export default function Detail({ route, navigation }: CollectionRouteProps<'Deta
     useLayoutEffect(() => {
         navigation.setOptions({
             headerTitle: () => (
-                <TouchableOpacity activeOpacity={1} onPress={() => navigation.navigate('Collection', { focus: true })}>
+                <TouchableOpacity
+                    activeOpacity={1}
+                    onPress={() => navigation.navigate('Collection', {
+                        focus: true
+                    })}
+                >
                     <SearchBar
-                        placeholder="Search the collection..."
+                        value={search ?? ""}
                         editable={false}
+                        placeholder="Search the collection..."
                         style={{ backgroundColor: theme.primary.light }}
                     />
                 </TouchableOpacity>
-
             ),
             headerTitleContainerStyle: {
                 left: 60,

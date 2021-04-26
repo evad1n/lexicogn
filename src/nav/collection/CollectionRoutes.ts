@@ -7,6 +7,7 @@ export type CollectionRoute = {
     } | undefined;
     Detail: {
         word: WordDocument;
+        search?: string;
     };
 };
 

@@ -1,7 +1,8 @@
 import SearchBar from '@/src/components/widgets/SearchBar';
 import useDebounce from '@/src/hooks/debounce';
+import { useSearchInput } from '@/src/hooks/search_input';
 import { useFocusEffect } from '@react-navigation/core';
-import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useState } from 'react';
 import { FlatList, Keyboard, StyleSheet, Text, View } from 'react-native';
 import ListItemButton from "_components/widgets/ListItemButton";
 import { useCurrentTheme, useWords } from '_store/hooks';
@@ -10,6 +11,7 @@ import { CollectionRouteProps } from './CollectionRoutes';
 export default function Collection({ route, navigation }: CollectionRouteProps<'Collection'>) {
     const theme = useCurrentTheme();
     const words = useWords();
+    const { focus } = useSearchInput();
 
     const [search, setSearch] = useState("");
     const debouncedSearch = useDebounce(search, 200);
@@ -17,30 +19,36 @@ export default function Collection({ route, navigation }: CollectionRouteProps<'
     const [results, setResults] = useState<WordDocument[]>([]);
 
     // Focus search bar if requested
-    const { focus } = route.params ?? { focus: false };
-    const searchBar: any = useRef();
+    const autoFocus = route.params ? route.params.focus : false;
 
+    // FIX: inputRef isn't set yet so....
     useFocusEffect(
         React.useCallback(() => {
-            if (focus) {
-                searchBar.current?.clear();
-                searchBar.current?.focusSearchBar();
+            console.log("focus attempt:", autoFocus);
+            if (autoFocus) {
+                focus();
             }
-        }, [focus])
+        }, [autoFocus, focus])
     );
+
+    function onChangeSearch(text: string) {
+        setSearch(text);
+    }
+
+    function clearSearch() {
+        setSearch("");
+    }
 
     // Header search bar
     useLayoutEffect(() => {
-        console.log("nav change");
         navigation.setOptions({
             headerTitle: () => (
                 <SearchBar
-                    ref={searchBar}
+                    value={search}
                     placeholder="Search the collection..."
-                    onChange={(text: string) => {
-                        setSearch(text);
-                    }}
-                    onSubmit={(text: string) => searchCollection(text)}
+                    onChange={onChangeSearch}
+                    onSubmit={() => searchCollection(search)}
+                    onClear={clearSearch}
                     style={{ backgroundColor: theme.primary.light }}
                 />
             ),
@@ -50,6 +58,7 @@ export default function Collection({ route, navigation }: CollectionRouteProps<'
         });
 
         // On leave
+        // FIX: set it back or smth
         const unsubscribe = navigation.addListener('blur', () => {
             setSearch("");
         });
@@ -57,7 +66,7 @@ export default function Collection({ route, navigation }: CollectionRouteProps<'
         return () => {
             unsubscribe();
         };
-    }, [navigation, theme]);
+    }, [navigation, theme, search]);
 
     // Autocomplete hook
     useEffect(() => {
@@ -100,7 +109,10 @@ export default function Collection({ route, navigation }: CollectionRouteProps<'
                 text={item.word}
                 handlePress={() => {
                     Keyboard.dismiss();
-                    navigation.navigate('Detail', { word: item });
+                    navigation.navigate('Detail', {
+                        word: item,
+                        search
+                    });
                 }}
             />}
             keyExtractor={(item, index) => `${index}`}

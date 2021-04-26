@@ -1,50 +1,37 @@
+import { useSearchInput } from '@/src/hooks/search_input';
 import { Ionicons } from '@expo/vector-icons';
-import React, { useEffect, useImperativeHandle, useRef, useState } from 'react';
-import { NativeSyntheticEvent, StyleSheet, TextInput, TextInputSubmitEditingEventData, View } from 'react-native';
+import React from 'react';
+import { StyleProp, StyleSheet, TextInput, ViewStyle } from 'react-native';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 import { useCurrentTheme } from '_store/hooks';
 
-interface SearchRef {
-    focusSearchBar(): void;
-}
-
 interface SearchBarProps {
-    autoFocus: boolean,
-    editable: boolean,
     placeholder: string,
+    autoFocus?: boolean,
+    editable?: boolean,
     value?: string;
-    onChange: (text: string) => void,
-    onSubmit: () => void,
-    onClear: () => void,
-    style: any;
+    onChange?: (text: string) => void,
+    onSubmit?: () => void,
+    onClear?: () => void,
+    style?: StyleProp<ViewStyle>;
 }
 
-const SearchBar = React.forwardRef<SearchRef, any>(({ autoFocus = false, editable = true, placeholder, value = "", onChange, onSubmit, onClear, style }: SearchBarProps, ref) => {
+export default function SearchBar({ style, autoFocus = false, editable = true, placeholder, value = "", onChange, onSubmit, onClear, }: SearchBarProps) {
     const theme = useCurrentTheme();
-
-    const input: any = useRef();
-
-    const focusSearchBar = () => {
-        input.current.focus();
-    };
-
-    // console.log("focus:", autoFocus);
-
-
-    useEffect(() => {
-        // console.log("focus!");
-        if (autoFocus)
-            input.current.focus();
-    }, [autoFocus]);
-
-    useImperativeHandle(ref, () => ({ focusSearchBar }));
+    const { inputRef, focus } = useSearchInput();
 
     return (
-        <View style={[{ backgroundColor: theme.primary.default, shadowColor: "red" }, styles.container, style]}>
+        <TouchableOpacity
+            onPress={focus}
+            activeOpacity={1}
+            containerStyle={[style]}
+            style={[styles.container, { backgroundColor: theme.primary.default }, style]}
+        >
             <Ionicons name="md-search" size={20} style={styles.icon} color={theme.primary.text} />
             <TextInput
                 autoFocus={autoFocus}
                 editable={editable}
-                ref={input}
+                ref={inputRef}
                 value={value}
                 style={[styles.text, { color: theme.primary.text }, value.length === 0 ? styles.placeholder : null]}
                 placeholderTextColor={theme.primary.text}
@@ -55,10 +42,9 @@ const SearchBar = React.forwardRef<SearchRef, any>(({ autoFocus = false, editabl
                 keyboardAppearance={theme.dark ? 'dark' : 'light'}
             />
             {value.length > 0 && <Ionicons onPress={onClear} name="close" size={26} color={theme.primary.text} />}
-        </View>
+        </TouchableOpacity>
     );
 }
-);
 
 const styles = StyleSheet.create({
     container: {
@@ -80,5 +66,3 @@ const styles = StyleSheet.create({
         opacity: 0.5
     }
 });
-
-export default SearchBar;

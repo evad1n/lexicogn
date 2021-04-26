@@ -21,7 +21,10 @@ export default function Home({ navigation }: RouteNavProps<'Home'> & HomeRoutePr
             <View style={styles.titleContainer}>
                 <Text style={[styles.title, { color: theme.primary.text }]}>LEXICOGN</Text>
             </View>
-            <TouchableOpacity activeOpacity={1} onPress={() => navigation.navigate('Search')}>
+            <TouchableOpacity
+                activeOpacity={1}
+                onPress={() => navigation.navigate('Search')}
+            >
                 <SearchBar
                     style={styles.searchBar}
                     editable={false}
@@ -50,8 +53,9 @@ const styles = StyleSheet.create({
         fontWeight: "bold"
     },
     searchBar: {
-        width: '80%',
-        paddingVertical: 10
+        width: '90%',
+        paddingVertical: 10,
+        // backgroundColor: "orange"
     },
     cardContainer: {
         marginTop: "10%",
