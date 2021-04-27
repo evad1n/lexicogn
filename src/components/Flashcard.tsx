@@ -62,6 +62,7 @@ export default function Flashcard({ word }: FlashcardProps) {
         }
     }
 
+    // TODO: render flashcard images
     function renderBack() {
         // Image
         if (word.api == 1) {
@@ -73,8 +74,9 @@ export default function Flashcard({ word }: FlashcardProps) {
                         // height: 0.9 * width
                     }}
                     source={{ uri: word.definition }}
-                // TODO:
-                // defaultSource={{ uri: word.definition }}
+                    // NOTE: this won't show up on android develpoment
+                    // https://reactnative.dev/docs/image#defaultsource
+                    defaultSource={require('_assets/no-image.png')}
                 />
             </View>;
         } else {

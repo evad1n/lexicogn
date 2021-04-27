@@ -10,6 +10,7 @@ export async function initDB(): Promise<void> {
     return new Promise<void>((resolve, reject) => {
         // Check if the words table exists if not create it
         db.transaction(tx => {
+            // CHORE: remove on deploy (only for testing)
             // tx.executeSql(reset);
             tx.executeSql(schema);
         }, (error) => {
@@ -21,11 +22,10 @@ export async function initDB(): Promise<void> {
 }
 
 /**
- * ### Creates database tables if they don't exist according to the schema
+ * ### Wipes the words database table
  */
 export async function wipeDB(): Promise<void> {
     return new Promise<void>((resolve, reject) => {
-        // Check if the words table exists if not create it
         db.transaction(tx => {
             tx.executeSql(wipe);
         }, (error) => {
@@ -62,7 +62,7 @@ export async function getAllWords(): Promise<WordDocument[]> {
  * @param {WordResult} word The word object to insert
  * @returns {Promise<number>}
  */
-export async function insertWord(word: WordResult) {
+export async function insertWord(word: WordResult): Promise<number> {
     return new Promise<number>((resolve, reject) => {
         db.transaction(tx => {
             tx.executeSql('INSERT INTO words (word, definition, api) values (?, ?, ?)', [word.word, word.definition, word.api],
@@ -82,7 +82,7 @@ export async function insertWord(word: WordResult) {
  * @param {number} id The id of the word to delete
  * @returns {Promise<void>}
  */
-export async function deleteWord(id: number) {
+export async function deleteWord(id: number): Promise<void> {
     return new Promise<void>((resolve, reject) => {
         db.transaction(tx => {
             tx.executeSql('DELETE FROM words WHERE id = ?', [id],
@@ -105,7 +105,7 @@ export async function deleteWord(id: number) {
  * @param id The id of the word to update
  * @returns {Promise<void>} 
  */
-export async function updateWord(newDefinition: string, id: number) {
+export async function updateWord(newDefinition: string, id: number): Promise<void> {
     return new Promise<void>((resolve, reject) => {
         db.transaction(tx => {
             tx.executeSql('UPDATE words SET definition = ?, api = 0 WHERE id = ?', [newDefinition, id],
@@ -127,7 +127,7 @@ export async function updateWord(newDefinition: string, id: number) {
  * @param id The id of the word to update
  * @returns {Promise<void>} 
  */
-export async function decreaseFrequency(id: number) {
+export async function decreaseFrequency(id: number): Promise<void> {
     return new Promise<void>((resolve, reject) => {
         db.transaction(tx => {
             tx.executeSql('UPDATE words SET correct = correct + 1 WHERE id = ?', [id],
@@ -150,7 +150,7 @@ export async function decreaseFrequency(id: number) {
  * @param id The id of the word to update
  * @returns {Promise<void>} 
  */
-export async function increaseFrequency(id: number) {
+export async function increaseFrequency(id: number): Promise<void> {
     return new Promise<void>((resolve, reject) => {
         db.transaction(tx => {
             tx.executeSql('UPDATE words SET incorrect = incorrect + 1 WHERE id = ?', [id],

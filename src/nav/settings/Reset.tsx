@@ -25,16 +25,18 @@ export default function Reset() {
         Updates.reloadAsync();
     }
 
+    const textColor = { color: theme.primary.lightText };
+
     return (
         <View style={styles.container}>
-            <Text style={[styles.text, styles.warning]}>{WARNING}</Text>
-            <Text style={[styles.text]}>{ACTIONS}</Text>
-            <Text style={[styles.text]}>These actions are <Text style={styles.danger}>irreversible</Text></Text>
-            <Text style={[styles.text, styles.warning]}>Proceed with caution</Text>
+            <Text style={[styles.text, styles.warning, textColor]}>{WARNING}</Text>
+            <Text style={[styles.text, textColor]}>{ACTIONS}</Text>
+            <Text style={[styles.text, textColor]}>These actions are <Text style={styles.danger}>irreversible</Text></Text>
+            <Text style={[styles.text, styles.warning, textColor]}>Proceed with caution</Text>
             <View style={{ flex: 1 }}></View>
             <TouchableOpacity
                 style={[buttonStyles.container, styles.button]}
-                onPress={() => console.log("clicked!")}
+                onPress={reset}
             >
                 <Text style={[buttonStyles.text, { color: "black" }]}>Reset</Text>
             </TouchableOpacity>

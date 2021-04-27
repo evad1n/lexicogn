@@ -122,6 +122,7 @@ export default function Detail({ route, navigation }: CollectionRouteProps<'Deta
     function renderContent() {
         if (word.api === 1) {
             return (
+                // TODO: handle editing image url
                 <View style={styles.imageContainer}>
                     <Image
                         resizeMode="contain"
@@ -130,8 +131,9 @@ export default function Detail({ route, navigation }: CollectionRouteProps<'Deta
                             height: 0.9 * width
                         }}
                         source={{ uri: word.definition }}
-                    // TODO:
-                    // defaultSource={{ uri: word.definition }}
+                        // NOTE: this won't show up on android develpoment
+                        // https://reactnative.dev/docs/image#defaultsource
+                        defaultSource={require('_assets/no-image.png')}
                     />
                 </View>
             );
