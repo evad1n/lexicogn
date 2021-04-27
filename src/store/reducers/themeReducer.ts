@@ -10,10 +10,10 @@ const initialState: ThemeState = {
     custom: {
         dark: false,
         primary: {
-            default: "rgb(220,220,220)",
-            light: "rgb(255,255,255)",
             dark: "rgb(200,200,200)",
-            text: "rgb(0,0,0)",
+            darkText: "rgb(0,0,0)",
+            light: "rgb(255,255,255)",
+            lightText: "rgb(0,0,0)",
         }
     }
 };

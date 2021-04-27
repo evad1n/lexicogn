@@ -25,7 +25,7 @@ export default function SearchResultCard({ item: result }: { item: WordResult; }
             });
             navigation.navigate('Collection', { screen: "Detail", params: { word: word } });
         } catch (error) {
-            console.error(error);
+            throw Error(error);
         }
     };
 
@@ -33,10 +33,10 @@ export default function SearchResultCard({ item: result }: { item: WordResult; }
         return (
             <React.Fragment>
                 <View>
-                    <Text style={[styles.word, { color: theme.primary.text }]}>{result.word}</Text>
+                    <Text style={[styles.word, { color: theme.primary.darkText }]}>{result.word}</Text>
                 </View>
                 <View style={styles.notFoundContainer}>
-                    <Text style={[styles.notFound, { color: theme.primary.text }]}>No results found</Text>
+                    <Text style={[styles.notFound, { color: theme.primary.darkText }]}>No results found</Text>
                 </View>
             </React.Fragment>
 
@@ -47,14 +47,14 @@ export default function SearchResultCard({ item: result }: { item: WordResult; }
         return (
             <React.Fragment>
                 <View style={styles.content}>
-                    <Text style={[styles.word, { color: theme.primary.text }]}>{result.word}</Text>
-                    <Text style={[styles.definition, { color: theme.primary.text }]}>{result.definition}</Text>
+                    <Text style={[styles.word, { color: theme.primary.darkText }]}>{result.word}</Text>
+                    <Text style={[styles.definition, { color: theme.primary.darkText }]}>{result.definition}</Text>
                 </View>
                 <TouchableOpacity
                     style={[buttonStyles.container, { backgroundColor: theme.primary.light }]}
                     onPress={() => saveWord()}
                 >
-                    <Text style={[buttonStyles.text, { color: theme.primary.text }]}>Save Word</Text>
+                    <Text style={[buttonStyles.text, { color: theme.primary.lightText }]}>Save Word</Text>
                 </TouchableOpacity>
             </React.Fragment>
         );
@@ -62,9 +62,9 @@ export default function SearchResultCard({ item: result }: { item: WordResult; }
 
     return (
         <View style={{ width: width }}>
-            <View style={[styles.container, { backgroundColor: theme.primary.default }]}>
+            <View style={[styles.container, { backgroundColor: theme.primary.dark }]}>
                 <View style={styles.header}>
-                    <Text style={[textStyles.api, { color: theme.primary.text }]}>{API.name.replace(/-/g, ' ')}</Text>
+                    <Text style={[textStyles.api, { color: theme.primary.darkText }]}>{API.name.replace(/-/g, ' ')}</Text>
                 </View>
                 {result.definition != null ? found() : notFound()}
             </View>

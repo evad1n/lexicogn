@@ -1,11 +1,12 @@
 import CustomResultCard from "@/src/components/CustomResultCard";
+import GoogleImagesResultCard from "@/src/components/GoogleImagesResultCard";
 import useDebounce from "@/src/hooks/debounce";
 import { useSearchInput } from "@/src/hooks/search_input";
 import { useCurrentTheme } from "@/src/store/hooks";
 import { useFocusEffect } from "@react-navigation/core";
 import axios from "axios";
 import React, { useEffect, useLayoutEffect, useState } from "react";
-import { ActivityIndicator, Dimensions, FlatList, Keyboard, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, Dimensions, FlatList, Keyboard, ListRenderItemInfo, StyleSheet, Text, View } from "react-native";
 import SearchResultCard from "_components/SearchResultCard";
 import ListItemButton from "_components/widgets/ListItemButton";
 import SearchBar from "_components/widgets/SearchBar";
@@ -88,7 +89,6 @@ export default function Search({ navigation }: SearchRouteProps<'Search'> & Rout
                     onChange={onChangeSearch}
                     onSubmit={() => searchWord(state.word)}
                     onClear={clearSearch}
-                    style={{ backgroundColor: theme.primary.light }}
                 />
             ),
             headerTitleContainerStyle: {
@@ -118,19 +118,26 @@ export default function Search({ navigation }: SearchRouteProps<'Search'> & Rout
         let newResults: WordResult[] = [];
         // Build requests
         let requests = [];
-        for (let i = 1; i < APIS.length; i++) {
+        for (let i = 2; i < APIS.length; i++) {
             requests.push(APIS[i].get(text));
         }
         // Make all requests in one
         const responses = await axios.all(requests);
         // Parse responses
-        for (let i = 1; i < APIS.length; i++) {
+        for (let i = 2; i < APIS.length; i++) {
             newResults.push({
                 word: text,
                 api: i,
                 definition: APIS[i].parseResponse(responses[i - 1]),
             });
         }
+        // Add extra for google images
+        newResults.push({
+            api: 1,
+            word: state.word,
+            definition: "",
+        });
+
         setState((state) => ({ ...state, results: newResults, loading: false }));
     }
 
@@ -152,7 +159,7 @@ export default function Search({ navigation }: SearchRouteProps<'Search'> & Rout
             <View
                 style={[styles.emptyContainer, state.keyboardOpen ? styles.keyboardView : null]}
             >
-                <Text style={[styles.emptyText, { color: theme.primary.text }]}>No suggestions for '{state.word}'</Text>
+                <Text style={[styles.emptyText, { color: theme.primary.lightText }]}>No suggestions for '{state.word}'</Text>
             </View>
         );
     }
@@ -163,7 +170,7 @@ export default function Search({ navigation }: SearchRouteProps<'Search'> & Rout
                 <View
                     style={[styles.emptyContainer, state.keyboardOpen ? styles.keyboardView : null]}
                 >
-                    <Text style={[styles.emptyText, { color: theme.primary.text }]}>Search for a word to see results</Text>
+                    <Text style={[styles.emptyText, { color: theme.primary.lightText }]}>Search for a word to see results</Text>
                 </View>
             );
         } else {
@@ -189,13 +196,25 @@ export default function Search({ navigation }: SearchRouteProps<'Search'> & Rout
         }
     }
 
+    function renderItemResult({ item, index }: ListRenderItemInfo<any>) {
+        if (index !== state.results.length - 1) {
+            return (
+                <SearchResultCard item={item} />
+            );
+        } else {
+            return (
+                <GoogleImagesResultCard word={state.word} />
+            );
+        }
+    }
+
     function renderResults() {
         if (state.loading) {
             return (
                 <View
                     style={[styles.emptyContainer, state.keyboardOpen ? styles.keyboardView : null]}
                 >
-                    <ActivityIndicator size={"large"} color={theme.primary.text} />
+                    <ActivityIndicator size={"large"} color={theme.primary.lightText} />
                 </View>
             );
         } else {
@@ -204,12 +223,14 @@ export default function Search({ navigation }: SearchRouteProps<'Search'> & Rout
                     style={{
                         width: width
                     }}
+                    keyboardShouldPersistTaps="handled"
+                    removeClippedSubviews={false}
                     alwaysBounceHorizontal
                     horizontal
                     pagingEnabled
                     showsHorizontalScrollIndicator={false}
                     data={state.results}
-                    renderItem={({ item }) => <SearchResultCard item={item} />}
+                    renderItem={renderItemResult}
                     keyExtractor={(item, index) => `${index}-api-${item.api}`}
                     ListFooterComponent={<CustomResultCard word={state.word} />}
                 />

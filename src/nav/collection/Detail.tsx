@@ -4,7 +4,7 @@ import buttonStyles from '@/src/styles/button';
 import textStyles from '@/src/styles/text';
 import { useFocusEffect } from '@react-navigation/core';
 import React, { useLayoutEffect, useState } from 'react';
-import { BackHandler, KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { BackHandler, Dimensions, Image, KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { deleteWord as deleteWordDB, updateWord as updateWordDB } from '_db/db';
 import { useCurrentTheme, useTypedDispatch } from '_store/hooks';
 import APIS from '~/api';
@@ -69,6 +69,7 @@ export default function Detail({ route, navigation }: CollectionRouteProps<'Deta
 
     const deleteWord = async () => {
         try {
+            setDeleteModal(false);
             await deleteWordDB(word.id);
             dispatch({
                 type: 'DELETE_WORD',
@@ -76,12 +77,11 @@ export default function Detail({ route, navigation }: CollectionRouteProps<'Deta
             });
             navigation.navigate('Collection');
         } catch (error) {
-            console.error(error);
+            throw Error(error);
         }
     };
 
     const updateWord = async () => {
-        console.log("update");
         try {
             await updateWordDB(definition, word.id);
             dispatch({
@@ -90,7 +90,7 @@ export default function Detail({ route, navigation }: CollectionRouteProps<'Deta
             });
             setEditing(false);
         } catch (error) {
-            console.error(error);
+            throw Error(error);
         }
     };
 
@@ -110,13 +110,54 @@ export default function Detail({ route, navigation }: CollectionRouteProps<'Deta
                     style={[buttonStyles.container, { backgroundColor: theme.primary.dark }]}
                     onPress={() => setEditing(true)}
                 >
-                    <Text style={[buttonStyles.text, { color: theme.primary.text }]}>Edit</Text>
+                    <Text style={[buttonStyles.text, { color: theme.primary.darkText }]}>Edit</Text>
                 </TouchableOpacity>
             );
         }
     }
 
-    const textBackgroundColor = editing ? { backgroundColor: theme.primary.default } : null;
+    const { width } = Dimensions.get("window");
+
+    // Definition or image
+    function renderContent() {
+        if (word.api === 1) {
+            return (
+                <View style={styles.imageContainer}>
+                    <Image
+                        resizeMode="contain"
+                        style={{
+                            width: 0.9 * width,
+                            height: 0.9 * width
+                        }}
+                        source={{ uri: word.definition }}
+                    // TODO:
+                    // defaultSource={{ uri: word.definition }}
+                    />
+                </View>
+            );
+        } else {
+            return (
+                <KeyboardAvoidingView
+                    style={[editingTextBackgroundColor, styles.definitionInput]}
+                    behavior="height"
+                >
+                    <TextInput
+                        style={[styles.definition, editingTextColor]}
+                        multiline
+                        onChangeText={(text) => setDefinition(text)}
+                        value={definition}
+                        editable={editing}
+                    />
+                </KeyboardAvoidingView>
+            );
+        }
+    }
+
+    const editingTextBackgroundColor = { backgroundColor: editing ? theme.primary.dark : theme.primary.light };
+    const editingTextColor = {
+        color: editing ? theme.primary.darkText : theme.primary.lightText,
+        marginLeft: editing ? 0 : -10
+    };
 
     return (
         <View style={styles.container}>
@@ -127,20 +168,9 @@ export default function Detail({ route, navigation }: CollectionRouteProps<'Deta
                 handleConfirm={deleteWord}
             />
             <View style={styles.content}>
-                <Text style={[styles.word, { color: theme.primary.text }]}>{word.word}</Text>
-                <Text style={[textStyles.api, { color: theme.primary.text }]}>{API.name.replace(/-/g, ' ')}</Text>
-                <KeyboardAvoidingView
-                    style={[textBackgroundColor, styles.definitionInput]}
-                    behavior="height"
-                >
-                    <TextInput
-                        style={[styles.definition, { color: theme.primary.text, marginLeft: editing ? 0 : -10 }]}
-                        multiline
-                        onChangeText={(text) => setDefinition(text)}
-                        value={definition}
-                        editable={editing}
-                    />
-                </KeyboardAvoidingView>
+                <Text style={[styles.word, { color: theme.primary.lightText }]}>{word.word}</Text>
+                <Text style={[textStyles.api, { color: theme.primary.lightText }]}>{API.name.replace(/-/g, ' ')}</Text>
+                {renderContent()}
             </View>
             <View style={styles.actions}>
                 {renderEditButton()}
@@ -164,6 +194,11 @@ const styles = StyleSheet.create({
         marginTop: 5,
         flexGrow: 1,
         display: "flex",
+    },
+    imageContainer: {
+        flexGrow: 1,
+        justifyContent: "center",
+        alignItems: "center",
     },
     word: {
         fontSize: 36,

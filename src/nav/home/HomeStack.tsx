@@ -13,7 +13,7 @@ export default function HomeStack({ navigation }: RouteNavProps<"Home">) {
             initialRouteName="home"
             screenOptions={{
                 headerLeft: () => (<DrawerButton navigation={navigation} />),
-                headerTitle: ""
+                headerTitle: "",
             }}
         >
             <Stack.Screen name="home" component={Home} />

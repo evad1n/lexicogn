@@ -1,7 +1,7 @@
 /**
  * Check if the words table exists if not create it
  */
-const schema =
+export const schema =
     `CREATE TABLE IF NOT EXISTS words (
     id INTEGER NOT NULL PRIMARY KEY,
     word TEXT NOT NULL,
@@ -9,7 +9,10 @@ const schema =
     api INTEGER NOT NULL
     );`;
 
+/* Drop all records from words table */
+export const wipe =
+    `DELETE FROM words`;
+
+/* Delete words table */
 export const reset =
     `DROP TABLE IF EXISTS words;`;
-
-export default schema;

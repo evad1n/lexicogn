@@ -33,10 +33,10 @@ type ColorState = {
 };
 
 type Selected =
-    | "default"
-    | "light"
     | "dark"
-    | "text";
+    | "dark text"
+    | "light"
+    | "light text";
 
 // Constants
 
@@ -62,14 +62,14 @@ export default function CustomThemePicker() {
     const dispatch = useTypedDispatch();
 
     // Have to split these up for performance reasons
-    const [selected, setSelected] = useState<Selected>("default");
-    const [startColor, setStartColor] = useState<ColorState>(parseColorString(customTheme.primary.default));
+    const [selected, setSelected] = useState<Selected>("dark");
+    const [startColor, setStartColor] = useState<ColorState>(parseColorString(customTheme.primary.dark));
 
     // Theme color states
-    const [defaultColor, setDefaultColor] = useState(customTheme.primary.default);
-    const [lightColor, setLightColor] = useState(customTheme.primary.light);
     const [darkColor, setDarkColor] = useState(customTheme.primary.dark);
-    const [textColor, setTextColor] = useState(customTheme.primary.text);
+    const [darkText, setDarkText] = useState(customTheme.primary.darkText);
+    const [lightColor, setLightColor] = useState(customTheme.primary.light);
+    const [lightText, setLightText] = useState(customTheme.primary.lightText);
     const [isDarkTheme, setIsDarkTheme] = useState(customTheme.dark);
 
     // Color state
@@ -80,17 +80,17 @@ export default function CustomThemePicker() {
     useEffect(() => {
         const currColor = `rgb(${red}, ${green}, ${blue})`;
         switch (selected) {
-            case "default":
-                setDefaultColor(currColor);
+            case "dark":
+                setDarkColor(currColor);
+                break;
+            case "dark text":
+                setDarkText(currColor);
                 break;
             case "light":
                 setLightColor(currColor);
                 break;
-            case "dark":
-                setDarkColor(currColor);
-                break;
-            case "text":
-                setTextColor(currColor);
+            case "light text":
+                setLightText(currColor);
                 break;
             default:
                 break;
@@ -102,34 +102,34 @@ export default function CustomThemePicker() {
             const savedTheme = {
                 dark: isDarkTheme,
                 primary: {
-                    default: defaultColor,
-                    light: lightColor,
                     dark: darkColor,
-                    text: textColor,
+                    darkText: darkText,
+                    light: lightColor,
+                    lightText: lightText,
                 }
             };
             await storeData("@customTheme", savedTheme);
             dispatch(changeCustomTheme(savedTheme));
             dispatch(changeTheme("custom"));
         } catch (error) {
-            console.error(error);
+            throw Error(error);
         }
     }
 
     const getThemeColor = useCallback(
         (label: Selected) => {
             switch (label) {
-                case "default":
-                    return defaultColor;
-                case "light":
-                    return lightColor;
                 case "dark":
                     return darkColor;
-                case "text":
-                    return textColor;
+                case "dark text":
+                    return darkText;
+                case "light":
+                    return lightColor;
+                case "light text":
+                    return lightText;
             }
         },
-        [defaultColor, lightColor, darkColor, textColor],
+        [darkColor, darkText, lightColor, lightText],
     );
 
     const changeSelection = useCallback(
@@ -170,30 +170,30 @@ export default function CustomThemePicker() {
                 <ColorDisplay
                     onSelect={changeSelection}
                     selected={selected}
-                    label={"default"}
-                    bgColor={defaultColor}
-                    textColor={textColor}
+                    label={"dark"}
+                    bgColor={darkColor}
+                    textColor={darkText}
+                />
+                <ColorDisplay
+                    onSelect={changeSelection}
+                    selected={selected}
+                    label={"dark text"}
+                    bgColor={darkColor}
+                    textColor={darkText}
                 />
                 <ColorDisplay
                     onSelect={changeSelection}
                     selected={selected}
                     label={"light"}
                     bgColor={lightColor}
-                    textColor={textColor}
+                    textColor={lightText}
                 />
                 <ColorDisplay
                     onSelect={changeSelection}
                     selected={selected}
-                    label={"dark"}
-                    bgColor={darkColor}
-                    textColor={textColor}
-                />
-                <ColorDisplay
-                    onSelect={changeSelection}
-                    selected={selected}
-                    label={"text"}
-                    bgColor={defaultColor}
-                    textColor={textColor}
+                    label={"light text"}
+                    bgColor={lightColor}
+                    textColor={lightText}
                 />
             </View>
         );
@@ -225,18 +225,18 @@ export default function CustomThemePicker() {
         <View style={{ flex: 1 }}>
             <ScrollView contentContainerStyle={styles.container}>
                 {renderDisplayColors()}
-                <Divider style={{ marginVertical: 20 }} color={currentTheme.primary.text} />
+                <Divider style={{ marginVertical: 20 }} color={currentTheme.primary.lightText} />
                 {renderSliders()}
-                <Divider style={{ marginBottom: 20 }} color={currentTheme.primary.text} />
+                <Divider style={{ marginBottom: 20 }} color={currentTheme.primary.lightText} />
                 <View style={styles.checkboxContainer}>
                     <CheckBox
                         size={30}
-                        iconStyle={{ borderColor: currentTheme.primary.text, borderWidth: 2 }}
+                        iconStyle={{ borderColor: currentTheme.primary.lightText, borderWidth: 2 }}
                         fillColor={currentTheme.primary.dark}
                         isChecked={isDarkTheme}
                         onPress={(val: boolean = false) => setIsDarkTheme(val)}
                     />
-                    <Text style={[styles.checkboxText, { color: currentTheme.primary.text }]}>Dark Theme</Text>
+                    <Text style={[styles.checkboxText, { color: currentTheme.primary.lightText }]}>Dark Theme</Text>
                 </View>
                 <View style={styles.button}>
                     <TouchableOpacity

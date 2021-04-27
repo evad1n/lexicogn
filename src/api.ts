@@ -22,9 +22,15 @@ export async function AutoComplete(word: string): Promise<string[]> {
 }
 
 const APIS: APIType[] = [
-    // Custom API type = 0
     {
+        // Custom API type = 0
         name: "custom",
+        get: (word: string) => "",
+        parseResponse: (response: any) => "",
+    },
+    {
+        // Image URL API type = 1
+        name: "Image",
         get: (word: string) => "",
         parseResponse: (response: any) => "",
     },
@@ -70,9 +76,6 @@ const APIS: APIType[] = [
         }
     },
 ];
-
-// Maybe do this eventually?
-// https://docs.github.com/en/github/authenticating-to-github/removing-sensitive-data-from-a-repository
 
 // Google images search format
 // https://www.google.com/search?tbm=isch&q=<word>

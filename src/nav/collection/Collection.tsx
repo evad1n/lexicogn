@@ -13,16 +13,12 @@ export default function Collection({ route, navigation }: CollectionRouteProps<'
     const words = useWords();
     const { inputRef, focus } = useSearchInput();
 
-
-
     // Route params
     useFocusEffect(
         React.useCallback(() => {
             // Focus search bar if requested
             if (route.params) {
                 if (route.params.focus ?? false) {
-                    // FIX: searchbar wont rerender
-                    console.log("trying to focus");
                     focus();
                 }
                 setSearch(route.params.search ?? "");
@@ -81,7 +77,7 @@ export default function Collection({ route, navigation }: CollectionRouteProps<'
     function renderEmptyText() {
         return (
             <View style={styles.emptyContainer}>
-                <Text style={[{ color: theme.primary.text }, styles.emptyText]}>No saved words</Text>
+                <Text style={[{ color: theme.primary.lightText }, styles.emptyText]}>No saved words</Text>
             </View>
         );
     }
@@ -89,7 +85,7 @@ export default function Collection({ route, navigation }: CollectionRouteProps<'
     function renderNoMatches() {
         return (
             <View style={styles.emptyContainer}>
-                <Text style={[styles.emptyText, { color: theme.primary.text }]}>No matches for '{search}'</Text>
+                <Text style={[styles.emptyText, { color: theme.primary.lightText }]}>No matches for '{search}'</Text>
             </View>
         );
     }

@@ -18,9 +18,9 @@ export default function ThemePicker({ navigation }: SettingsRouteProps<'Theme'>)
 
         return (
             <TouchableOpacity onPress={() => dispatch(changeTheme(themeName))} style={styles.item}>
-                <View style={[styles.color, { backgroundColor: theme.primary.default, borderColor: theme.primary.text, borderWidth: 2 }]}>
+                <View style={[styles.color, { backgroundColor: theme.primary.dark, borderColor: theme.primary.darkText, borderWidth: 2 }]}>
                 </View>
-                <Text style={[styles.colorTitle, { color: currentTheme.primary.text }]}>{themeName}</Text>
+                <Text style={[styles.colorTitle, { color: currentTheme.primary.lightText }]}>{themeName}</Text>
             </TouchableOpacity>
         );
     };
@@ -28,9 +28,9 @@ export default function ThemePicker({ navigation }: SettingsRouteProps<'Theme'>)
     function renderCustomPalette() {
         return (
             <TouchableOpacity onPress={() => dispatch(changeTheme("custom"))} style={styles.item}>
-                <View style={[styles.color, { backgroundColor: customTheme.primary.default, borderColor: customTheme.primary.text, borderWidth: 2 }]}>
+                <View style={[styles.color, { backgroundColor: customTheme.primary.dark, borderColor: customTheme.primary.darkText, borderWidth: 2 }]}>
                 </View>
-                <Text style={[styles.colorTitle, { color: currentTheme.primary.text }]}>custom</Text>
+                <Text style={[styles.colorTitle, { color: currentTheme.primary.lightText }]}>custom</Text>
             </TouchableOpacity>
         );
     };
@@ -40,13 +40,13 @@ export default function ThemePicker({ navigation }: SettingsRouteProps<'Theme'>)
     return (
         <View style={styles.container}>
             <View style={styles.currentTheme}>
-                <Text style={[styles.currentTitle, { color: currentTheme.primary.text }]}>Current Theme</Text>
-                <View style={[styles.color, { backgroundColor: currentTheme.primary.default, borderColor: currentTheme.primary.text, borderWidth: 2 }]}>
+                <Text style={[styles.currentTitle, { color: currentTheme.primary.lightText }]}>Current Theme</Text>
+                <View style={[styles.color, { backgroundColor: currentTheme.primary.dark, borderColor: currentTheme.primary.darkText, borderWidth: 2 }]}>
                 </View>
-                <Text style={[styles.colorTitle, { color: currentTheme.primary.text }]}>{currentTheme.name}</Text>
+                <Text style={[styles.colorTitle, { color: currentTheme.primary.lightText }]}>{currentTheme.name}</Text>
             </View>
             <View style={{ marginHorizontal: 10 }} >
-                <Divider color={currentTheme.primary.text} />
+                <Divider color={currentTheme.primary.lightText} />
             </View>
             <FlatList
                 style={{ borderBottomWidth: 0 }}
@@ -58,14 +58,14 @@ export default function ThemePicker({ navigation }: SettingsRouteProps<'Theme'>)
                 ListFooterComponent={renderCustomPalette}
             />
             <View style={{ marginHorizontal: 0 }} >
-                <Divider color={currentTheme.primary.text} />
+                <Divider color={currentTheme.primary.lightText} />
             </View>
             <View style={styles.bottom}>
                 <TouchableOpacity
                     onPress={() => navigation.navigate("Custom Theme")}
                     style={[buttonStyles.container, { backgroundColor: currentTheme.primary.dark }]}
                 >
-                    <Text style={[buttonStyles.text, { color: currentTheme.primary.text }]}>Custom</Text>
+                    <Text style={[buttonStyles.text, { color: currentTheme.primary.darkText }]}>Custom</Text>
                 </TouchableOpacity>
             </View>
         </View>

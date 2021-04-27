@@ -1,5 +1,3 @@
-
-
 const initialState: WordsState = {
     words: [],
     homeWord: null

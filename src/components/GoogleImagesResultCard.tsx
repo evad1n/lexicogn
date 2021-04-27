@@ -5,25 +5,28 @@ import { insertWord } from '_db/db';
 import { useCurrentTheme, useTypedDispatch } from '_store/hooks';
 import buttonStyles from '../styles/button';
 import textStyles from '../styles/text';
+import * as WebBrowser from 'expo-web-browser';
 
-interface CustomResultCardProps {
+interface GoogleImagesResultCardProps {
     word: string;
 }
 
-export default function CustomResultCard({ word }: CustomResultCardProps) {
+export default function GoogleImagesResultCard({ word }: GoogleImagesResultCardProps) {
     const theme = useCurrentTheme();
     const { width } = Dimensions.get('window');
     const dispatch = useTypedDispatch();
     const navigation = useNavigation();
 
-    const [definition, setDefinition] = useState("");
+    const searchURL = `https://www.google.com/search?tbm=isch&q=${word}`;
 
-    const saveWord = async () => {
+    const [url, setUrl] = useState("");
+
+    const saveURL = async () => {
         try {
             const customWordResult = {
-                api: 0,
+                api: 1,
                 word,
-                definition
+                definition: url,
             };
             let id = await insertWord(customWordResult);
             let wordDoc = { ...customWordResult, id };
@@ -37,33 +40,41 @@ export default function CustomResultCard({ word }: CustomResultCardProps) {
         }
     };
 
+    function openInBrowser() {
+        WebBrowser.openBrowserAsync(searchURL);
+    }
+
     return (
         <View style={{ width, flex: 1 }}>
             <View style={[styles.container, { backgroundColor: theme.primary.dark }]}>
-                <View style={styles.header}>
-                    <Text style={[textStyles.api, { color: theme.primary.darkText }]}>custom</Text>
-                </View>
                 <View style={styles.content}>
                     <Text style={[styles.word, { color: theme.primary.darkText }]}>{word}</Text>
                 </View>
-                <View style={[{ backgroundColor: theme.primary.light }, styles.definitionInput]}>
+                <View style={[{ backgroundColor: theme.primary.light }, styles.urlInput]}>
                     <TextInput
                         style={[styles.definition,
                         { color: theme.primary.lightText },
-                        definition.length === 0 ? styles.placeholder : null
+                        url.length === 0 ? styles.placeholder : null
                         ]}
                         multiline
                         placeholderTextColor={theme.primary.lightText}
-                        placeholder="Enter a custom definition here..."
-                        onChangeText={(text) => setDefinition(text)}
-                        value={definition}
+                        placeholder="Enter an image URL here..."
+                        onChangeText={(text) => setUrl(text)}
+                        value={url}
                     />
                 </View>
+                <View style={{ flex: 1 }} />
                 <TouchableOpacity
                     style={[buttonStyles.container, { backgroundColor: theme.primary.light }]}
-                    onPress={() => saveWord()}
+                    onPress={saveURL}
                 >
-                    <Text style={[buttonStyles.text, { color: theme.primary.lightText }]}>Save Word</Text>
+                    <Text style={[buttonStyles.text, { color: theme.primary.lightText }]}>Save URL</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                    style={[buttonStyles.container, { backgroundColor: theme.primary.light }]}
+                    onPress={openInBrowser}
+                >
+                    <Text style={[buttonStyles.text, { color: theme.primary.lightText }]}>Search Google Images</Text>
                 </TouchableOpacity>
             </View>
         </View >
@@ -91,8 +102,8 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
         marginBottom: 10,
     },
-    definitionInput: {
-        flexGrow: 1,
+    urlInput: {
+        flexGrow: 0.,
         justifyContent: "flex-start",
         marginBottom: 20
     },

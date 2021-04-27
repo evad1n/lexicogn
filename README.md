@@ -6,11 +6,10 @@ A mobile app to keep track of and study new vocabulary words.
 
 ## TODO
 
-- collection search
-- whats going on help me
-- why does keyboard. s...
+- flashcard swipe velocity
 - images
 - frequencies
+- better API results...
 
 ## Deploy
 

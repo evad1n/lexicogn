@@ -1,8 +1,8 @@
 type ColorPalette = {
-    default: string;
-    light: string;
     dark: string;
-    text: string;
+    darkText: string;
+    light: string;
+    lightText: string;
 };
 
 /**
@@ -18,7 +18,9 @@ type ThemeKey =
     | "dark"
     | "dimmed"
     | "rust"
+    | "ayu"
     | "ocean"
+    | "winter"
     | "green";
 
 type ThemeName = ThemeKey | "custom";

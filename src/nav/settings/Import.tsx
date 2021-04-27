@@ -82,18 +82,18 @@ export default function Import() {
         <View style={{ flex: 1 }}>
             <ScrollView contentContainerStyle={styles.container}>
                 <View style={styles.directionsContainer}>
-                    <Text style={[styles.heading, { color: theme.primary.text }]}>
+                    <Text style={[styles.heading, { color: theme.primary.lightText }]}>
                         Upload a JSON file to insert into the database
                     </Text>
-                    <Text style={[styles.directions, { color: theme.primary.text }]}>
+                    <Text style={[styles.directions, { color: theme.primary.lightText }]}>
                         Content should be of the following format
                     </Text>
-                    <Text style={[styles.code, { backgroundColor: theme.primary.default, color: theme.primary.text }]}>{EXAMPLE_TYPE}</Text>
+                    <Text style={[styles.code, { backgroundColor: theme.primary.dark, color: theme.primary.darkText }]}>{EXAMPLE_TYPE}</Text>
                     <Text style={{ fontWeight: "bold", textAlign: "center" }}>Example input file:</Text>
-                    <Text style={[styles.code, { backgroundColor: theme.primary.default, color: theme.primary.text }]}>{EXAMPLE_JSON}</Text>
+                    <Text style={[styles.code, { backgroundColor: theme.primary.dark, color: theme.primary.darkText }]}>{EXAMPLE_JSON}</Text>
                 </View>
                 <TouchableOpacity style={[buttonStyles.container, styles.button, { backgroundColor: theme.primary.dark }]} onPress={uploadFile}>
-                    <Text style={[buttonStyles.text, styles.buttonText, { color: theme.primary.text }]}>Upload</Text>
+                    <Text style={[buttonStyles.text, styles.buttonText, { color: theme.primary.darkText }]}>Upload</Text>
                 </TouchableOpacity>
                 <Text style={styles.errors}>{error}</Text>
             </ScrollView>

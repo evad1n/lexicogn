@@ -27,6 +27,11 @@ const settings: SettingsType[] = [
         nav: "Export",
         icon: (props: any) => <AntDesign name="upload" {...props} />
     },
+    {
+        name: "Reset",
+        nav: "Reset",
+        icon: (props: any) => <Ionicons name="warning" {...props} />
+    },
 ];
 
 export default function Settings({ navigation }: SettingsRouteProps<'Settings'>) {
@@ -40,9 +45,9 @@ export default function Settings({ navigation }: SettingsRouteProps<'Settings'>)
             >
                 {setting.icon({
                     size: 30,
-                    color: theme.primary.text,
+                    color: theme.primary.lightText,
                 })}
-                <Text style={[styles.itemText, { color: theme.primary.text }]}>{setting.name}</Text>
+                <Text style={[styles.itemText, { color: theme.primary.lightText }]}>{setting.name}</Text>
             </TouchableOpacity>
         );
     };
@@ -52,7 +57,8 @@ export default function Settings({ navigation }: SettingsRouteProps<'Settings'>)
             data={settings}
             renderItem={renderSettingTab}
             keyExtractor={(item: SettingsType) => item.name}
-            ItemSeparatorComponent={() => <Divider color={theme.primary.text} />}
+            ItemSeparatorComponent={() => <Divider color={theme.primary.lightText} />}
+            ListFooterComponent={() => <Divider color={theme.primary.lightText} />}
         />
     );
 }

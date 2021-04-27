@@ -1,9 +1,9 @@
 import { useSearchInput } from '@/src/hooks/search_input';
 import { Ionicons } from '@expo/vector-icons';
 import { useFocusEffect } from '@react-navigation/core';
-import React, { useEffect, useRef } from 'react';
-import { StyleProp, StyleSheet, TextInput, ViewStyle } from 'react-native';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import React, { useRef } from 'react';
+import { StyleProp, StyleSheet, TextInput, ViewStyle, TouchableOpacity } from 'react-native';
+import { TouchableHighlight, } from 'react-native-gesture-handler';
 import { useCurrentTheme } from '_store/hooks';
 
 interface SearchBarProps {
@@ -11,46 +11,56 @@ interface SearchBarProps {
     autoFocus?: boolean,
     editable?: boolean,
     value?: string;
+    blockEvent?: () => void;
     onChange?: (text: string) => void,
     onSubmit?: () => void,
     onClear?: () => void,
     style?: StyleProp<ViewStyle>;
+    textColor?: string;
 }
 
-export default function SearchBar({ style, autoFocus = false, editable = true, placeholder, value = "", onChange, onSubmit, onClear, }: SearchBarProps) {
+export default function SearchBar({ style, textColor, autoFocus = false, editable = true, placeholder, value = "", onChange, onSubmit, onClear, blockEvent }: SearchBarProps) {
     const theme = useCurrentTheme();
     const { inputRef, setRef, focus } = useSearchInput();
 
     const searchRef: any = useRef();
 
+    textColor = textColor ?? theme.primary.lightText;
+
     useFocusEffect(
         React.useCallback(() => {
-            setRef(searchRef.current);
+            if (setRef) {
+                setRef(searchRef.current);
+            }
         }, [searchRef, inputRef])
     );
 
     return (
         <TouchableOpacity
-            onPress={focus}
+            onPress={() => {
+                if (blockEvent)
+                    blockEvent();
+                else
+                    focus();
+            }}
             activeOpacity={1}
-            containerStyle={[style]}
-            style={[styles.container, { backgroundColor: theme.primary.default }, style]}
+            style={[styles.container, { backgroundColor: theme.primary.light }, style]}
         >
-            <Ionicons name="md-search" size={20} style={styles.icon} color={theme.primary.text} />
+            <Ionicons name="md-search" size={20} style={styles.icon} color={textColor} />
             <TextInput
                 autoFocus={autoFocus}
                 editable={editable}
                 ref={searchRef}
                 value={value}
-                style={[styles.text, { color: theme.primary.text }, value.length === 0 ? styles.placeholder : null]}
-                placeholderTextColor={theme.primary.text}
+                style={[styles.text, { color: textColor }, value.length === 0 ? styles.placeholder : null]}
+                placeholderTextColor={textColor}
                 placeholder={placeholder}
                 onChangeText={onChange}
                 onSubmitEditing={onSubmit}
                 returnKeyType="search"
                 keyboardAppearance={theme.dark ? 'dark' : 'light'}
             />
-            {value.length > 0 && <Ionicons onPress={onClear} name="close" size={26} color={theme.primary.text} />}
+            {value.length > 0 && <Ionicons onPress={onClear} name="close" size={26} color={textColor} />}
         </TouchableOpacity>
     );
 }
@@ -62,7 +72,7 @@ const styles = StyleSheet.create({
         borderRadius: 3,
         paddingVertical: 5,
         paddingHorizontal: 10,
-        elevation: 6,
+        elevation: 5,
     },
     text: {
         fontSize: 20,

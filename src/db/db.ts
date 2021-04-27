@@ -1,5 +1,5 @@
 import * as SQLite from 'expo-sqlite';
-import schema, { reset } from './schema';
+import { schema, wipe } from './schema';
 
 const db = SQLite.openDatabase("lexicogn.db");
 
@@ -12,6 +12,22 @@ export async function initDB(): Promise<void> {
         db.transaction(tx => {
             // tx.executeSql(reset);
             tx.executeSql(schema);
+        }, (error) => {
+            reject(error);
+        }, () => {
+            resolve();
+        });
+    });
+}
+
+/**
+ * ### Creates database tables if they don't exist according to the schema
+ */
+export async function wipeDB(): Promise<void> {
+    return new Promise<void>((resolve, reject) => {
+        // Check if the words table exists if not create it
+        db.transaction(tx => {
+            tx.executeSql(wipe);
         }, (error) => {
             reject(error);
         }, () => {
@@ -93,6 +109,51 @@ export async function updateWord(newDefinition: string, id: number) {
     return new Promise<void>((resolve, reject) => {
         db.transaction(tx => {
             tx.executeSql('UPDATE words SET definition = ?, api = 0 WHERE id = ?', [newDefinition, id],
+                (txObj, { rowsAffected }) => {
+                    if (rowsAffected == 0)
+                        reject(`no word exists with id ${id}`);
+                    else
+                        resolve();
+                },
+            );
+        }, (error) => {
+            reject(error);
+        });
+    });
+}
+
+/**
+ * ### Add 1 to word's correct count
+ * @param id The id of the word to update
+ * @returns {Promise<void>} 
+ */
+export async function decreaseFrequency(id: number) {
+    return new Promise<void>((resolve, reject) => {
+        db.transaction(tx => {
+            tx.executeSql('UPDATE words SET correct = correct + 1 WHERE id = ?', [id],
+                (txObj, { rowsAffected }) => {
+                    if (rowsAffected == 0)
+                        reject(`no word exists with id ${id}`);
+                    else
+                        resolve();
+                },
+            );
+        }, (error) => {
+            reject(error);
+        });
+    });
+}
+
+
+/**
+ * ### Add 1 to word's incorrect count
+ * @param id The id of the word to update
+ * @returns {Promise<void>} 
+ */
+export async function increaseFrequency(id: number) {
+    return new Promise<void>((resolve, reject) => {
+        db.transaction(tx => {
+            tx.executeSql('UPDATE words SET incorrect = incorrect + 1 WHERE id = ?', [id],
                 (txObj, { rowsAffected }) => {
                     if (rowsAffected == 0)
                         reject(`no word exists with id ${id}`);

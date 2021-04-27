@@ -36,7 +36,7 @@ function InnerApp() {
     return (
         <SafeAreaProvider>
             <Router />
-            <ExpoStatusBar style={theme.dark ? 'light' : 'dark'} backgroundColor={theme.primary.default} />
+            <ExpoStatusBar style={theme.dark ? 'light' : 'dark'} backgroundColor={theme.primary.dark} />
         </SafeAreaProvider >
     );
 }

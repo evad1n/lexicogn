@@ -17,7 +17,7 @@ interface WordDocument extends WordResult {
 
 type WordsState = {
     words: WordDocument[];
-    homeWord: WordDefinition | null;
+    homeWord: WordDocument | null;
 };
 
 type WordsAction =

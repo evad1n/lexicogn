@@ -5,14 +5,13 @@ import SettingsStack from '@/src/nav/settings/SettingsStack';
 import StudyStack from '@/src/nav/study/StudyStack';
 import { Ionicons } from '@expo/vector-icons';
 import { createDrawerNavigator, DrawerContentComponentProps, DrawerContentScrollView, DrawerItem } from '@react-navigation/drawer';
-import { CommonActions, StackActions, NavigationContainer, useNavigation } from '@react-navigation/native';
+import { NavigationContainer } from '@react-navigation/native';
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import Divider from '../components/layout/Divider';
 import { useCurrentTheme } from '_store/hooks';
+import Divider from '../components/layout/Divider';
 import CollectionStack from './collection/CollectionStack';
-import { RouteNavProps, RouteParamList } from './DrawerRoutes';
-import themeReducer from '../store/reducers/themeReducer';
+import { RouteParamList } from './DrawerRoutes';
 
 interface DrawerItemConfig {
     name: keyof RouteParamList,
@@ -69,12 +68,12 @@ export default function Router() {
         return {
             dark: false,
             colors: {
-                primary: theme.primary.default,
+                primary: theme.primary.dark,
                 background: theme.primary.light,
-                card: theme.primary.default,
-                text: theme.primary.text,
+                card: theme.primary.dark,
+                text: theme.primary.darkText,
                 border: theme.primary.dark,
-                notification: theme.primary.default,
+                notification: theme.primary.dark,
             }
         };
     };
@@ -108,9 +107,9 @@ function DrawerSection(props: DrawerContentComponentProps & { items: DrawerItemC
                             // Navigate to inner default screen
                             navigation.navigate(item.name, { screen: item.name });
                         }}
-                        icon={({ focused, size }) => <Ionicons name={focused ? item.focusedIcon : item.icon} size={size} color={theme.primary.text} />}
-                        label={({ focused }) => <Text style={{ color: theme.primary.text, fontWeight: focused ? "bold" : "normal", fontSize: 16 }}>{item.name}</Text>}
-                        activeTintColor={theme.primary.text}
+                        icon={({ focused, size }) => <Ionicons name={focused ? item.focusedIcon : item.icon} size={size} color={theme.primary.darkText} />}
+                        label={({ focused }) => <Text style={{ color: theme.primary.darkText, fontWeight: focused ? "bold" : "normal", fontSize: 16 }}>{item.name}</Text>}
+                        activeTintColor={theme.primary.darkText}
                     />
                 </React.Fragment>
             ))
@@ -129,8 +128,8 @@ function MyDrawerContent(props: DrawerContentComponentProps) {
             </DrawerContentScrollView>
             <View style={styles.footer}>
                 <DrawerSection items={BotItems} indexOffset={TopItems.length} {...props} />
-                <Divider color={theme.primary.text} />
-                <Text style={[styles.footerText, { color: theme.primary.text }]}>&copy; {new Date().getFullYear()} Will Dickinson</Text>
+                <Divider color={theme.primary.darkText} />
+                <Text style={[styles.footerText, { color: theme.primary.darkText }]}>&copy; {new Date().getFullYear()} Will Dickinson</Text>
             </View>
         </View>
     );

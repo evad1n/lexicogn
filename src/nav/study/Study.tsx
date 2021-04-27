@@ -4,9 +4,11 @@ import { Animated, PanResponder, StyleSheet, useWindowDimensions, View } from 'r
 import { useCurrentTheme, useWords } from '_store/hooks';
 import { StudyRouteProps } from './StudyRoutes';
 
-const NO_WORDS: WordDefinition = {
+const NO_WORDS: WordDocument = {
     word: "You've got nothing to study!",
-    definition: "Did you expect something witty here?"
+    definition: "Did you expect something witty here?",
+    api: -1,
+    id: -1
 };
 
 // Differentiatae between tap/swipe

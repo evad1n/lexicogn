@@ -7,9 +7,11 @@ import { RouteNavProps } from '../DrawerRoutes';
 import { HomeRouteProps } from './HomeRoutes';
 
 // No words card
-const NO_WORDS: WordDefinition = {
+const NO_WORDS: WordDocument = {
     word: "A random word!",
-    definition: "At least it would be if you had any saved words..."
+    definition: "At least it would be if you had any saved words...",
+    api: -1,
+    id: -1
 };
 
 export default function Home({ navigation }: RouteNavProps<'Home'> & HomeRouteProps<'home'>) {
@@ -19,18 +21,17 @@ export default function Home({ navigation }: RouteNavProps<'Home'> & HomeRoutePr
     return (
         <View style={styles.container}>
             <View style={styles.titleContainer}>
-                <Text style={[styles.title, { color: theme.primary.text }]}>LEXICOGN</Text>
+                <Text style={[styles.title, { color: theme.primary.lightText }]}>LEXICOGN</Text>
             </View>
-            <TouchableOpacity
-                activeOpacity={1}
-                onPress={() => navigation.navigate('Search')}
-            >
-                <SearchBar
-                    style={styles.searchBar}
-                    editable={false}
-                    placeholder="Look up a word..."
-                />
-            </TouchableOpacity>
+            <SearchBar
+                style={[styles.searchBar, { backgroundColor: theme.primary.dark }]}
+                textColor={theme.primary.darkText}
+                editable={false}
+                placeholder="Look up a word..."
+                blockEvent={() => {
+                    navigation.navigate('Search');
+                }}
+            />
             <View style={styles.cardContainer}>
                 <Flashcard word={homeWord || NO_WORDS} />
             </View>
@@ -53,9 +54,8 @@ const styles = StyleSheet.create({
         fontWeight: "bold"
     },
     searchBar: {
-        width: '90%',
+        width: '85%',
         paddingVertical: 10,
-        // backgroundColor: "orange"
     },
     cardContainer: {
         marginTop: "10%",

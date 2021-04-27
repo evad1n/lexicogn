@@ -68,10 +68,10 @@ export default function Export() {
             <View>
                 <Text style={styles.title}>Export the current saved words as JSON</Text>
             </View>
-            <View style={[styles.fileNameContainer, { backgroundColor: theme.primary.default }]}>
+            <View style={[styles.fileNameContainer, { backgroundColor: theme.primary.dark }]}>
                 <View style={styles.labelContainer}>
-                    <Text style={styles.fileNameLabel}>File name: </Text>
-                    <Text style={styles.fileName}>{fileName}</Text>
+                    <Text style={[styles.fileNameLabel, { color: theme.primary.darkText }]}>File name: </Text>
+                    <Text style={[styles.fileName, { color: theme.primary.darkText }]}>{fileName}</Text>
                 </View>
                 <KeyboardAvoidingView
                     style={[styles.inputContainer, { backgroundColor: theme.primary.light }]}
@@ -85,7 +85,7 @@ export default function Export() {
                 style={[buttonStyles.container, styles.button, { backgroundColor: theme.primary.dark }]}
                 onPress={downloadData}
             >
-                <Text style={[buttonStyles.text, { color: theme.primary.text }]}>Download</Text>
+                <Text style={[buttonStyles.text, { color: theme.primary.darkText }]}>Download</Text>
             </TouchableOpacity>
             {/* Bottom padding */}
             <View style={{ flex: 1.4 }}></View>
@@ -120,7 +120,8 @@ function FileNameInput({ onSubmit }: FileNameInputProps) {
     return (
         <TextInput
             style={[
-                { color: theme.primary.text },
+                styles.input,
+                { color: theme.primary.lightText },
                 text.length === 0 ? styles.placeholder : null,
             ]}
             value={text}
@@ -128,7 +129,7 @@ function FileNameInput({ onSubmit }: FileNameInputProps) {
             onSubmitEditing={submit}
             ref={input}
             placeholder="Enter a different file name..."
-            placeholderTextColor={theme.primary.text}
+            placeholderTextColor={theme.primary.lightText}
         />
     );
 }
@@ -170,6 +171,9 @@ const styles = StyleSheet.create({
     },
     inputContainer: {
         padding: 10
+    },
+    input: {
+        fontSize: 20
     },
     location: {
         fontSize: 16,

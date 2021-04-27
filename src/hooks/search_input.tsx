@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useRef, useState } from "react";
+import React, { createContext, useContext, useState } from "react";
 import { TextInput } from "react-native";
 
 interface SearchInputState {
@@ -8,7 +8,7 @@ interface SearchInputState {
     setRef: any;
 }
 
-// const searchContext = createContext<SearchInputState>(undefined!);
+// const searchContext = createContext<SearchInputState>(useProvideSearchInput());
 const searchContext = createContext<SearchInputState>({
     focus: () => null,
     blur: () => null,
@@ -29,7 +29,6 @@ export const useSearchInput = () => {
 
 function useProvideSearchInput(): SearchInputState {
     const [inputRef, setInputRef] = useState<any>(null);
-    console.log("rerender context");
 
     function focus() {
         if (inputRef) {
@@ -44,7 +43,6 @@ function useProvideSearchInput(): SearchInputState {
     }
 
     function setRef(ref: any) {
-        console.log("ref is set");
         setInputRef(ref);
     }
 

@@ -1,10 +1,12 @@
 import { createStackNavigator, TransitionPresets } from '@react-navigation/stack';
 import React from 'react';
+import { View } from 'react-native';
 import DrawerButton from '../DrawerButton';
 import { RouteNavProps } from '../DrawerRoutes';
 import CustomThemePicker from './CustomThemePicker';
 import Export from './Export';
 import Import from './Import';
+import Reset from './Reset';
 import Settings from './Settings';
 import { SettingsRoute } from './SettingsRoutes';
 import ThemePicker from './ThemePicker';
@@ -20,6 +22,7 @@ export default function HomeStack({ navigation }: RouteNavProps<"Settings">) {
             screenOptions={{
                 headerLeft: () => (<DrawerButton navigation={navigation} />),
                 ...TransitionPresets.SlideFromRightIOS,
+                headerStyleInterpolator: () => ({}),
             }}
         >
             <Stack.Screen name="Settings" component={Settings} />
@@ -27,6 +30,7 @@ export default function HomeStack({ navigation }: RouteNavProps<"Settings">) {
             <Stack.Screen name="Custom Theme" component={CustomThemePicker} />
             <Stack.Screen name="Import" component={Import} />
             <Stack.Screen name="Export" component={Export} />
+            <Stack.Screen name="Reset" component={Reset} />
         </Stack.Navigator >
     );
 }

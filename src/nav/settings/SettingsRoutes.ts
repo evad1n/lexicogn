@@ -7,6 +7,7 @@ export type SettingsRoute = {
     "Custom Theme": undefined;
     Import: undefined;
     Export: undefined;
+    Reset: undefined;
 };
 
 export type SettingsRouteProps<T extends keyof SettingsRoute> = {

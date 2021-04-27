@@ -1,57 +1,74 @@
-// TODO: fix theme colors
 const Themes: ThemeMap = {
     "light": {
         dark: false,
         primary: {
-            default: "#fff",
+            dark: "#fff",
+            darkText: "#000",
             light: "#f0f0f0",
-            dark: "#c7c7c7",
-            text: "#000"
+            lightText: "#000",
         },
     },
     "dark": {
         dark: true,
         primary: {
-            default: "#000",
-            light: "#222",
             dark: "#000",
-            text: "#fff"
+            darkText: "#fff",
+            light: "#222",
+            lightText: "#fff"
         },
     },
     "dimmed": {
         dark: true,
         primary: {
-            default: "#333",
-            light: "#555",
             dark: "#333",
-            text: "#fff"
+            darkText: "#fff",
+            light: "#555",
+            lightText: "#fff",
         },
     },
     "rust": {
-        dark: false,
+        dark: true,
         primary: {
-            default: "#3b2e2a",
+            dark: "#3b2e2a",
+            darkText: "#fff",
             light: "#e1e1db",
-            dark: "#333",
-            text: "#000"
+            lightText: "#000",
+        },
+    },
+    "ayu": {
+        dark: true,
+        primary: {
+            dark: "#222",
+            darkText: "#FF8F40",
+            light: "#444",
+            lightText: "#e6b450",
         },
     },
     "ocean": {
         dark: true,
         primary: {
-            default: "#001869",
-            light: "#2a45a1",
-            dark: "#1f44c2",
-            text: "#fff"
+            dark: "#031459",
+            darkText: "#fff",
+            light: "#525975",
+            lightText: "#fff",
+        },
+    },
+    "winter": {
+        dark: true,
+        primary: {
+            dark: "#219fd5",
+            darkText: "#fff",
+            light: "#282822",
+            lightText: "#00BFF9",
         },
     },
     "green": {
         dark: false,
         primary: {
-            default: "#95c96d",
+            dark: "#95c96d",
+            darkText: "#000",
             light: "#cff0b6",
-            dark: "#82b85a",
-            text: "#000"
+            lightText: "#000",
         },
     },
 };
