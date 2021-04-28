@@ -8,7 +8,7 @@
     "splash": {
       "image": "./src/assets/app/splash.png",
       "resizeMode": "cover",
-      "backgroundColor": "#ccc"
+      "backgroundColor": "#ddd"
     },
     "updates": {
       "fallbackToCacheTimeout": 0
@@ -30,7 +30,7 @@
     "web": {
       "favicon": "./src/assets/app/favicon.png"
     },
-    "description": "(WIP) A vocabulary studying mobile app that makes it easy to look up and save words at the same time.",
+    "description": "A mobile app to keep track of and study new vocabulary words.",
     "githubUrl": "https://github.com/evad1n/lexicogn",
     "sdkVersion": "40.0.0"
   }

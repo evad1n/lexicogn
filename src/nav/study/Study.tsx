@@ -25,10 +25,10 @@ export default function Study({ navigation }: StudyRouteProps<'Study'>) {
     const [change, setChange] = useState(false);
     const [weightSum, setWeightSum] = useState(0);
 
-    // TODO: DIE
-    // useEffect(() => {
-    //     console.log("nav changed");
-    // }, [navigation]);
+    // TODO: onFocus reload from db
+    useEffect(() => {
+        console.log("render?");
+    });
 
     function newCard() {
         // Move card off screen to the right
@@ -54,29 +54,27 @@ export default function Study({ navigation }: StudyRouteProps<'Study'>) {
     }, [word]);
 
     function getWordWeight(word: WordDocument): number {
-        let total = word.correct + word.incorrect;
-        if (total === 0) {
-            return 1;
-        } else {
-            let weight = word.correct / (total);
-            return 1 - weight;
-        }
+        let weight = 20 + word.incorrect - word.correct;
+        if (weight <= 0)
+            weight = 1;
+        return weight;
     }
 
     function randomWord() {
         let sum = weightSum;
-        let randWord: WordDocument;
         let r = Math.floor(Math.random() * sum);
-        for (let i = 0; i < words.length; i++) {
+        let i;
+        for (i = 0; i < words.length; i++) {
+            r -= getWordWeight(words[i]);
             if (r <= 0) {
-                randWord = words[i];
                 break;
             }
-            r -= getWordWeight(words[i]);
         }
+        let randWord: WordDocument = words[i];
+        console.log("new random:", randWord);
 
         setChange(change => !change);
-        setWord(words[r]);
+        setWord(randWord);
     }
 
     function swipeUp() {

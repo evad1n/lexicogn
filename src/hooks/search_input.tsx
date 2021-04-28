@@ -1,6 +1,8 @@
 import React, { createContext, useContext, useState } from "react";
 import { TextInput } from "react-native";
 
+/* Allows for sharing of search input without using complicated forward refs */
+
 interface SearchInputState {
     focus: () => void;
     blur: () => void;
@@ -8,7 +10,6 @@ interface SearchInputState {
     setRef: any;
 }
 
-// const searchContext = createContext<SearchInputState>(useProvideSearchInput());
 const searchContext = createContext<SearchInputState>({
     focus: () => null,
     blur: () => null,
