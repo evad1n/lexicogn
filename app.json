@@ -4,11 +4,11 @@
     "slug": "lexicogn",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./src/assets/icon.png",
+    "icon": "./src/assets/app/icon.png",
     "splash": {
-      "image": "./src/assets/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "image": "./src/assets/app/splash.png",
+      "resizeMode": "cover",
+      "backgroundColor": "#ccc"
     },
     "updates": {
       "fallbackToCacheTimeout": 0
@@ -21,14 +21,14 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./src/assets/adaptive-icon.png",
+        "foregroundImage": "./src/assets/app/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
       },
       // Keyboard doesn't affect layout
       "softwareKeyboardLayoutMode": "pan"
     },
     "web": {
-      "favicon": "./src/assets/favicon.png"
+      "favicon": "./src/assets/app/favicon.png"
     },
     "description": "(WIP) A vocabulary studying mobile app that makes it easy to look up and save words at the same time.",
     "githubUrl": "https://github.com/evad1n/lexicogn",

@@ -6,13 +6,8 @@ A mobile app to keep track of and study new vocabulary words.
 
 ## TODO
 
-- flashcard swipe velocity
 - better API results...
 - no state
-
-## Deploy
-
-- icon/splashscreen
 
 ## Other
 

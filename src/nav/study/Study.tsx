@@ -1,6 +1,6 @@
 import Flashcard from '@/src/components/Flashcard';
 import { decreaseFrequency, increaseFrequency } from '@/src/db/db';
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Animated, PanResponder, StyleSheet, useWindowDimensions, View } from 'react-native';
 import { useCurrentTheme, useTypedDispatch, useWords } from '_store/hooks';
 import { StudyRouteProps } from './StudyRoutes';
@@ -23,6 +23,12 @@ export default function Study({ navigation }: StudyRouteProps<'Study'>) {
 
     const [word, setWord] = useState(words[Math.floor(Math.random() * words.length)]);
     const [change, setChange] = useState(false);
+    const [weightSum, setWeightSum] = useState(0);
+
+    // TODO: DIE
+    // useEffect(() => {
+    //     console.log("nav changed");
+    // }, [navigation]);
 
     function newCard() {
         // Move card off screen to the right
@@ -38,8 +44,36 @@ export default function Study({ navigation }: StudyRouteProps<'Study'>) {
         ).start();
     }
 
+    useEffect(() => {
+        // Find sum of weights
+        let total_weights = 0;
+        for (const word of words) {
+            total_weights += getWordWeight(word);
+        }
+        setWeightSum(total_weights);
+    }, [word]);
+
+    function getWordWeight(word: WordDocument): number {
+        let total = word.correct + word.incorrect;
+        if (total === 0) {
+            return 1;
+        } else {
+            let weight = word.correct / (total);
+            return 1 - weight;
+        }
+    }
+
     function randomWord() {
-        let r = Math.floor(Math.random() * words.length);
+        let sum = weightSum;
+        let randWord: WordDocument;
+        let r = Math.floor(Math.random() * sum);
+        for (let i = 0; i < words.length; i++) {
+            if (r <= 0) {
+                randWord = words[i];
+                break;
+            }
+            r -= getWordWeight(words[i]);
+        }
 
         setChange(change => !change);
         setWord(words[r]);

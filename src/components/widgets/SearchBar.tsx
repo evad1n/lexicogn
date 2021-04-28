@@ -54,6 +54,7 @@ export default function SearchBar({ style, textColor, autoFocus = false, editabl
                 value={value}
                 style={[styles.text, { color: textColor }, value.length === 0 ? textStyles.placeholder : null]}
                 placeholderTextColor={textColor}
+                autoCapitalize='none'
                 placeholder={placeholder}
                 onChangeText={onChange}
                 onSubmitEditing={onSubmit}
