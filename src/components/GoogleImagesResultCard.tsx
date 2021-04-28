@@ -1,11 +1,11 @@
 import { useNavigation } from '@react-navigation/core';
+import * as WebBrowser from 'expo-web-browser';
 import React, { useState } from 'react';
 import { Dimensions, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { insertWord } from '_db/db';
-import { useCurrentTheme, useTypedDispatch } from '_store/hooks';
+import { useCurrentTheme } from '_hooks/theme_provider';
 import buttonStyles from '../styles/button';
 import textStyles from '../styles/text';
-import * as WebBrowser from 'expo-web-browser';
 
 interface GoogleImagesResultCardProps {
     word: string;
@@ -14,7 +14,6 @@ interface GoogleImagesResultCardProps {
 export default function GoogleImagesResultCard({ word }: GoogleImagesResultCardProps) {
     const theme = useCurrentTheme();
     const { width } = Dimensions.get('window');
-    const dispatch = useTypedDispatch();
     const navigation = useNavigation();
 
     const searchURL = `https://www.google.com/search?tbm=isch&q=${word}`;
@@ -23,18 +22,13 @@ export default function GoogleImagesResultCard({ word }: GoogleImagesResultCardP
 
     const saveURL = async () => {
         try {
-            const customWordResult = {
+            const imageWordResult = {
                 api: 1,
                 word,
                 definition: url,
             };
-            let id = await insertWord(customWordResult);
-            let wordDoc = { ...customWordResult, id };
-            dispatch({
-                type: "ADD_WORD",
-                word: wordDoc
-            });
-            navigation.navigate('Collection', { screen: "Detail", params: { word: wordDoc } });
+            let id = await insertWord(imageWordResult);
+            navigation.navigate('Collection', { screen: "Detail", params: { id } });
         } catch (error) {
             throw Error(error);
         }

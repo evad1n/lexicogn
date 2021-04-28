@@ -1,5 +1,5 @@
 import { wipeDB } from '@/src/db/db';
-import { useCurrentTheme } from '@/src/store/hooks';
+import { useCurrentTheme } from '@/src/hooks/theme_provider';
 import buttonStyles from '@/src/styles/button';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Updates from 'expo-updates';

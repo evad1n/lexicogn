@@ -1,20 +1,22 @@
-import { useSearchInput } from '@/src/hooks/search_input';
+import { useSearchInput } from '_hooks/search_input';
 import textStyles from '@/src/styles/text';
 import { Ionicons } from '@expo/vector-icons';
 import { useFocusEffect } from '@react-navigation/core';
 import React, { useRef } from 'react';
 import { StyleProp, StyleSheet, TextInput, TouchableOpacity, ViewStyle } from 'react-native';
-import { useCurrentTheme } from '_store/hooks';
+import { useCurrentTheme } from '_hooks/theme_provider';
 
 interface SearchBarProps {
     placeholder: string,
     autoFocus?: boolean,
     editable?: boolean,
     value?: string;
+    /** When editing is false use this for onPress */
     blockEvent?: () => void;
     onChange?: (text: string) => void,
     onSubmit?: () => void,
     onClear?: () => void,
+    /** Container style */
     style?: StyleProp<ViewStyle>;
     textColor?: string;
 }

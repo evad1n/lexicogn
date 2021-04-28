@@ -1,12 +1,10 @@
-import { storeData } from '@/src/storage';
+import Divider from '@/src/components/layout/Divider';
+import { useTheme } from '@/src/hooks/theme_provider';
 import buttonStyles from '@/src/styles/button';
 import Slider from '@brlja/react-native-slider';
-import CheckBox from 'react-native-bouncy-checkbox';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { changeCustomTheme, changeTheme } from '_store/actions/themeActions';
-import { useCurrentTheme, useCustomTheme, useTypedDispatch } from '_store/hooks';
-import Divider from '@/src/components/layout/Divider';
+import CheckBox from 'react-native-bouncy-checkbox';
 
 // Component props
 
@@ -57,9 +55,7 @@ function parseColorString(text: string): ColorState {
 }
 
 export default function CustomThemePicker() {
-    const currentTheme = useCurrentTheme();
-    const customTheme = useCustomTheme();
-    const dispatch = useTypedDispatch();
+    const { current: currentTheme, custom: customTheme, changeTheme, changeCustomTheme } = useTheme();
 
     // Have to split these up for performance reasons
     const [selected, setSelected] = useState<Selected>("dark");
@@ -108,9 +104,8 @@ export default function CustomThemePicker() {
                     lightText: lightText,
                 }
             };
-            await storeData("@customTheme", savedTheme);
-            dispatch(changeCustomTheme(savedTheme));
-            dispatch(changeTheme("custom"));
+            await changeCustomTheme(savedTheme);
+            changeTheme("custom");
         } catch (error) {
             throw Error(error);
         }
@@ -243,7 +238,10 @@ export default function CustomThemePicker() {
                         onPress={saveCustomTheme}
                         style={[buttonStyles.container, { backgroundColor: currentTheme.primary.dark }]}
                     >
-                        <Text style={[buttonStyles.text]}>Save</Text>
+                        <Text style={[buttonStyles.text, {
+                            color:
+                                currentTheme.primary.darkText
+                        }]}>Save</Text>
                     </TouchableOpacity>
                 </View>
             </ScrollView>

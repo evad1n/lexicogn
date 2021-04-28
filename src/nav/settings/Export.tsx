@@ -1,4 +1,6 @@
 import CustomAlert from '@/src/components/widgets/CustomAlert';
+import { getAllWords } from '@/src/db/db';
+import { useCurrentTheme } from '@/src/hooks/theme_provider';
 import buttonStyles from '@/src/styles/button';
 import textStyles from '@/src/styles/text';
 import * as FileSystem from 'expo-file-system';
@@ -6,14 +8,12 @@ import * as MediaLibrary from 'expo-media-library';
 import * as Permissions from 'expo-permissions';
 import React, { useCallback, useRef, useState } from 'react';
 import { KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
-import { useCurrentTheme, useWords } from '_store/hooks';
 
 // Create file name w/ date
 const tempFileName = `lexicogn_export_${new Date().toLocaleDateString().replace(/\//g, '-')}.json`;
 
 export default function Export() {
     const theme = useCurrentTheme();
-    const words = useWords();
 
     const [fileName, setFileName] = useState(tempFileName);
 
@@ -24,6 +24,7 @@ export default function Export() {
 
     async function downloadData() {
         try {
+            let words = await getAllWords();
             // Abandon if 0 words
             if (words.length === 0) {
                 setModal({

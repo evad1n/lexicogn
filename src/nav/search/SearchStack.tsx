@@ -1,4 +1,4 @@
-import { ProvideSearchInput } from '@/src/hooks/search_input';
+import { ProvideSearchInput } from '_hooks/search_input';
 import { createStackNavigator } from '@react-navigation/stack';
 import React from 'react';
 import DrawerButton from '../DrawerButton';

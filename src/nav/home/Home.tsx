@@ -1,8 +1,10 @@
 import Flashcard from '@/src/components/Flashcard';
 import SearchBar from '@/src/components/widgets/SearchBar';
-import React from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { useCurrentTheme, useHomeWord } from '_store/hooks';
+import { getAllWords } from '@/src/db/db';
+import { useCurrentTheme } from '_hooks/theme_provider';
+import { getWordWeight } from '@/src/weighting';
+import React, { useEffect, useState } from 'react';
+import { StyleSheet, Text, View } from 'react-native';
 import { RouteNavProps } from '../DrawerRoutes';
 import { HomeRouteProps } from './HomeRoutes';
 
@@ -14,7 +16,44 @@ const NO_WORDS: Partial<WordDocument> = {
 
 export default function Home({ navigation }: RouteNavProps<'Home'> & HomeRouteProps<'home'>) {
     const theme = useCurrentTheme();
-    const homeWord = useHomeWord();
+
+    const [homeWord, setHomeWord] = useState<WordDefinition | null>(null);
+    const [loaded, setLoaded] = useState(false);
+
+    // Get home word with same weighting algorithm
+    useEffect(() => {
+        async function getHomeWord() {
+            try {
+                let words = await getAllWords();
+                if (words.length === 0) {
+                    setHomeWord(null);
+                    setLoaded(true);
+                    return;
+                }
+                // Find sum of weights
+                let total_weights = 0;
+                for (const word of words) {
+                    total_weights += getWordWeight(word);
+                }
+                // Now find a weighted random
+                let r = Math.floor(Math.random() * total_weights);
+                let i;
+                for (i = 0; i < words.length; i++) {
+                    r -= getWordWeight(words[i]);
+                    if (r <= 0) {
+                        break;
+                    }
+                }
+                let randWord: WordDocument = words[i];
+
+                setHomeWord(randWord);
+                setLoaded(true);
+            } catch (error) {
+                throw Error(error);
+            }
+        }
+        getHomeWord();
+    }, []);
 
     return (
         <View style={styles.container}>
@@ -30,9 +69,9 @@ export default function Home({ navigation }: RouteNavProps<'Home'> & HomeRoutePr
                     navigation.navigate('Search');
                 }}
             />
-            <View style={styles.cardContainer}>
+            {loaded && <View style={styles.cardContainer}>
                 <Flashcard word={homeWord || NO_WORDS} change={false} />
-            </View>
+            </View>}
         </View >
     );
 }

@@ -4,6 +4,11 @@ interface WordDefinition {
     definition: string;
 }
 
+type WordOverivew = {
+    word: string;
+    id: number;
+};
+
 // From requests
 interface WordResult extends WordDefinition {
     api: number;

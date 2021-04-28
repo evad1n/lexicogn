@@ -1,23 +1,19 @@
 import Divider from '@/src/components/layout/Divider';
-import themeReducer from '@/src/store/reducers/themeReducer';
+import { useTheme } from '@/src/hooks/theme_provider';
 import buttonStyles from '@/src/styles/button';
 import React from 'react';
 import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { changeTheme } from '_store/actions/themeActions';
-import { useCurrentTheme, useCustomTheme, useTypedDispatch } from '_store/hooks';
 import Themes from '~/themes';
 import { SettingsRouteProps } from './SettingsRoutes';
 
 export default function ThemePicker({ navigation }: SettingsRouteProps<'Theme'>) {
-    const currentTheme = useCurrentTheme();
-    const customTheme = useCustomTheme();
-    const dispatch = useTypedDispatch();
+    const { current: currentTheme, custom: customTheme, changeTheme } = useTheme();
 
     const renderPalette = ({ item: themeName }: { item: ThemeKey; }) => {
         const theme = Themes[themeName];
 
         return (
-            <TouchableOpacity onPress={() => dispatch(changeTheme(themeName))} style={styles.item}>
+            <TouchableOpacity onPress={() => changeTheme(themeName)} style={styles.item}>
                 <View style={[styles.color, { backgroundColor: theme.primary.dark, borderColor: theme.primary.darkText, borderWidth: 2 }]}>
                 </View>
                 <Text style={[styles.colorTitle, { color: currentTheme.primary.lightText }]}>{themeName}</Text>
@@ -27,7 +23,7 @@ export default function ThemePicker({ navigation }: SettingsRouteProps<'Theme'>)
 
     function renderCustomPalette() {
         return (
-            <TouchableOpacity onPress={() => dispatch(changeTheme("custom"))} style={styles.item}>
+            <TouchableOpacity onPress={() => changeTheme("custom")} style={styles.item}>
                 <View style={[styles.color, { backgroundColor: customTheme.primary.dark, borderColor: customTheme.primary.darkText, borderWidth: 2 }]}>
                 </View>
                 <Text style={[styles.colorTitle, { color: currentTheme.primary.lightText }]}>custom</Text>

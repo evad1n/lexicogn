@@ -1,7 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import React, { useEffect } from 'react';
 import { Keyboard, StyleSheet, TouchableOpacity } from 'react-native';
-import { useCurrentTheme } from '_store/hooks';
+import { useCurrentTheme } from '_hooks/theme_provider';
 
 
 export default function DrawerButton({ navigation }: any) {

@@ -8,9 +8,8 @@ const db = SQLite.openDatabase("lexicogn.db");
  */
 export async function initDB(): Promise<void> {
     return new Promise<void>((resolve, reject) => {
-        // Check if the words table exists if not create it
+        // Check if the words table exists; if not, create it
         db.transaction(tx => {
-            // CHORE: remove on deploy (only for testing)
             tx.executeSql(schema);
         }, (error) => {
             reject(error);
@@ -37,6 +36,31 @@ export async function wipeDB(): Promise<void> {
 }
 
 /**
+ * ### Gets overview (word & id) of all words in alphabetical order
+ * @returns {Promise<WordOverivew[]>} All words in the database
+ */
+export async function getAllWordsOverview(): Promise<WordOverivew[]> {
+    return new Promise<WordOverivew[]>((resolve, reject) => {
+        db.transaction(tx => {
+            tx.executeSql(
+                'SELECT word, id FROM words ORDER BY word',
+                [],
+                (_, { rows }: { rows: any; }) => {
+                    /**
+                     * Expo sqlite has completely wrong types
+                     * rows has no member _array but it does!
+                     * Awesome!
+                     */
+                    resolve(rows._array);
+                },
+            );
+        }, (error) => {
+            reject(error);
+        });
+    });
+}
+
+/**
  * ### Gets all words in alphabetical order
  * @returns {Promise<WordDocument[]>} All words in the database
  */
@@ -47,8 +71,37 @@ export async function getAllWords(): Promise<WordDocument[]> {
                 'SELECT * FROM words ORDER BY word',
                 [],
                 (_, { rows }: { rows: any; }) => {
-                    // Expo sqlite has completely wrong Types => rows has no member _array but it does! Awesome!
+                    /**
+                     * Expo sqlite has completely wrong types
+                     * rows has no member _array but it does!
+                     * Awesome!
+                     */
                     resolve(rows._array);
+                },
+            );
+        }, (error) => {
+            reject(error);
+        });
+    });
+}
+
+/**
+ * ### Gets a single word record
+ * @param {number} id The id of the word
+ * @returns {Promise<WordDocument>} All words in the database
+ */
+export async function getWord(id: number): Promise<WordDocument> {
+    return new Promise<WordDocument>((resolve, reject) => {
+        db.transaction(tx => {
+            tx.executeSql(
+                'SELECT * FROM words WHERE id = ?',
+                [id],
+                (_, { rows }) => {
+                    let word: WordDocument = rows.item(0);
+                    if (word)
+                        resolve(word);
+                    else
+                        reject(`no word exists with id ${id}`);
                 },
             );
         }, (error) => {

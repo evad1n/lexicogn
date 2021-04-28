@@ -1,29 +1,42 @@
 import ConfirmModal from '@/src/components/widgets/ConfirmModal';
 import SearchBar from '@/src/components/widgets/SearchBar';
-import wordsReducer from '@/src/store/reducers/wordsReducer';
 import buttonStyles from '@/src/styles/button';
 import textStyles from '@/src/styles/text';
 import { useFocusEffect } from '@react-navigation/core';
-import React, { useCallback, useLayoutEffect, useState } from 'react';
-import { BackHandler, Dimensions, Image, KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import React, { useCallback, useEffect, useLayoutEffect, useState } from 'react';
+import { ActivityIndicator, BackHandler, Dimensions, Image, KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
-import { deleteWord as deleteWordDB, updateDefinition as updateDefinitionDB } from '_db/db';
-import { useCurrentTheme, useTypedDispatch } from '_store/hooks';
+import { deleteWord as deleteWordDB, getWord, updateDefinition as updateDefinitionDB } from '_db/db';
+import { useCurrentTheme } from '_hooks/theme_provider';
 import APIS from '~/api';
 import { CollectionRouteProps } from './CollectionRoutes';
 
 
 export default function Detail({ route, navigation }: CollectionRouteProps<'Detail'>) {
     const theme = useCurrentTheme();
-    const dispatch = useTypedDispatch();
 
-    const { word, search } = route.params;
-    const API = APIS[word.api];
+    const { id, search } = route.params;
 
     const [deleteModal, setDeleteModal] = useState(false);
 
-    const [definition, setDefinition] = useState(word.definition);
+    const [word, setWord] = useState<WordDocument>(undefined!);
+    const [definition, setDefinition] = useState<string>(undefined!);
     const [editing, setEditing] = useState(false);
+
+    // Word data
+    // TODO: maybe make this focus
+    useEffect(() => {
+        async function loadWord() {
+            try {
+                let word = await getWord(id);
+                setDefinition(word.definition);
+                setWord(word);
+            } catch (error) {
+                throw Error(error);
+            }
+        }
+        loadWord();
+    }, [route.params]);
 
     // Header search bar
     useLayoutEffect(() => {
@@ -75,10 +88,6 @@ export default function Detail({ route, navigation }: CollectionRouteProps<'Deta
         try {
             setDeleteModal(false);
             await deleteWordDB(word.id);
-            dispatch({
-                type: 'DELETE_WORD',
-                id: word.id
-            });
             navigation.navigate('Collection');
         } catch (error) {
             throw Error(error);
@@ -93,14 +102,7 @@ export default function Detail({ route, navigation }: CollectionRouteProps<'Deta
                 newAPI = 0;
             }
             await updateDefinitionDB(definition, newAPI, word.id);
-            dispatch({
-                type: 'UPDATE_WORD',
-                word: { ...word, definition, api: newAPI }
-            });
-            // Update local word
-            navigation.setParams({
-                word: { ...word, definition, api: newAPI }
-            });
+            setWord(word => ({ ...word, definition, api: newAPI }));
             setEditing(false);
         } catch (error) {
             throw Error(error);
@@ -152,7 +154,7 @@ export default function Detail({ route, navigation }: CollectionRouteProps<'Deta
     );
 
     // Definition or image
-    function renderContent() {
+    function renderDefinition() {
         if (word.api === 1) {
             if (editing) {
                 return (
@@ -205,31 +207,43 @@ export default function Detail({ route, navigation }: CollectionRouteProps<'Deta
         }
     }
 
+    function renderContent() {
+        if (!word) {
+            return (
+                <ActivityIndicator size={"large"} color={theme.primary.lightText} />
+            );
+        } else {
+            return (
+                <ScrollView contentContainerStyle={styles.container}>
+                    <ConfirmModal
+                        visible={deleteModal}
+                        message={`Are you sure you want to delete ${word.word}?`}
+                        handleCancel={() => setDeleteModal(false)}
+                        handleConfirm={deleteWord}
+                    />
+                    <View style={styles.content}>
+                        {renderRatio()}
+                        <Text style={[styles.word, { color: theme.primary.lightText }]}>{word.word}</Text>
+                        <Text style={[textStyles.api, { color: theme.primary.lightText }]}>{APIS[word.api].name.replace(/-/g, ' ')}</Text>
+                        {renderDefinition()}
+                    </View>
+                    <View style={styles.actions}>
+                        {renderEditButton()}
+                        <TouchableOpacity
+                            style={[buttonStyles.container, { backgroundColor: "#fa5a5a" }]}
+                            onPress={() => setDeleteModal(true)}
+                        >
+                            <Text style={[buttonStyles.text, { color: "black" }]}>Delete</Text>
+                        </TouchableOpacity>
+                    </View>
+                </ScrollView>
+            );
+        }
+    }
+
     return (
         <View style={{ flex: 1 }}>
-            <ScrollView contentContainerStyle={styles.container}>
-                <ConfirmModal
-                    visible={deleteModal}
-                    message={`Are you sure you want to delete ${word.word}?`}
-                    handleCancel={() => setDeleteModal(false)}
-                    handleConfirm={deleteWord}
-                />
-                <View style={styles.content}>
-                    {renderRatio()}
-                    <Text style={[styles.word, { color: theme.primary.lightText }]}>{word.word}</Text>
-                    <Text style={[textStyles.api, { color: theme.primary.lightText }]}>{API.name.replace(/-/g, ' ')}</Text>
-                    {renderContent()}
-                </View>
-                <View style={styles.actions}>
-                    {renderEditButton()}
-                    <TouchableOpacity
-                        style={[buttonStyles.container, { backgroundColor: "#fa5a5a" }]}
-                        onPress={() => setDeleteModal(true)}
-                    >
-                        <Text style={[buttonStyles.text, { color: "black" }]}>Delete</Text>
-                    </TouchableOpacity>
-                </View>
-            </ScrollView>
+            {renderContent()}
         </View>
     );
 }
@@ -257,7 +271,7 @@ const styles = StyleSheet.create({
         position: "absolute",
         top: 10,
         right: 0,
-        textAlign: "center",
+        textAlign: "right",
         fontSize: 20,
         fontWeight: "bold"
     },

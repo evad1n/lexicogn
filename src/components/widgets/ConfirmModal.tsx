@@ -1,4 +1,4 @@
-import { useCurrentTheme } from '_store/hooks';
+import { useCurrentTheme } from '_hooks/theme_provider';
 import React from 'react';
 import { Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import buttonStyles from '@/src/styles/button';

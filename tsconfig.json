@@ -31,8 +31,8 @@
       "_db/*": [
         "./src/db/*"
       ],
-      "_store/*": [
-        "src/store/*"
+      "_hooks/*": [
+        "src/hooks/*"
       ],
       "_styles/*": [
         "src/styles/*"

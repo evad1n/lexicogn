@@ -1,21 +1,47 @@
 import SearchBar from '@/src/components/widgets/SearchBar';
-import useDebounce from '@/src/hooks/debounce';
-import { useSearchInput } from '@/src/hooks/search_input';
+import { getAllWordsOverview } from '@/src/db/db';
+import useDebounce from '_hooks/debounce';
+import { useSearchInput } from '_hooks/search_input';
 import { useFocusEffect } from '@react-navigation/core';
-import React, { useEffect, useLayoutEffect, useState } from 'react';
-import { FlatList, Keyboard, StyleSheet, Text, View } from 'react-native';
+import React, { useCallback, useEffect, useLayoutEffect, useState } from 'react';
+import { ActivityIndicator, FlatList, Keyboard, StyleSheet, Text, View } from 'react-native';
 import ListItemButton from "_components/widgets/ListItemButton";
-import { useCurrentTheme, useWords } from '_store/hooks';
+import { useCurrentTheme } from '_hooks/theme_provider';
 import { CollectionRouteProps } from './CollectionRoutes';
 
 export default function Collection({ route, navigation }: CollectionRouteProps<'Collection'>) {
     const theme = useCurrentTheme();
-    const words = useWords();
     const { inputRef, focus } = useSearchInput();
 
-    // Route params
+    const [words, setWords] = useState<WordOverivew[]>(undefined!);
+
+    const [search, setSearch] = useState("");
+    const debouncedSearch = useDebounce(search, 200);
+
+    const [results, setResults] = useState<WordOverivew[]>([]);
+
+
+    // Load words
     useFocusEffect(
-        React.useCallback(() => {
+        useCallback(
+            () => {
+                async function loadWords() {
+                    try {
+                        let loadedWords = await getAllWordsOverview();
+                        setWords(loadedWords);
+                    } catch (error) {
+                        throw Error(error);
+                    }
+                }
+                loadWords();
+            },
+            [],
+        )
+    );
+
+    // Search bar focus
+    useFocusEffect(
+        useCallback(() => {
             // Focus search bar if requested
             if (route.params) {
                 if (route.params.focus ?? false) {
@@ -25,11 +51,6 @@ export default function Collection({ route, navigation }: CollectionRouteProps<'
             }
         }, [route.params, focus, inputRef])
     );
-
-    const [search, setSearch] = useState("");
-    const debouncedSearch = useDebounce(search, 200);
-
-    const [results, setResults] = useState<WordDocument[]>([]);
 
     function onChangeSearch(text: string) {
         setSearch(text);
@@ -64,6 +85,9 @@ export default function Collection({ route, navigation }: CollectionRouteProps<'
     }, [debouncedSearch]);
 
     function searchCollection(text: string) {
+        if (!words)
+            return;
+
         let hits = [];
         for (const word of words) {
             // Matches starting substring
@@ -90,24 +114,38 @@ export default function Collection({ route, navigation }: CollectionRouteProps<'
         );
     }
 
+    function renderContent() {
+        if (!words) {
+            return (
+                <ActivityIndicator size={"large"} color={theme.primary.lightText} />
+            );
+        } else {
+            return (
+                <FlatList
+                    keyboardShouldPersistTaps="handled"
+                    contentContainerStyle={styles.listContainer}
+                    data={search.length === 0 ? words : results}
+                    renderItem={({ item }) => <ListItemButton
+                        text={item.word}
+                        handlePress={() => {
+                            Keyboard.dismiss();
+                            navigation.navigate('Detail', {
+                                id: item.id,
+                                search
+                            });
+                        }}
+                    />}
+                    keyExtractor={(item, index) => `${index}`}
+                    ListEmptyComponent={search.length !== 0 && words.length !== 0 ? renderNoMatches : renderEmptyText}
+                />
+            );
+        }
+    }
+
     return (
-        <FlatList
-            keyboardShouldPersistTaps="handled"
-            contentContainerStyle={styles.listContainer}
-            data={search.length === 0 ? words : results}
-            renderItem={({ item }) => <ListItemButton
-                text={item.word}
-                handlePress={() => {
-                    Keyboard.dismiss();
-                    navigation.navigate('Detail', {
-                        word: item,
-                        search
-                    });
-                }}
-            />}
-            keyExtractor={(item, index) => `${index}`}
-            ListEmptyComponent={search.length !== 0 && words.length !== 0 ? renderNoMatches : renderEmptyText}
-        />
+        <React.Fragment>
+            {renderContent()}
+        </React.Fragment>
     );
 }
 

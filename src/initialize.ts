@@ -3,7 +3,6 @@ import { getAllWords, initDB } from '_db/db';
 import store from '_store/store';
 import { getData } from './storage';
 import { changeCustomTheme, changeTheme } from './store/actions/themeActions';
-import { setWords } from './store/actions/wordsActions';
 
 // Load local storage theme
 async function initialize() {
@@ -30,8 +29,6 @@ async function loadTheme() {
 async function loadDB() {
     try {
         await initDB();
-        const words = await getAllWords();
-        store.dispatch(setWords(words));
     } catch (error) {
         throw new Error(error);
     }

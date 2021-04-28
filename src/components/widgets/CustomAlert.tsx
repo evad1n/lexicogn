@@ -1,9 +1,10 @@
-import { useCurrentTheme } from '@/src/store/hooks';
+import { useCurrentTheme } from '@/src/hooks/theme_provider';
 import buttonStyles from '@/src/styles/button';
 import React from 'react';
 import { Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 interface CustomAlertProps {
+    /** Show/hide the modal */
     visible: boolean,
     message: string,
     handleClose: () => void,

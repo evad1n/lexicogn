@@ -1,21 +1,21 @@
+import { useFocusEffect } from '@react-navigation/core';
 import React, { useEffect } from 'react';
 import { Animated, Image, StyleSheet, Text, TouchableWithoutFeedback, View } from 'react-native';
-import { useCurrentTheme } from '../store/hooks';
+import { useCurrentTheme } from '_hooks/theme_provider';
 
 
 interface FlashcardProps {
     word: Partial<WordDocument>;
-    change: boolean;
 }
 
-export default function Flashcard({ word, change }: FlashcardProps) {
+export default function Flashcard({ word }: FlashcardProps) {
     const theme = useCurrentTheme();
 
     const flipValue = new Animated.Value(0);
 
-    useEffect(() => {
+    useFocusEffect(() => {
         flipValue.setValue(0);
-    }, [change]);
+    });
 
     let currentFlipValue = 0;
     flipValue.addListener(({ value }) => {

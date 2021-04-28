@@ -1,8 +1,10 @@
 import Flashcard from '@/src/components/Flashcard';
-import { decreaseFrequency, increaseFrequency } from '@/src/db/db';
-import React, { useEffect, useRef, useState } from 'react';
-import { Animated, PanResponder, StyleSheet, useWindowDimensions, View } from 'react-native';
-import { useCurrentTheme, useTypedDispatch, useWords } from '_store/hooks';
+import { decreaseFrequency, getAllWords, increaseFrequency } from '@/src/db/db';
+import { useCurrentTheme } from '@/src/hooks/theme_provider';
+import { getWordWeight } from '@/src/weighting';
+import { useFocusEffect } from '@react-navigation/core';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { ActivityIndicator, Animated, PanResponder, StyleSheet, useWindowDimensions, View } from 'react-native';
 import { StudyRouteProps } from './StudyRoutes';
 
 const NO_WORDS: Partial<WordDocument> = {
@@ -16,19 +18,41 @@ const SWIPE_THRESHOLD = 200;
 const NEW_CARD_DURATION = 200;
 
 export default function Study({ navigation }: StudyRouteProps<'Study'>) {
-    const words = useWords();
-    const theme = useCurrentTheme();
-    const dispatch = useTypedDispatch();
     const { width, height } = useWindowDimensions();
+    const theme = useCurrentTheme();
 
-    const [word, setWord] = useState(words[Math.floor(Math.random() * words.length)]);
-    const [change, setChange] = useState(false);
+    const [words, setWords] = useState<WordDocument[]>(undefined!);
+
+    const [word, setWord] = useState<WordDocument>(undefined!);
     const [weightSum, setWeightSum] = useState(0);
 
-    // TODO: onFocus reload from db
+
     useEffect(() => {
-        console.log("render?");
-    });
+        const unsubscribe = navigation.addListener('blur', () => {
+            // Move card off screen to the right
+            pan.setValue({ x: width, y: 0 });
+        });
+
+        return unsubscribe;
+    }, [navigation]);
+
+    // Load words on focus
+    useFocusEffect(
+        useCallback(
+            () => {
+                async function loadWords() {
+                    try {
+                        let loadedWords = await getAllWords();
+                        setWords(loadedWords);
+                    } catch (error) {
+                        throw Error(error);
+                    }
+                }
+                loadWords();
+            },
+            [],
+        )
+    );
 
     function newCard() {
         // Move card off screen to the right
@@ -45,20 +69,16 @@ export default function Study({ navigation }: StudyRouteProps<'Study'>) {
     }
 
     useEffect(() => {
+        if (!words)
+            return;
         // Find sum of weights
         let total_weights = 0;
         for (const word of words) {
             total_weights += getWordWeight(word);
         }
         setWeightSum(total_weights);
-    }, [word]);
-
-    function getWordWeight(word: WordDocument): number {
-        let weight = 20 + word.incorrect - word.correct;
-        if (weight <= 0)
-            weight = 1;
-        return weight;
-    }
+        newCard();
+    }, [words]);
 
     function randomWord() {
         let sum = weightSum;
@@ -71,18 +91,12 @@ export default function Study({ navigation }: StudyRouteProps<'Study'>) {
             }
         }
         let randWord: WordDocument = words[i];
-        console.log("new random:", randWord);
 
-        setChange(change => !change);
         setWord(randWord);
     }
 
     function swipeUp() {
         decreaseFrequency(word.id);
-        dispatch({
-            type: 'UPDATE_WORD',
-            word: { ...word, correct: word.correct + 1 }
-        });
         Animated.parallel(
             [
                 Animated.timing(
@@ -107,10 +121,6 @@ export default function Study({ navigation }: StudyRouteProps<'Study'>) {
 
     function swipeDown() {
         increaseFrequency(word.id);
-        dispatch({
-            type: 'UPDATE_WORD',
-            word: { ...word, incorrect: word.incorrect + 1 }
-        });
         Animated.parallel(
             [
                 Animated.timing(
@@ -152,7 +162,7 @@ export default function Study({ navigation }: StudyRouteProps<'Study'>) {
         },
         onPanResponderMove: (e, gestureState) => {
             // Border function
-            Animated.event(
+            word && Animated.event(
                 [
                     null,
                     {
@@ -177,10 +187,10 @@ export default function Study({ navigation }: StudyRouteProps<'Study'>) {
             )(e, gestureState);
         },
         onPanResponderRelease: (e, gestureState) => {
-            if (swipeThreshold(-gestureState.dy, -gestureState.vy)) {
+            if (word && swipeThreshold(-gestureState.dy, -gestureState.vy)) {
                 // UP
                 swipeUp();
-            } else if (swipeThreshold(gestureState.dy, gestureState.vy)) {
+            } else if (word && swipeThreshold(gestureState.dy, gestureState.vy)) {
                 // DOWN
                 swipeDown();
             } else {
@@ -229,19 +239,30 @@ export default function Study({ navigation }: StudyRouteProps<'Study'>) {
         backgroundColor: borderInterpolate
     };
 
+    function renderContent() {
+        if (!words) {
+            return (
+                <ActivityIndicator size={"large"} color={theme.primary.lightText} />
+            );
+        } else {
+            return (
+                <View style={styles.cardContainer}>
+                    <Animated.View
+                        {...panResponder.panHandlers}
+                        style={[styles.cardWrapper, borderStyle, pan.getTranslateTransform()]}
+                    >
+                        <Flashcard
+                            word={word || NO_WORDS}
+                        />
+                    </Animated.View>
+                </View>
+            );
+        }
+    }
+
     return (
         <View style={styles.container}>
-            <View style={styles.cardContainer}>
-                <Animated.View
-                    {...panResponder.panHandlers}
-                    style={[styles.cardWrapper, borderStyle, pan.getTranslateTransform()]}
-                >
-                    <Flashcard
-                        word={word || NO_WORDS}
-                        change={change}
-                    />
-                </Animated.View>
-            </View>
+            {renderContent()}
         </View>
     );
 }

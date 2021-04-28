@@ -1,8 +1,6 @@
 import CustomResultCard from "@/src/components/CustomResultCard";
 import GoogleImagesResultCard from "@/src/components/GoogleImagesResultCard";
-import useDebounce from "@/src/hooks/debounce";
-import { useSearchInput } from "@/src/hooks/search_input";
-import { useCurrentTheme } from "@/src/store/hooks";
+import { useCurrentTheme } from "@/src/hooks/theme_provider";
 import { useFocusEffect } from "@react-navigation/core";
 import axios from "axios";
 import React, { useEffect, useLayoutEffect, useState } from "react";
@@ -10,6 +8,8 @@ import { ActivityIndicator, Dimensions, FlatList, Keyboard, ListRenderItemInfo, 
 import SearchResultCard from "_components/SearchResultCard";
 import ListItemButton from "_components/widgets/ListItemButton";
 import SearchBar from "_components/widgets/SearchBar";
+import useDebounce from "_hooks/debounce";
+import { useSearchInput } from "_hooks/search_input";
 import APIS, { API_OFFSET, AutoComplete } from "~/api";
 import { RouteNavProps } from "../DrawerRoutes";
 import { SearchRouteProps } from "./SearchRoutes";

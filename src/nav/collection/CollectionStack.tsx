@@ -1,5 +1,5 @@
 // import SharedSearchBar from '@/src/components/widgets/SharedSearchBar';
-import { ProvideSearchInput } from '@/src/hooks/search_input';
+import { ProvideSearchInput } from '_hooks/search_input';
 import { useCurrentTheme } from '@/src/store/hooks';
 import { useNavigation } from '@react-navigation/core';
 import { createStackNavigator, TransitionPresets } from '@react-navigation/stack';

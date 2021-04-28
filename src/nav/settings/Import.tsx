@@ -5,7 +5,7 @@ import * as DocumentPicker from 'expo-document-picker';
 import * as FileSystem from 'expo-file-system';
 import React, { useState } from 'react';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { useCurrentTheme, useTypedDispatch } from '_store/hooks';
+import { useCurrentTheme } from '_hooks/theme_provider';
 
 const EXAMPLE_JSON = `
 [
@@ -31,7 +31,6 @@ type Item = {
 
 export default function Import() {
     const theme = useCurrentTheme();
-    const dispatch = useTypedDispatch();
 
     const [modal, setModal] = useState({
         open: false,
@@ -66,12 +65,7 @@ export default function Import() {
 
     async function saveWord(word: WordDefinition) {
         try {
-            let id = await insertWord({ ...word, api: 0 });
-            let wordDoc = { ...word, api: 0, id };
-            dispatch({
-                type: "ADD_WORD",
-                word: wordDoc
-            });
+            await insertWord({ ...word, api: 0 });
         } catch (error) {
             // Bubble error up
             throw Error(error);

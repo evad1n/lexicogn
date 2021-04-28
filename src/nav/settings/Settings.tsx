@@ -1,5 +1,5 @@
 import Divider from '@/src/components/layout/Divider';
-import { useCurrentTheme } from '_store/hooks';
+import { useCurrentTheme } from '_hooks/theme_provider';
 import { Ionicons, AntDesign } from '@expo/vector-icons';
 import React from "react";
 import { FlatList, StyleSheet, Text, TouchableOpacity } from "react-native";

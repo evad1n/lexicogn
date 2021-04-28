@@ -2,7 +2,7 @@ import { useNavigation } from '@react-navigation/core';
 import React from 'react';
 import { Dimensions, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { insertWord } from '_db/db';
-import { useCurrentTheme, useTypedDispatch } from '_store/hooks';
+import { useCurrentTheme } from '_hooks/theme_provider';
 import APIS, { APIType } from '~/api';
 import buttonStyles from '../styles/button';
 import textStyles from '../styles/text';
@@ -10,7 +10,6 @@ import textStyles from '../styles/text';
 export default function SearchResultCard({ item: result }: { item: WordResult; }) {
     const theme = useCurrentTheme();
     const { width } = Dimensions.get('window');
-    const dispatch = useTypedDispatch();
     const navigation = useNavigation();
 
     const API: APIType = APIS[result.api];
@@ -18,12 +17,7 @@ export default function SearchResultCard({ item: result }: { item: WordResult; }
     const saveWord = async () => {
         try {
             let id = await insertWord(result);
-            let word: WordDocument = { ...result, id, correct: 0, incorrect: 0 };
-            dispatch({
-                type: "ADD_WORD",
-                word: word
-            });
-            navigation.navigate('Collection', { screen: "Detail", params: { word: word } });
+            navigation.navigate('Collection', { screen: "Detail", params: { id } });
         } catch (error) {
             throw Error(error);
         }

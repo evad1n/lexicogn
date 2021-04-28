@@ -8,8 +8,8 @@ import { createDrawerNavigator, DrawerContentComponentProps, DrawerContentScroll
 import { NavigationContainer } from '@react-navigation/native';
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import { useCurrentTheme } from '_store/hooks';
 import Divider from '../components/layout/Divider';
+import { useCurrentTheme } from '../hooks/theme_provider';
 import CollectionStack from './collection/CollectionStack';
 import { RouteParamList } from './DrawerRoutes';
 

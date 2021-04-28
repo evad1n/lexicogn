@@ -7,7 +7,7 @@ A mobile app to keep track of and study new vocabulary words.
 - **ADD Published app store link**
 - [Expo](https://expo.io/@evadin/projects/lexicogn)
 
-
+---
 
 ## Technologies
 
@@ -34,13 +34,18 @@ A mobile app to keep track of and study new vocabulary words.
 - Support for custom color themes
 - User friendly UI/UX
 
-## TODO
+---
 
-- no state/redux .... for the best...
+# TODO
+
 - better API results...
 
 ## Other
 
+- maybe keep recent flashcard history with swipe left... (flatlist/panresponder?)
 - try flashcard as modal for no clipping
-- maybe keep recent flashcard history with swipe left...
-- update expo description
+- possibly add help page in settings
+
+## Deploy Checklist
+
+- Remove console.log()

@@ -2,11 +2,9 @@ import { hideAsync, preventAutoHideAsync } from 'expo-splash-screen';
 import { StatusBar as ExpoStatusBar } from 'expo-status-bar';
 import React, { useEffect } from 'react';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { Provider } from 'react-redux';
 import Router from '_nav/Router';
-import store from '_store/store';
+import { ProvideTheme, useCurrentTheme } from '_hooks/theme_provider';
 import initialize from './src/initialize';
-import { useCurrentTheme } from './src/store/hooks';
 
 export default function App() {
     async function initializeApp() {
@@ -23,10 +21,11 @@ export default function App() {
         initializeApp();
     });
 
+    // Wrap contexts here
     return (
-        <Provider store={store}>
+        <ProvideTheme>
             <InnerApp />
-        </Provider>
+        </ProvideTheme>
     );
 }
 
