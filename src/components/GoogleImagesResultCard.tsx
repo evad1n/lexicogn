@@ -54,9 +54,8 @@ export default function GoogleImagesResultCard({ word }: GoogleImagesResultCardP
                     <TextInput
                         style={[styles.definition,
                         { color: theme.primary.lightText },
-                        url.length === 0 ? styles.placeholder : null
+                        url.length === 0 ? textStyles.placeholder : null
                         ]}
-                        multiline
                         placeholderTextColor={theme.primary.lightText}
                         placeholder="Enter an image URL here..."
                         onChangeText={(text) => setUrl(text)}
@@ -110,9 +109,6 @@ const styles = StyleSheet.create({
     definition: {
         fontSize: 20,
         padding: 10
-    },
-    placeholder: {
-        opacity: 0.5
     },
     notFoundContainer: {
         flex: 1,

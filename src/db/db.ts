@@ -1,5 +1,5 @@
 import * as SQLite from 'expo-sqlite';
-import { schema, wipe } from './schema';
+import { reset, schema } from './schema';
 
 const db = SQLite.openDatabase("lexicogn.db");
 
@@ -11,7 +11,6 @@ export async function initDB(): Promise<void> {
         // Check if the words table exists if not create it
         db.transaction(tx => {
             // CHORE: remove on deploy (only for testing)
-            // tx.executeSql(reset);
             tx.executeSql(schema);
         }, (error) => {
             reject(error);
@@ -27,7 +26,8 @@ export async function initDB(): Promise<void> {
 export async function wipeDB(): Promise<void> {
     return new Promise<void>((resolve, reject) => {
         db.transaction(tx => {
-            tx.executeSql(wipe);
+            tx.executeSql(reset);
+            tx.executeSql(schema);
         }, (error) => {
             reject(error);
         }, () => {
@@ -102,13 +102,14 @@ export async function deleteWord(id: number): Promise<void> {
 /**
  * ### Update a word in the database
  * @param newDefinition The updated definition
- * @param id The id of the word to update
+ * @param {number} api The id of the word to update
+ * @param {number} id The id of the word to update
  * @returns {Promise<void>} 
  */
-export async function updateWord(newDefinition: string, id: number): Promise<void> {
+export async function updateDefinition(newDefinition: string, api: number, id: number): Promise<void> {
     return new Promise<void>((resolve, reject) => {
         db.transaction(tx => {
-            tx.executeSql('UPDATE words SET definition = ?, api = 0 WHERE id = ?', [newDefinition, id],
+            tx.executeSql('UPDATE words SET definition = ?, api = ? WHERE id = ?', [newDefinition, api, id],
                 (txObj, { rowsAffected }) => {
                     if (rowsAffected == 0)
                         reject(`no word exists with id ${id}`);

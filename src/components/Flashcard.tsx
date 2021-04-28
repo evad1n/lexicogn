@@ -4,17 +4,18 @@ import { useCurrentTheme } from '../store/hooks';
 
 
 interface FlashcardProps {
-    word: WordDocument;
+    word: Partial<WordDocument>;
+    change: boolean;
 }
 
-export default function Flashcard({ word }: FlashcardProps) {
+export default function Flashcard({ word, change }: FlashcardProps) {
     const theme = useCurrentTheme();
 
     const flipValue = new Animated.Value(0);
 
     useEffect(() => {
         flipValue.setValue(0);
-    }, [word]);
+    }, [change]);
 
     let currentFlipValue = 0;
     flipValue.addListener(({ value }) => {
@@ -62,23 +63,24 @@ export default function Flashcard({ word }: FlashcardProps) {
         }
     }
 
-    // TODO: render flashcard images
     function renderBack() {
         // Image
         if (word.api == 1) {
-            <View style={{ flex: 1 }}>
-                <Image
-                    resizeMode="contain"
-                    style={{
-                        width: "100%",
-                        // height: 0.9 * width
-                    }}
-                    source={{ uri: word.definition }}
-                    // NOTE: this won't show up on android develpoment
-                    // https://reactnative.dev/docs/image#defaultsource
-                    defaultSource={require('_assets/no-image.png')}
-                />
-            </View>;
+            return (
+                <View style={styles.imageContainer}>
+                    <Image
+                        resizeMode="contain"
+                        style={{
+                            width: "100%",
+                            height: "100%",
+                        }}
+                        source={{ uri: word.definition }}
+                        // NOTE: this won't show up on android develpoment
+                        // https://reactnative.dev/docs/image#defaultsource
+                        defaultSource={require('_assets/no-image.png')}
+                    />
+                </View>
+            );
         } else {
             return (
                 <Text adjustsFontSizeToFit style={[{ color: theme.primary.darkText }, styles.text]}>{word.definition}</Text>
@@ -123,5 +125,12 @@ const styles = StyleSheet.create({
         textAlign: "center",
         fontWeight: "bold",
         textAlignVertical: 'bottom',
+    },
+    imageContainer: {
+        width: "100%",
+        height: "100%",
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center"
     }
 });

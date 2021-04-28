@@ -21,6 +21,8 @@ export async function AutoComplete(word: string): Promise<string[]> {
     }
 }
 
+export const API_OFFSET = 2;
+
 const APIS: APIType[] = [
     {
         // Custom API type = 0

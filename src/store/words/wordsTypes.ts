@@ -12,6 +12,8 @@ interface WordResult extends WordDefinition {
 // Database type
 interface WordDocument extends WordResult {
     id: number;
+    correct: number;
+    incorrect: number;
 };
 
 

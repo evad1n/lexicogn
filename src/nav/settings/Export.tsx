@@ -1,5 +1,6 @@
 import CustomAlert from '@/src/components/widgets/CustomAlert';
 import buttonStyles from '@/src/styles/button';
+import textStyles from '@/src/styles/text';
 import * as FileSystem from 'expo-file-system';
 import * as MediaLibrary from 'expo-media-library';
 import * as Permissions from 'expo-permissions';
@@ -122,7 +123,7 @@ function FileNameInput({ onSubmit }: FileNameInputProps) {
             style={[
                 styles.input,
                 { color: theme.primary.lightText },
-                text.length === 0 ? styles.placeholder : null,
+                text.length === 0 ? textStyles.placeholder : null,
             ]}
             value={text}
             onChangeText={text => setText(text)}
@@ -182,7 +183,4 @@ const styles = StyleSheet.create({
     button: {
         marginTop: 20
     },
-    placeholder: {
-        opacity: 0.5
-    }
 });

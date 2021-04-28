@@ -1,29 +1,28 @@
 import Flashcard from '@/src/components/Flashcard';
+import { decreaseFrequency, increaseFrequency } from '@/src/db/db';
 import React, { useRef, useState } from 'react';
 import { Animated, PanResponder, StyleSheet, useWindowDimensions, View } from 'react-native';
-import { useCurrentTheme, useWords } from '_store/hooks';
+import { useCurrentTheme, useTypedDispatch, useWords } from '_store/hooks';
 import { StudyRouteProps } from './StudyRoutes';
 
-const NO_WORDS: WordDocument = {
+const NO_WORDS: Partial<WordDocument> = {
     word: "You've got nothing to study!",
     definition: "Did you expect something witty here?",
-    api: -1,
-    id: -1
 };
 
 // Differentiatae between tap/swipe
 const SWIPE_THRESHOLD = 200;
 // Time for new card animation
 const NEW_CARD_DURATION = 200;
-// Threshold ratio for swipe completion
-const SWIPE_COMPLETION_RATIO = 0.25;
 
 export default function Study({ navigation }: StudyRouteProps<'Study'>) {
     const words = useWords();
     const theme = useCurrentTheme();
+    const dispatch = useTypedDispatch();
     const { width, height } = useWindowDimensions();
 
     const [word, setWord] = useState(words[Math.floor(Math.random() * words.length)]);
+    const [change, setChange] = useState(false);
 
     function newCard() {
         // Move card off screen to the right
@@ -42,7 +41,71 @@ export default function Study({ navigation }: StudyRouteProps<'Study'>) {
     function randomWord() {
         let r = Math.floor(Math.random() * words.length);
 
+        setChange(change => !change);
         setWord(words[r]);
+    }
+
+    function swipeUp() {
+        decreaseFrequency(word.id);
+        dispatch({
+            type: 'UPDATE_WORD',
+            word: { ...word, correct: word.correct + 1 }
+        });
+        Animated.parallel(
+            [
+                Animated.timing(
+                    pan, // Auto-multiplexed
+                    {
+                        duration: NEW_CARD_DURATION,
+                        toValue: { x: 0, y: -height },
+                        useNativeDriver: false
+                    }, // Back to zero
+                ),
+                Animated.timing(
+                    border, // Auto-multiplexed
+                    {
+                        duration: NEW_CARD_DURATION,
+                        toValue: 0,
+                        useNativeDriver: false
+                    }, // Back to zero
+                )
+            ]
+        ).start(newCard);
+    }
+
+    function swipeDown() {
+        increaseFrequency(word.id);
+        dispatch({
+            type: 'UPDATE_WORD',
+            word: { ...word, incorrect: word.incorrect + 1 }
+        });
+        Animated.parallel(
+            [
+                Animated.timing(
+                    pan, // Auto-multiplexed
+                    {
+                        duration: NEW_CARD_DURATION,
+                        toValue: { x: 0, y: height },
+                        useNativeDriver: false
+                    }, // Back to zero
+                ),
+                Animated.timing(
+                    border, // Auto-multiplexed
+                    {
+                        duration: NEW_CARD_DURATION,
+                        toValue: 0,
+                        useNativeDriver: false
+                    }, // Back to zeros
+                )
+            ]
+        ).start(newCard);
+    }
+
+    function swipeThreshold(dy: number, vy: number): boolean {
+        if ((dy + (200 * vy)) > height * 0.25) {
+            return true;
+        }
+        return false;
     }
 
 
@@ -82,50 +145,12 @@ export default function Study({ navigation }: StudyRouteProps<'Study'>) {
             )(e, gestureState);
         },
         onPanResponderRelease: (e, gestureState) => {
-            if (gestureState.dy < height * -SWIPE_COMPLETION_RATIO) {
+            if (swipeThreshold(-gestureState.dy, -gestureState.vy)) {
                 // UP
-                Animated.parallel(
-                    [
-                        Animated.timing(
-                            pan, // Auto-multiplexed
-                            {
-                                duration: NEW_CARD_DURATION,
-                                toValue: { x: 0, y: -height },
-                                useNativeDriver: false
-                            }, // Back to zero
-                        ),
-                        Animated.timing(
-                            border, // Auto-multiplexed
-                            {
-                                duration: NEW_CARD_DURATION,
-                                toValue: 0,
-                                useNativeDriver: false
-                            }, // Back to zero
-                        )
-                    ]
-                ).start(newCard);
-            } else if (gestureState.dy > height * SWIPE_COMPLETION_RATIO) {
+                swipeUp();
+            } else if (swipeThreshold(gestureState.dy, gestureState.vy)) {
                 // DOWN
-                Animated.parallel(
-                    [
-                        Animated.timing(
-                            pan, // Auto-multiplexed
-                            {
-                                duration: NEW_CARD_DURATION,
-                                toValue: { x: 0, y: height },
-                                useNativeDriver: false
-                            }, // Back to zero
-                        ),
-                        Animated.timing(
-                            border, // Auto-multiplexed
-                            {
-                                duration: NEW_CARD_DURATION,
-                                toValue: 0,
-                                useNativeDriver: false
-                            }, // Back to zero
-                        )
-                    ]
-                ).start(newCard);
+                swipeDown();
             } else {
                 Animated.parallel(
                     [
@@ -181,6 +206,7 @@ export default function Study({ navigation }: StudyRouteProps<'Study'>) {
                 >
                     <Flashcard
                         word={word || NO_WORDS}
+                        change={change}
                     />
                 </Animated.View>
             </View>

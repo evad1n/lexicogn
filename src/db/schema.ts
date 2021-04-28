@@ -6,7 +6,9 @@ export const schema =
     id INTEGER NOT NULL PRIMARY KEY,
     word TEXT NOT NULL,
     definition TEXT NOT NULL,
-    api INTEGER NOT NULL
+    api INTEGER NOT NULL,
+    correct INTEGER NOT NULL DEFAULT 0,
+    incorrect INTEGER NOT NULL DEFAULT 0
     );`;
 
 /* Drop all records from words table */

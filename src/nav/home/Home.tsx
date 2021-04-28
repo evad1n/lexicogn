@@ -7,11 +7,9 @@ import { RouteNavProps } from '../DrawerRoutes';
 import { HomeRouteProps } from './HomeRoutes';
 
 // No words card
-const NO_WORDS: WordDocument = {
+const NO_WORDS: Partial<WordDocument> = {
     word: "A random word!",
     definition: "At least it would be if you had any saved words...",
-    api: -1,
-    id: -1
 };
 
 export default function Home({ navigation }: RouteNavProps<'Home'> & HomeRouteProps<'home'>) {
@@ -33,7 +31,7 @@ export default function Home({ navigation }: RouteNavProps<'Home'> & HomeRoutePr
                 }}
             />
             <View style={styles.cardContainer}>
-                <Flashcard word={homeWord || NO_WORDS} />
+                <Flashcard word={homeWord || NO_WORDS} change={false} />
             </View>
         </View >
     );

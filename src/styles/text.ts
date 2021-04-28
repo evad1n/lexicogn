@@ -6,6 +6,9 @@ const textStyles = StyleSheet.create({
         textTransform: "capitalize",
         fontSize: 14
     },
+    placeholder: {
+        opacity: 0.5
+    }
 });
 
 export default textStyles;

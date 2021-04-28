@@ -18,7 +18,7 @@ export default function SearchResultCard({ item: result }: { item: WordResult; }
     const saveWord = async () => {
         try {
             let id = await insertWord(result);
-            let word = { ...result, id };
+            let word: WordDocument = { ...result, id, correct: 0, incorrect: 0 };
             dispatch({
                 type: "ADD_WORD",
                 word: word

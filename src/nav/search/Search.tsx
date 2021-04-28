@@ -10,7 +10,7 @@ import { ActivityIndicator, Dimensions, FlatList, Keyboard, ListRenderItemInfo, 
 import SearchResultCard from "_components/SearchResultCard";
 import ListItemButton from "_components/widgets/ListItemButton";
 import SearchBar from "_components/widgets/SearchBar";
-import APIS, { AutoComplete } from "~/api";
+import APIS, { API_OFFSET, AutoComplete } from "~/api";
 import { RouteNavProps } from "../DrawerRoutes";
 import { SearchRouteProps } from "./SearchRoutes";
 
@@ -118,17 +118,17 @@ export default function Search({ navigation }: SearchRouteProps<'Search'> & Rout
         let newResults: WordResult[] = [];
         // Build requests
         let requests = [];
-        for (let i = 2; i < APIS.length; i++) {
+        for (let i = API_OFFSET; i < APIS.length; i++) {
             requests.push(APIS[i].get(text));
         }
         // Make all requests in one
         const responses = await axios.all(requests);
         // Parse responses
-        for (let i = 2; i < APIS.length; i++) {
+        for (let i = API_OFFSET; i < APIS.length; i++) {
             newResults.push({
                 word: text,
                 api: i,
-                definition: APIS[i].parseResponse(responses[i - 1]),
+                definition: APIS[i].parseResponse(responses[i - API_OFFSET]),
             });
         }
         // Add extra for google images

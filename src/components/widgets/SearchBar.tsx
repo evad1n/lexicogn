@@ -1,9 +1,9 @@
 import { useSearchInput } from '@/src/hooks/search_input';
+import textStyles from '@/src/styles/text';
 import { Ionicons } from '@expo/vector-icons';
 import { useFocusEffect } from '@react-navigation/core';
 import React, { useRef } from 'react';
-import { StyleProp, StyleSheet, TextInput, ViewStyle, TouchableOpacity } from 'react-native';
-import { TouchableHighlight, } from 'react-native-gesture-handler';
+import { StyleProp, StyleSheet, TextInput, TouchableOpacity, ViewStyle } from 'react-native';
 import { useCurrentTheme } from '_store/hooks';
 
 interface SearchBarProps {
@@ -52,7 +52,7 @@ export default function SearchBar({ style, textColor, autoFocus = false, editabl
                 editable={editable}
                 ref={searchRef}
                 value={value}
-                style={[styles.text, { color: textColor }, value.length === 0 ? styles.placeholder : null]}
+                style={[styles.text, { color: textColor }, value.length === 0 ? textStyles.placeholder : null]}
                 placeholderTextColor={textColor}
                 placeholder={placeholder}
                 onChangeText={onChange}
@@ -81,7 +81,4 @@ const styles = StyleSheet.create({
     icon: {
         paddingRight: 10
     },
-    placeholder: {
-        opacity: 0.5
-    }
 });
