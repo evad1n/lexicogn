@@ -5,6 +5,7 @@ import DrawerButton from '../DrawerButton';
 import { RouteNavProps } from '../DrawerRoutes';
 import CustomThemePicker from './CustomThemePicker';
 import Export from './Export';
+import Help from './Help';
 import Import from './Import';
 import Reset from './Reset';
 import Settings from './Settings';
@@ -30,6 +31,7 @@ export default function HomeStack({ navigation }: RouteNavProps<"Settings">) {
             <Stack.Screen name="Custom Theme" component={CustomThemePicker} />
             <Stack.Screen name="Import" component={Import} />
             <Stack.Screen name="Export" component={Export} />
+            <Stack.Screen name="Help" component={Help} />
             <Stack.Screen name="Reset" component={Reset} />
         </Stack.Navigator >
     );

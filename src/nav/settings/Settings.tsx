@@ -28,6 +28,11 @@ const settings: SettingsType[] = [
         icon: (props: any) => <AntDesign name="upload" {...props} />
     },
     {
+        name: "Help",
+        nav: "Help",
+        icon: (props: any) => <Ionicons name="md-help-circle" {...props} />
+    },
+    {
         name: "Reset",
         nav: "Reset",
         icon: (props: any) => <Ionicons name="warning" {...props} />
@@ -44,7 +49,7 @@ export default function Settings({ navigation }: SettingsRouteProps<'Settings'>)
                 style={styles.item}
             >
                 {setting.icon({
-                    size: 30,
+                    size: 40,
                     color: theme.primary.lightText,
                 })}
                 <Text style={[styles.itemText, { color: theme.primary.lightText }]}>{setting.name}</Text>
@@ -77,7 +82,7 @@ const styles = StyleSheet.create({
         alignItems: "center"
     },
     itemText: {
-        paddingLeft: 10,
-        fontSize: 20
+        paddingLeft: 20,
+        fontSize: 26,
     },
 });
