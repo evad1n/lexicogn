@@ -38,6 +38,13 @@ A mobile app to keep track of and study new vocabulary words.
 
 # TODO
 
+- progress bar
+- ? test export progress bar maybe
+- image URL editing
+- help page
+
+- ? about page
+- ? handle no internet conneciton better
 - better API results...
 
 ## Other
@@ -48,3 +55,5 @@ A mobile app to keep track of and study new vocabulary words.
 ## Deploy Checklist
 
 - Remove console.log()
+- sign away my rights to google
+- update terms/privacy paths

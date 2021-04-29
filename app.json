@@ -4,7 +4,7 @@
     "slug": "lexicogn",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./src/assets/app/icon.png",
+    "icon": "./src/assets/app/icon-1024.png",
     "splash": {
       "image": "./src/assets/app/splash.png",
       "resizeMode": "cover",

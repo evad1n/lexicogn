@@ -16,7 +16,7 @@ export default function Collection({ route, navigation }: CollectionRouteProps<'
     const [words, setWords] = useState<WordOverivew[]>(undefined!);
 
     const [search, setSearch] = useState("");
-    const debouncedSearch = useDebounce(search, 200);
+    const debouncedSearch = useDebounce(search, 500);
 
     const [results, setResults] = useState<WordOverivew[]>([]);
 
