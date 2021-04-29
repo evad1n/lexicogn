@@ -49,7 +49,7 @@ export default function Settings({ navigation }: SettingsRouteProps<'Settings'>)
                 style={styles.item}
             >
                 {setting.icon({
-                    size: 40,
+                    size: 32,
                     color: theme.primary.lightText,
                 })}
                 <Text style={[styles.itemText, { color: theme.primary.lightText }]}>{setting.name}</Text>
@@ -83,6 +83,6 @@ const styles = StyleSheet.create({
     },
     itemText: {
         paddingLeft: 20,
-        fontSize: 26,
+        fontSize: 20,
     },
 });

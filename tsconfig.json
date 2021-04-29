@@ -32,7 +32,7 @@
         "./src/db/*"
       ],
       "_hooks/*": [
-        "src/hooks/*"
+        "./src/hooks/*"
       ],
       "_styles/*": [
         "src/styles/*"
