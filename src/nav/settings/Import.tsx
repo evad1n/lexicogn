@@ -67,6 +67,7 @@ export default function Import({ navigation }: SettingsRouteProps<'Import'>) {
             await importFile(result.uri);
 
             setLoading(false);
+            setLeaveModal({ open: false });
 
             // Show success message!
             setAlertModal({

@@ -82,7 +82,6 @@ export default function Collection({ route, navigation }: CollectionRouteProps<'
     }, [navigation, theme, search]);
 
     // Autocomplete hook
-    // TODO: optimize
     useEffect(() => {
         searchCollection(debouncedSearch);
     }, [debouncedSearch]);
@@ -93,8 +92,8 @@ export default function Collection({ route, navigation }: CollectionRouteProps<'
 
         let hits = [];
         for (const word of words) {
-            // Matches starting substring
-            if (word.word.substr(0, text.length).toUpperCase() === text.toUpperCase()) {
+            // Matches if word contains search
+            if (word.word.toUpperCase().includes(text.toUpperCase())) {
                 hits.push(word);
             }
         }

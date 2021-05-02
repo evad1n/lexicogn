@@ -3,10 +3,11 @@ import SearchBar from '@/src/components/widgets/SearchBar';
 import { getAllWords } from '@/src/db/db';
 import { useCurrentTheme } from '_hooks/theme_provider';
 import { getWordWeight } from '@/src/weighting';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { RouteNavProps } from '../DrawerRoutes';
 import { HomeRouteProps } from './HomeRoutes';
+import { useFocusEffect } from '@react-navigation/core';
 
 // No words card
 const NO_WORDS: Partial<WordDocument> = {
@@ -21,39 +22,45 @@ export default function Home({ navigation }: RouteNavProps<'Home'> & HomeRoutePr
     const [loaded, setLoaded] = useState(false);
 
     // Get home word with same weighting algorithm
-    useEffect(() => {
-        async function getHomeWord() {
-            try {
-                let words = await getAllWords();
-                if (words.length === 0) {
-                    setHomeWord(null);
-                    setLoaded(true);
-                    return;
-                }
-                // Find sum of weights
-                let total_weights = 0;
-                for (const word of words) {
-                    total_weights += getWordWeight(word);
-                }
-                // Now find a weighted random
-                let r = Math.floor(Math.random() * total_weights);
-                let i;
-                for (i = 0; i < words.length; i++) {
-                    r -= getWordWeight(words[i]);
-                    if (r <= 0) {
-                        break;
+    useFocusEffect(
+        useCallback(
+            () => {
+                async function getHomeWord() {
+                    try {
+                        let words = await getAllWords();
+                        if (words.length === 0) {
+                            setHomeWord(null);
+                            setLoaded(true);
+                            return;
+                        }
+                        // Find sum of weights
+                        let total_weights = 0;
+                        for (const word of words) {
+                            total_weights += getWordWeight(word);
+                        }
+                        // Now find a weighted random
+                        let r = Math.floor(Math.random() * total_weights);
+                        let i;
+                        for (i = 0; i < words.length; i++) {
+                            r -= getWordWeight(words[i]);
+                            if (r <= 0) {
+                                break;
+                            }
+                        }
+                        let randWord: WordDocument = words[i];
+
+                        setHomeWord(randWord);
+                        setLoaded(true);
+                    } catch (error) {
+                        throw Error(error);
                     }
                 }
-                let randWord: WordDocument = words[i];
-
-                setHomeWord(randWord);
-                setLoaded(true);
-            } catch (error) {
-                throw Error(error);
-            }
-        }
-        getHomeWord();
-    }, []);
+                if (!homeWord)
+                    getHomeWord();
+            },
+            [homeWord],
+        )
+    );
 
     return (
         <View style={styles.container}>

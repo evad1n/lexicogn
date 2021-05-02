@@ -124,7 +124,7 @@ export default function Search({ navigation }: SearchRouteProps<'Search'> & Rout
             }
             // Make all requests in one
             const responses = await axios.all(requests);
-            console.log('requests done!');
+
             // Parse responses
             for (let i = API_OFFSET; i < APIS.length; i++) {
                 newResults.push({
