@@ -74,7 +74,7 @@ export default function Flashcard({ word }: FlashcardProps) {
                             width: "100%",
                             height: "100%",
                         }}
-                        source={{ uri: word.definition }}
+                        source={{ uri: word.definition !== "" ? word.definition : "__" }}
                         // NOTE: this won't show up on android develpoment
                         // https://reactnative.dev/docs/image#defaultsource
                         defaultSource={require('_assets/no-image.png')}
@@ -83,7 +83,7 @@ export default function Flashcard({ word }: FlashcardProps) {
             );
         } else {
             return (
-                <Text adjustsFontSizeToFit style={[{ color: theme.primary.darkText }, styles.text]}>{word.definition}</Text>
+                <Text adjustsFontSizeToFit style={[{ color: theme.palette.primaryText }, styles.text]}>{word.definition}</Text>
             );
         }
     }
@@ -92,10 +92,10 @@ export default function Flashcard({ word }: FlashcardProps) {
     return (
         <TouchableWithoutFeedback onPress={flipCard} style={styles.container}>
             <View>
-                <Animated.View style={[frontAnimatedStyle, { backgroundColor: theme.primary.dark }, styles.flipCard]}>
-                    <Text adjustsFontSizeToFit style={[{ color: theme.primary.darkText }, styles.text]}>{word.word}</Text>
+                <Animated.View style={[frontAnimatedStyle, { backgroundColor: theme.palette.primary }, styles.flipCard]}>
+                    <Text adjustsFontSizeToFit style={[{ color: theme.palette.primaryText }, styles.text]}>{word.word}</Text>
                 </Animated.View>
-                <Animated.View style={[backAnimatedStyle, { backgroundColor: theme.primary.dark }, styles.back, styles.flipCard]}>
+                <Animated.View style={[backAnimatedStyle, { backgroundColor: theme.palette.primary }, styles.back, styles.flipCard]}>
                     {renderBack()}
                 </Animated.View>
             </View>

@@ -1,14 +1,16 @@
+import ConfirmModal from '@/src/components/widgets/ConfirmModal';
 import CustomAlert from '@/src/components/widgets/CustomAlert';
-import { insertWord } from '@/src/db/db';
+import Spinner from '@/src/components/widgets/Spinner';
 import buttonStyles from '@/src/styles/button';
 import layoutStyles from '@/src/styles/layout';
 import * as DocumentPicker from 'expo-document-picker';
 import * as FileSystem from 'expo-file-system';
-import React, { useEffect, useRef, useState } from 'react';
-import { Animated, Dimensions, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { Bar as ProgressBar } from 'react-native-progress';
+import * as SQLite from 'expo-sqlite';
+import React, { useEffect, useMemo, useState } from 'react';
+import { Dimensions, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useCurrentTheme } from '_hooks/theme_provider';
 import { SettingsRouteProps } from './SettingsRoutes';
+
 
 const EXAMPLE_JSON = `
 [
@@ -32,43 +34,28 @@ type Item = {
 }
 `;
 
+const LEAVE_WARNING = `Leaving now will cancel the import`;
+
+interface LeaveModalState {
+    open: boolean;
+    confirm?: () => void;
+}
+
 export default function Import({ navigation }: SettingsRouteProps<'Import'>) {
     const theme = useCurrentTheme();
 
     const { width } = Dimensions.get("window");
 
-    const [modal, setModal] = useState({
+    const [alertModal, setAlertModal] = useState({
         open: false,
         message: ""
     });
 
-    const [error, setError] = useState("Any errors will appear here");
-    const [total, setTotal] = useState(0);
+    const [leaveModal, setLeaveModal] = useState<LeaveModalState>({
+        open: false
+    });
+
     const [loading, setLoading] = useState(false);
-    const [progress, setProgress] = useState(0);
-
-    // useEffect(() => {
-    //     async function F() {
-    //         setLoading(true);
-    //         setTotal(3000);
-
-    //         for (let i = 0; i < 3000; i++) {
-    //             await new Promise(r => setTimeout(r, 1));
-    //             if (i % 5 === 0)
-    //                 setProgress(i);
-    //         }
-    //         // const interval = setInterval(() => {
-    //         //     setProgress(progress => ({
-    //         //         ...progress,
-    //         //         current: progress.current + 1
-    //         //     }));
-    //         // }, 5);
-    //         // return () => {
-    //         //     clearInterval(interval);
-    //         // };
-    //     }
-    //     F();
-    // }, [navigation]);
 
     async function uploadFile() {
         try {
@@ -76,82 +63,96 @@ export default function Import({ navigation }: SettingsRouteProps<'Import'>) {
             const result: any = await DocumentPicker.getDocumentAsync({ type: "application/json" });
             if (result.type == 'cancel')
                 return;
-            const data = await FileSystem.readAsStringAsync(result.uri);
-            setLoading(true);
-            const words = JSON.parse(data);
-            setTotal(words.length);
 
-            // TODO: fix timing and only do some state updates
-            for (let i = 0; i < words.length; i++) {
-                // Process each word
-                await saveWord(words[i]);
-                // Otherwise takes longer than actual
-                if (i % 5 === 0) {
-                    setProgress(i);
-                }
-            }
+            await importFile(result.uri);
+
             setLoading(false);
 
             // Show success message!
-            setModal({
+            setAlertModal({
                 open: true,
                 message: "Imported successfully"
             });
         } catch (error) {
-            setModal({
+            setAlertModal({
                 open: true,
                 message: error.toString()
             });
-            setError(error.toString());
-        }
-    }
-
-    async function saveWord(word: WordDefinition) {
-        try {
-            await insertWord({ ...word, api: 0 });
-        } catch (error) {
-            // Bubble error up
-            throw Error(error);
         }
     };
+
+    async function importFile(fileURI: any): Promise<void> {
+        // Get file data
+        const data = await FileSystem.readAsStringAsync(fileURI);
+        setLoading(true);
+        const words: WordDefinition[] = JSON.parse(data);
+
+        // Open db
+        const db = SQLite.openDatabase("lexicogn.db");
+
+        // Start transaction
+        return new Promise<void>((resolve, reject) => {
+            db.transaction(tx => {
+                // Process each word
+                for (let i = 0; i < words.length; i++) {
+                    const word = words[i];
+                    tx.executeSql('INSERT INTO words (word, definition, api) values (?, ?, 0)',
+                        [word.word, word.definition],
+                    );
+                }
+            }, (error) => {
+                reject(error);
+            }, () => {
+                resolve();
+            });
+        });
+    }
+
+    // Prevent unmount while importing
+    useEffect(
+        () =>
+            navigation.addListener('beforeRemove', (e) => {
+                if (!loading) {
+                    // Not currently importing so continue
+                    return;
+                }
+                // Prevent default behavior of leaving the screen
+                e.preventDefault();
+                // Display warning
+                setLeaveModal({ open: true, confirm: () => navigation.dispatch(e.data.action) });
+            }),
+        [navigation, loading]
+    );
+
+
+    const cardStyle = useMemo(() => ({
+        backgroundColor: theme.palette.primary,
+        color: theme.palette.primaryText
+    }), [theme]);
+
 
     function renderContent() {
         if (loading) {
             return (
-                <View style={layoutStyles.center}>
-                    <Text style={styles.progress}>{progress} / {total}</Text>
-                    <Text style={styles.progress}>{progress / total}</Text>
-                    <ProgressBar
-                        progress={progress / total}
-                        color={theme.primary.dark}
-                        unfilledColor={theme.primary.light}
-                        borderColor={theme.primary.dark}
-                        borderWidth={2}
-                        width={width * 0.8}
-                        height={16}
-                        borderRadius={200}
-                        animated={false}
-                    />
-                </View>
+                <Spinner />
             );
         } else {
             return (
                 <ScrollView contentContainerStyle={styles.container}>
                     <View style={styles.directionsContainer}>
-                        <Text style={[styles.heading, { color: theme.primary.lightText }]}>
+                        <Text style={[styles.heading, { color: theme.palette.secondaryText }]}>
                             Upload a JSON file to insert into the database
                     </Text>
-                        <Text style={[styles.directions, { color: theme.primary.lightText }]}>
+                        <Text style={[styles.directions, { color: theme.palette.secondaryText }]}>
                             Content should be of the following format
                     </Text>
-                        <Text style={[styles.code, { backgroundColor: theme.primary.dark, color: theme.primary.darkText }]}>{EXAMPLE_TYPE}</Text>
-                        <Text style={{ fontWeight: "bold", textAlign: "center", color: theme.primary.lightText }}>Example input file:</Text>
-                        <Text style={[styles.code, { backgroundColor: theme.primary.dark, color: theme.primary.darkText }]}>{EXAMPLE_JSON}</Text>
+                        <Text style={[styles.code, cardStyle]}>{EXAMPLE_TYPE}</Text>
+                        <Text style={{ fontWeight: "bold", textAlign: "center", color: theme.palette.secondaryText }}>Example input file:</Text>
+                        <Text style={[styles.code, cardStyle]}>{EXAMPLE_JSON}</Text>
                     </View>
-                    <TouchableOpacity style={[buttonStyles.container, styles.button, { backgroundColor: theme.primary.dark }]} onPress={uploadFile}>
-                        <Text style={[buttonStyles.text, styles.buttonText, { color: theme.primary.darkText }]}>Upload</Text>
+                    <TouchableOpacity style={[buttonStyles.container, styles.button, { backgroundColor: theme.palette.primary }]} onPress={uploadFile}>
+                        <Text style={[buttonStyles.text, styles.buttonText, { color: theme.palette.primaryText }]}>Upload</Text>
                     </TouchableOpacity>
-                    <Text style={[styles.errors, { color: theme.primary.lightText }]}>{error}</Text>
                 </ScrollView>
             );
         }
@@ -161,17 +162,26 @@ export default function Import({ navigation }: SettingsRouteProps<'Import'>) {
         <View style={{ flex: 1 }}>
             {renderContent()}
             <CustomAlert
-                message={modal.message}
-                visible={modal.open}
-                handleClose={() => setModal({ ...modal, open: false })}
+                visible={alertModal.open}
+                message={alertModal.message}
+                handleClose={() => setAlertModal({ ...alertModal, open: false })}
+            />
+            <ConfirmModal
+                visible={leaveModal.open}
+                message={LEAVE_WARNING}
+                handleCancel={() => setLeaveModal({ open: false })}
+                handleConfirm={leaveModal.confirm!}
             />
         </View>
     );
 }
 
+
 const styles = StyleSheet.create({
     container: {
+        flexGrow: 1,
         alignItems: 'center',
+        justifyContent: "space-evenly",
         padding: 10,
     },
     directionsContainer: {
@@ -189,7 +199,8 @@ const styles = StyleSheet.create({
         textAlign: "center"
     },
     button: {
-        paddingHorizontal: 30
+        paddingHorizontal: 30,
+        marginBottom: 20
     },
     buttonText: {
 
@@ -198,10 +209,6 @@ const styles = StyleSheet.create({
         fontFamily: "monospace",
         paddingHorizontal: 10,
         marginVertical: 10
-    },
-    errors: {
-        marginTop: 10,
-        fontSize: 16,
     },
     progress: {
         fontSize: 24,

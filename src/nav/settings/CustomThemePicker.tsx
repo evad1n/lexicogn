@@ -31,10 +31,10 @@ type ColorState = {
 };
 
 type Selected =
-    | "dark"
-    | "dark text"
-    | "light"
-    | "light text";
+    | "primary"
+    | "primary text"
+    | "secondary"
+    | "secondary text";
 
 // Constants
 
@@ -54,18 +54,18 @@ function parseColorString(text: string): ColorState {
     };
 }
 
-export default function CustomThemePicker() {
+export default function customThemePicker() {
     const { current: currentTheme, custom: customTheme, changeTheme, changeCustomTheme } = useTheme();
 
     // Have to split these up for performance reasons
-    const [selected, setSelected] = useState<Selected>("dark");
-    const [startColor, setStartColor] = useState<ColorState>(parseColorString(customTheme.primary.dark));
+    const [selected, setSelected] = useState<Selected>("primary");
+    const [startColor, setStartColor] = useState<ColorState>(parseColorString(customTheme.palette.primary));
 
     // Theme color states
-    const [darkColor, setDarkColor] = useState(customTheme.primary.dark);
-    const [darkText, setDarkText] = useState(customTheme.primary.darkText);
-    const [lightColor, setLightColor] = useState(customTheme.primary.light);
-    const [lightText, setLightText] = useState(customTheme.primary.lightText);
+    const [primaryColor, setPrimaryColor] = useState(customTheme.palette.primary);
+    const [primaryText, setPrimaryText] = useState(customTheme.palette.primaryText);
+    const [secondaryColor, setSecondaryColor] = useState(customTheme.palette.secondary);
+    const [secondaryText, setSecondaryText] = useState(customTheme.palette.secondaryText);
     const [isDarkTheme, setIsDarkTheme] = useState(customTheme.dark);
 
     // Color state
@@ -76,32 +76,32 @@ export default function CustomThemePicker() {
     useEffect(() => {
         const currColor = `rgb(${red}, ${green}, ${blue})`;
         switch (selected) {
-            case "dark":
-                setDarkColor(currColor);
+            case "primary":
+                setPrimaryColor(currColor);
                 break;
-            case "dark text":
-                setDarkText(currColor);
+            case "primary text":
+                setPrimaryText(currColor);
                 break;
-            case "light":
-                setLightColor(currColor);
+            case "secondary":
+                setSecondaryColor(currColor);
                 break;
-            case "light text":
-                setLightText(currColor);
+            case "secondary text":
+                setSecondaryText(currColor);
                 break;
             default:
                 break;
         }
     }, [red, green, blue]);
 
-    async function saveCustomTheme() {
+    async function savecustomTheme() {
         try {
             const savedTheme = {
                 dark: isDarkTheme,
-                primary: {
-                    dark: darkColor,
-                    darkText: darkText,
-                    light: lightColor,
-                    lightText: lightText,
+                palette: {
+                    primary: primaryColor,
+                    primaryText: primaryText,
+                    secondary: secondaryColor,
+                    secondaryText: secondaryText,
                 }
             };
             await changeCustomTheme(savedTheme);
@@ -114,17 +114,17 @@ export default function CustomThemePicker() {
     const getThemeColor = useCallback(
         (label: Selected) => {
             switch (label) {
-                case "dark":
-                    return darkColor;
-                case "dark text":
-                    return darkText;
-                case "light":
-                    return lightColor;
-                case "light text":
-                    return lightText;
+                case "primary":
+                    return primaryColor;
+                case "primary text":
+                    return primaryText;
+                case "secondary":
+                    return secondaryColor;
+                case "secondary text":
+                    return secondaryText;
             }
         },
-        [darkColor, darkText, lightColor, lightText],
+        [primaryColor, primaryText, secondaryColor, secondaryText],
     );
 
     const changeSelection = useCallback(
@@ -165,30 +165,30 @@ export default function CustomThemePicker() {
                 <ColorDisplay
                     onSelect={changeSelection}
                     selected={selected}
-                    label={"dark"}
-                    bgColor={darkColor}
-                    textColor={darkText}
+                    label={"primary"}
+                    bgColor={primaryColor}
+                    textColor={primaryText}
                 />
                 <ColorDisplay
                     onSelect={changeSelection}
                     selected={selected}
-                    label={"dark text"}
-                    bgColor={darkColor}
-                    textColor={darkText}
+                    label={"primary text"}
+                    bgColor={primaryColor}
+                    textColor={primaryText}
                 />
                 <ColorDisplay
                     onSelect={changeSelection}
                     selected={selected}
-                    label={"light"}
-                    bgColor={lightColor}
-                    textColor={lightText}
+                    label={"secondary"}
+                    bgColor={secondaryColor}
+                    textColor={secondaryText}
                 />
                 <ColorDisplay
                     onSelect={changeSelection}
                     selected={selected}
-                    label={"light text"}
-                    bgColor={lightColor}
-                    textColor={lightText}
+                    label={"secondary text"}
+                    bgColor={secondaryColor}
+                    textColor={secondaryText}
                 />
             </View>
         );
@@ -220,27 +220,27 @@ export default function CustomThemePicker() {
         <View style={{ flex: 1 }}>
             <ScrollView contentContainerStyle={styles.container}>
                 {renderDisplayColors()}
-                <Divider style={{ marginVertical: 20 }} color={currentTheme.primary.lightText} />
+                <Divider style={{ marginVertical: 20 }} color={currentTheme.palette.secondaryText} />
                 {renderSliders()}
-                <Divider style={{ marginBottom: 20 }} color={currentTheme.primary.lightText} />
+                <Divider style={{ marginBottom: 20 }} color={currentTheme.palette.secondaryText} />
                 <View style={styles.checkboxContainer}>
                     <CheckBox
                         size={30}
-                        iconStyle={{ borderColor: currentTheme.primary.lightText, borderWidth: 2 }}
-                        fillColor={currentTheme.primary.dark}
+                        iconStyle={{ borderColor: currentTheme.palette.secondaryText, borderWidth: 2 }}
+                        fillColor={currentTheme.palette.primary}
                         isChecked={isDarkTheme}
                         onPress={(val: boolean = false) => setIsDarkTheme(val)}
                     />
-                    <Text style={[styles.checkboxText, { color: currentTheme.primary.lightText }]}>Dark Theme</Text>
+                    <Text style={[styles.checkboxText, { color: currentTheme.palette.secondaryText }]}>Dark Theme</Text>
                 </View>
                 <View style={styles.button}>
                     <TouchableOpacity
-                        onPress={saveCustomTheme}
-                        style={[buttonStyles.container, { backgroundColor: currentTheme.primary.dark }]}
+                        onPress={savecustomTheme}
+                        style={[buttonStyles.container, { backgroundColor: currentTheme.palette.primary }]}
                     >
                         <Text style={[buttonStyles.text, {
                             color:
-                                currentTheme.primary.darkText
+                                currentTheme.palette.primaryText
                         }]}>Save</Text>
                     </TouchableOpacity>
                 </View>

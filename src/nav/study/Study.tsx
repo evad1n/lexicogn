@@ -4,7 +4,7 @@ import { useCurrentTheme } from '@/src/hooks/theme_provider';
 import { getWordWeight } from '@/src/weighting';
 import { useFocusEffect } from '@react-navigation/core';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { ActivityIndicator, Animated, PanResponder, StyleSheet, useWindowDimensions, View } from 'react-native';
+import { Animated, PanResponder, StyleSheet, useWindowDimensions, View } from 'react-native';
 import { StudyRouteProps } from './StudyRoutes';
 
 const NO_WORDS: Partial<WordDocument> = {
@@ -48,6 +48,7 @@ export default function Study({ navigation }: StudyRouteProps<'Study'>) {
                         throw Error(error);
                     }
                 }
+                setWords(undefined!);
                 loadWords();
             },
             [],
@@ -240,11 +241,7 @@ export default function Study({ navigation }: StudyRouteProps<'Study'>) {
     };
 
     function renderContent() {
-        if (!words) {
-            return (
-                <ActivityIndicator size={"large"} color={theme.primary.lightText} />
-            );
-        } else {
+        if (words) {
             return (
                 <View style={styles.cardContainer}>
                     <Animated.View

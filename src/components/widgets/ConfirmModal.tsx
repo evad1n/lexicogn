@@ -21,13 +21,13 @@ export default function ConfirmModal({ visible, message, handleCancel, handleCon
             animationType="fade"
         >
             <View style={styles.center}>
-                <View style={[{ backgroundColor: theme.primary.light, shadowColor: theme.primary.lightText }, styles.modalView]}>
+                <View style={[{ backgroundColor: theme.palette.secondary, shadowColor: theme.palette.secondaryText }, styles.modalView]}>
                     <View style={styles.prompt}>
-                        <Text adjustsFontSizeToFit style={[{ color: theme.primary.lightText }, styles.text]}>{message}</Text>
+                        <Text adjustsFontSizeToFit style={[{ color: theme.palette.secondaryText }, styles.text]}>{message}</Text>
                     </View>
                     <View style={styles.actions}>
-                        <TouchableOpacity style={[buttonStyles.container, { backgroundColor: theme.primary.dark }]} onPress={handleCancel} >
-                            <Text style={[buttonStyles.text, { color: theme.primary.darkText }]}>Cancel</Text>
+                        <TouchableOpacity style={[buttonStyles.container, { backgroundColor: theme.palette.primary }]} onPress={handleCancel} >
+                            <Text style={[buttonStyles.text, { color: theme.palette.primaryText }]}>Cancel</Text>
                         </TouchableOpacity>
                         <TouchableOpacity style={[buttonStyles.container, { backgroundColor: "#fa5a5a" }]} onPress={handleConfirm} >
                             <Text style={[buttonStyles.text, { color: "black" }]}>Confirm</Text>

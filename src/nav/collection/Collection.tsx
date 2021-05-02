@@ -1,11 +1,12 @@
 import SearchBar from '@/src/components/widgets/SearchBar';
+import Spinner from '@/src/components/widgets/Spinner';
 import { getAllWordsOverview } from '@/src/db/db';
-import useDebounce from '_hooks/debounce';
-import { useSearchInput } from '_hooks/search_input';
 import { useFocusEffect } from '@react-navigation/core';
 import React, { useCallback, useEffect, useLayoutEffect, useState } from 'react';
-import { ActivityIndicator, FlatList, Keyboard, StyleSheet, Text, View } from 'react-native';
+import { FlatList, Keyboard, StyleSheet, Text, View } from 'react-native';
 import ListItemButton from "_components/widgets/ListItemButton";
+import useDebounce from '_hooks/debounce';
+import { useSearchInput } from '_hooks/search_input';
 import { useCurrentTheme } from '_hooks/theme_provider';
 import { CollectionRouteProps } from './CollectionRoutes';
 
@@ -33,6 +34,7 @@ export default function Collection({ route, navigation }: CollectionRouteProps<'
                         throw Error(error);
                     }
                 }
+                setWords(undefined!);
                 loadWords();
             },
             [],
@@ -70,7 +72,7 @@ export default function Collection({ route, navigation }: CollectionRouteProps<'
                     onChange={onChangeSearch}
                     onSubmit={() => searchCollection(search)}
                     onClear={clearSearch}
-                    style={{ backgroundColor: theme.primary.light }}
+                    style={{ backgroundColor: theme.palette.secondary }}
                 />
             ),
             headerTitleContainerStyle: {
@@ -80,6 +82,7 @@ export default function Collection({ route, navigation }: CollectionRouteProps<'
     }, [navigation, theme, search]);
 
     // Autocomplete hook
+    // TODO: optimize
     useEffect(() => {
         searchCollection(debouncedSearch);
     }, [debouncedSearch]);
@@ -101,7 +104,7 @@ export default function Collection({ route, navigation }: CollectionRouteProps<'
     function renderEmptyText() {
         return (
             <View style={styles.emptyContainer}>
-                <Text style={[{ color: theme.primary.lightText }, styles.emptyText]}>No saved words</Text>
+                <Text style={[{ color: theme.palette.secondaryText }, styles.emptyText]}>No saved words</Text>
             </View>
         );
     }
@@ -109,7 +112,7 @@ export default function Collection({ route, navigation }: CollectionRouteProps<'
     function renderNoMatches() {
         return (
             <View style={styles.emptyContainer}>
-                <Text style={[styles.emptyText, { color: theme.primary.lightText }]}>No matches for '{search}'</Text>
+                <Text style={[styles.emptyText, { color: theme.palette.secondaryText }]}>No matches for '{search}'</Text>
             </View>
         );
     }
@@ -117,7 +120,7 @@ export default function Collection({ route, navigation }: CollectionRouteProps<'
     function renderContent() {
         if (!words) {
             return (
-                <ActivityIndicator size={"large"} color={theme.primary.lightText} />
+                <Spinner />
             );
         } else {
             return (

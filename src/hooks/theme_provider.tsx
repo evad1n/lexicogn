@@ -22,11 +22,11 @@ const initialState: ThemeState = {
     },
     custom: {
         dark: false,
-        primary: {
-            dark: "rgb(200,200,200)",
-            darkText: "rgb(0,0,0)",
-            light: "rgb(255,255,255)",
-            lightText: "rgb(0,0,0)",
+        palette: {
+            primary: "rgb(200,200,200)",
+            primaryText: "rgb(0,0,0)",
+            secondary: "rgb(255,255,255)",
+            secondaryText: "rgb(0,0,0)",
         }
     }
 };

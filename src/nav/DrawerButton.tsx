@@ -12,7 +12,7 @@ export default function DrawerButton({ navigation }: any) {
             Keyboard.dismiss();
             navigation.openDrawer();
         }}>
-            <Ionicons name="menu" size={36} color={theme.primary.darkText} />
+            <Ionicons name="menu" size={36} color={theme.palette.primaryText} />
         </TouchableOpacity>
     );
 }

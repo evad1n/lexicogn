@@ -7,7 +7,7 @@ export default function Spinner() {
     const theme = useCurrentTheme();
     return (
         <View style={layoutStyles.center}>
-            <ActivityIndicator style={{ transform: [{ scale: 3 }] }} size={"large"} color={theme.primary.lightText} />
+            <ActivityIndicator style={{ transform: [{ scale: 3 }] }} size={"large"} color={theme.palette.secondaryText} />
         </View>
     );
 }

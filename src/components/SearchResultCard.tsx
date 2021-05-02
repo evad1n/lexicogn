@@ -27,10 +27,10 @@ export default function SearchResultCard({ item: result }: { item: WordResult; }
         return (
             <React.Fragment>
                 <View>
-                    <Text style={[styles.word, { color: theme.primary.darkText }]}>{result.word}</Text>
+                    <Text style={[styles.word, { color: theme.palette.primaryText }]}>{result.word}</Text>
                 </View>
                 <View style={styles.notFoundContainer}>
-                    <Text style={[styles.notFound, { color: theme.primary.darkText }]}>No results found</Text>
+                    <Text style={[styles.notFound, { color: theme.palette.primaryText }]}>No results found</Text>
                 </View>
             </React.Fragment>
 
@@ -41,14 +41,14 @@ export default function SearchResultCard({ item: result }: { item: WordResult; }
         return (
             <React.Fragment>
                 <View style={styles.content}>
-                    <Text style={[styles.word, { color: theme.primary.darkText }]}>{result.word}</Text>
-                    <Text style={[styles.definition, { color: theme.primary.darkText }]}>{result.definition}</Text>
+                    <Text style={[styles.word, { color: theme.palette.primaryText }]}>{result.word}</Text>
+                    <Text style={[styles.definition, { color: theme.palette.primaryText }]}>{result.definition}</Text>
                 </View>
                 <TouchableOpacity
-                    style={[buttonStyles.container, { backgroundColor: theme.primary.light }]}
+                    style={[buttonStyles.container, { backgroundColor: theme.palette.secondary }]}
                     onPress={() => saveWord()}
                 >
-                    <Text style={[buttonStyles.text, { color: theme.primary.lightText }]}>Save Word</Text>
+                    <Text style={[buttonStyles.text, { color: theme.palette.secondaryText }]}>Save Word</Text>
                 </TouchableOpacity>
             </React.Fragment>
         );
@@ -56,9 +56,9 @@ export default function SearchResultCard({ item: result }: { item: WordResult; }
 
     return (
         <View style={{ width: width }}>
-            <View style={[styles.container, { backgroundColor: theme.primary.dark }]}>
+            <View style={[styles.container, { backgroundColor: theme.palette.primary }]}>
                 <View style={styles.header}>
-                    <Text style={[textStyles.api, { color: theme.primary.darkText }]}>{API.name.replace(/-/g, ' ')}</Text>
+                    <Text style={[textStyles.api, { color: theme.palette.primaryText }]}>{API.name.replace(/-/g, ' ')}</Text>
                 </View>
                 {result.definition != null ? found() : notFound()}
             </View>

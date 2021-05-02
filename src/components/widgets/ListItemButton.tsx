@@ -7,8 +7,8 @@ export default function AutoSuggestion({ text, handlePress }: { text: string; ha
 
     return (
         <View style={styles.wrapper}>
-            <TouchableOpacity onPress={() => handlePress(text)} activeOpacity={0.8} style={[styles.container, { backgroundColor: theme.primary.dark }]}>
-                <Text style={[styles.text, { color: theme.primary.darkText }]}>{text}</Text>
+            <TouchableOpacity onPress={() => handlePress(text)} activeOpacity={0.8} style={[styles.container, { backgroundColor: theme.palette.primary }]}>
+                <Text style={[styles.text, { color: theme.palette.primaryText }]}>{text}</Text>
             </TouchableOpacity>
         </View>
     );

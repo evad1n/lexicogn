@@ -3,6 +3,7 @@ import { getAllWords } from '@/src/db/db';
 import { useCurrentTheme } from '@/src/hooks/theme_provider';
 import buttonStyles from '@/src/styles/button';
 import textStyles from '@/src/styles/text';
+import { useFocusEffect } from '@react-navigation/core';
 import * as FileSystem from 'expo-file-system';
 import * as MediaLibrary from 'expo-media-library';
 import * as Permissions from 'expo-permissions';
@@ -15,16 +16,36 @@ const tempFileName = `lexicogn_export_${new Date().toLocaleDateString().replace(
 export default function Export() {
     const theme = useCurrentTheme();
 
+    const lightText = { color: theme.palette.secondaryText };
+
     const [fileName, setFileName] = useState(tempFileName);
+    const [words, setWords] = useState<WordDocument[]>(undefined!);
 
     const [modal, setModal] = useState({
         open: false,
         message: ""
     });
 
+    // Load words
+    useFocusEffect(
+        useCallback(
+            () => {
+                async function loadWords() {
+                    try {
+                        let loadedWords = await getAllWords();
+                        setWords(loadedWords);
+                    } catch (error) {
+                        throw Error(error);
+                    }
+                }
+                loadWords();
+            },
+            [],
+        )
+    );
+
     async function downloadData() {
         try {
-            let words = await getAllWords();
             // Abandon if 0 words
             if (words.length === 0) {
                 setModal({
@@ -68,26 +89,27 @@ export default function Export() {
     return (
         <View style={styles.container}>
             <View>
-                <Text style={styles.title}>Export the current saved words as JSON</Text>
+                <Text style={[styles.title, lightText]}>Export the current saved words as JSON</Text>
+                <Text style={[styles.title, lightText]}>Total count: {words?.length ?? "..."}</Text>
             </View>
-            <View style={[styles.fileNameContainer, { backgroundColor: theme.primary.dark }]}>
+            <View style={[styles.fileNameContainer, { backgroundColor: theme.palette.primary }]}>
                 <View style={styles.labelContainer}>
-                    <Text style={[styles.fileNameLabel, { color: theme.primary.darkText }]}>File name: </Text>
-                    <Text style={[styles.fileName, { color: theme.primary.darkText }]}>{fileName}</Text>
+                    <Text style={[styles.fileNameLabel, { color: theme.palette.primaryText }]}>File name: </Text>
+                    <Text style={[styles.fileName, { color: theme.palette.primaryText }]}>{fileName}</Text>
                 </View>
                 <KeyboardAvoidingView
-                    style={[styles.inputContainer, { backgroundColor: theme.primary.light }]}
+                    style={[styles.inputContainer, { backgroundColor: theme.palette.secondary }]}
                     behavior="height"
                 >
                     <FileNameInput onSubmit={handleChangeFileName} />
                 </KeyboardAvoidingView>
             </View>
-            <Text style={styles.location}>File will be located in the Downloads folder</Text>
+            <Text style={[styles.location, lightText]}>File will be located in the Downloads folder</Text>
             <TouchableOpacity
-                style={[buttonStyles.container, styles.button, { backgroundColor: theme.primary.dark }]}
+                style={[buttonStyles.container, styles.button, { backgroundColor: theme.palette.primary }]}
                 onPress={downloadData}
             >
-                <Text style={[buttonStyles.text, { color: theme.primary.darkText }]}>Download</Text>
+                <Text style={[buttonStyles.text, { color: theme.palette.primaryText }]}>Download</Text>
             </TouchableOpacity>
             {/* Bottom padding */}
             <View style={{ flex: 1.4 }}></View>
@@ -123,7 +145,7 @@ function FileNameInput({ onSubmit }: FileNameInputProps) {
         <TextInput
             style={[
                 styles.input,
-                { color: theme.primary.lightText },
+                { color: theme.palette.secondaryText },
                 text.length === 0 ? textStyles.placeholder : null,
             ]}
             value={text}
@@ -131,7 +153,7 @@ function FileNameInput({ onSubmit }: FileNameInputProps) {
             onSubmitEditing={submit}
             ref={input}
             placeholder="Enter a different file name..."
-            placeholderTextColor={theme.primary.lightText}
+            placeholderTextColor={theme.palette.secondaryText}
         />
     );
 }

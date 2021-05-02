@@ -40,17 +40,17 @@ export default function GoogleImagesResultCard({ word }: GoogleImagesResultCardP
 
     return (
         <View style={{ width, flex: 1 }}>
-            <View style={[styles.container, { backgroundColor: theme.primary.dark }]}>
+            <View style={[styles.container, { backgroundColor: theme.palette.primary }]}>
                 <View style={styles.content}>
-                    <Text style={[styles.word, { color: theme.primary.darkText }]}>{word}</Text>
+                    <Text style={[styles.word, { color: theme.palette.primaryText }]}>{word}</Text>
                 </View>
-                <View style={[{ backgroundColor: theme.primary.light }, styles.urlInput]}>
+                <View style={[{ backgroundColor: theme.palette.secondary }, styles.urlInput]}>
                     <TextInput
                         style={[styles.definition,
-                        { color: theme.primary.lightText },
+                        { color: theme.palette.secondaryText },
                         url.length === 0 ? textStyles.placeholder : null
                         ]}
-                        placeholderTextColor={theme.primary.lightText}
+                        placeholderTextColor={theme.palette.secondaryText}
                         placeholder="Enter an image URL here..."
                         onChangeText={(text) => setUrl(text)}
                         value={url}
@@ -58,16 +58,16 @@ export default function GoogleImagesResultCard({ word }: GoogleImagesResultCardP
                 </View>
                 <View style={{ flex: 1 }} />
                 <TouchableOpacity
-                    style={[buttonStyles.container, { backgroundColor: theme.primary.light }]}
+                    style={[buttonStyles.container, { backgroundColor: theme.palette.secondary }]}
                     onPress={saveURL}
                 >
-                    <Text style={[buttonStyles.text, { color: theme.primary.lightText }]}>Save URL</Text>
+                    <Text style={[buttonStyles.text, { color: theme.palette.secondaryText }]}>Save URL</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
-                    style={[buttonStyles.container, { backgroundColor: theme.primary.light }]}
+                    style={[buttonStyles.container, { backgroundColor: theme.palette.secondary }]}
                     onPress={openInBrowser}
                 >
-                    <Text style={[buttonStyles.text, { color: theme.primary.lightText }]}>Search Google Images</Text>
+                    <Text style={[buttonStyles.text, { color: theme.palette.secondaryText }]}>Search Google Images</Text>
                 </TouchableOpacity>
             </View>
         </View >

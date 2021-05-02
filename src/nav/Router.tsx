@@ -68,12 +68,12 @@ export default function Router() {
         return {
             dark: false,
             colors: {
-                primary: theme.primary.dark,
-                background: theme.primary.light,
-                card: theme.primary.dark,
-                text: theme.primary.darkText,
-                border: theme.primary.dark,
-                notification: theme.primary.dark,
+                primary: theme.palette.primary,
+                background: theme.palette.secondary,
+                card: theme.palette.primary,
+                text: theme.palette.primaryText,
+                border: theme.palette.primary,
+                notification: theme.palette.primary,
             }
         };
     };
@@ -107,9 +107,9 @@ function DrawerSection(props: DrawerContentComponentProps & { items: DrawerItemC
                             // Navigate to inner default screen
                             navigation.navigate(item.name, { screen: item.name });
                         }}
-                        icon={({ focused, size }) => <Ionicons name={focused ? item.focusedIcon : item.icon} size={size} color={theme.primary.darkText} />}
-                        label={({ focused }) => <Text style={{ color: theme.primary.darkText, fontWeight: focused ? "bold" : "normal", fontSize: 16 }}>{item.name}</Text>}
-                        activeTintColor={theme.primary.darkText}
+                        icon={({ focused, size }) => <Ionicons name={focused ? item.focusedIcon : item.icon} size={size} color={theme.palette.primaryText} />}
+                        label={({ focused }) => <Text style={{ color: theme.palette.primaryText, fontWeight: focused ? "bold" : "normal", fontSize: 16 }}>{item.name}</Text>}
+                        activeTintColor={theme.palette.primaryText}
                     />
                 </React.Fragment>
             ))
@@ -128,8 +128,8 @@ function MyDrawerContent(props: DrawerContentComponentProps) {
             </DrawerContentScrollView>
             <View style={styles.footer}>
                 <DrawerSection items={BotItems} indexOffset={TopItems.length} {...props} />
-                <Divider color={theme.primary.darkText} />
-                <Text style={[styles.footerText, { color: theme.primary.darkText }]}>&copy; {new Date().getFullYear()} Will Dickinson</Text>
+                <Divider color={theme.palette.primaryText} />
+                <Text style={[styles.footerText, { color: theme.palette.primaryText }]}>&copy; {new Date().getFullYear()} Will Dickinson</Text>
             </View>
         </View>
     );

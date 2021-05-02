@@ -27,7 +27,7 @@ export default function SearchBar({ style, textColor, autoFocus = false, editabl
 
     const searchRef: any = useRef();
 
-    textColor = textColor ?? theme.primary.lightText;
+    textColor = textColor ?? theme.palette.secondaryText;
 
     useFocusEffect(
         React.useCallback(() => {
@@ -46,7 +46,7 @@ export default function SearchBar({ style, textColor, autoFocus = false, editabl
                     focus();
             }}
             activeOpacity={1}
-            style={[styles.container, { backgroundColor: theme.primary.light }, style]}
+            style={[styles.container, { backgroundColor: theme.palette.secondary }, style]}
         >
             <Ionicons name="md-search" size={20} style={styles.icon} color={textColor} />
             <TextInput

@@ -50,9 +50,9 @@ export default function Settings({ navigation }: SettingsRouteProps<'Settings'>)
             >
                 {setting.icon({
                     size: 32,
-                    color: theme.primary.lightText,
+                    color: theme.palette.secondaryText,
                 })}
-                <Text style={[styles.itemText, { color: theme.primary.lightText }]}>{setting.name}</Text>
+                <Text style={[styles.itemText, { color: theme.palette.secondaryText }]}>{setting.name}</Text>
             </TouchableOpacity>
         );
     };
@@ -62,8 +62,8 @@ export default function Settings({ navigation }: SettingsRouteProps<'Settings'>)
             data={settings}
             renderItem={renderSettingTab}
             keyExtractor={(item: SettingsType) => item.name}
-            ItemSeparatorComponent={() => <Divider color={theme.primary.lightText} />}
-            ListFooterComponent={() => <Divider color={theme.primary.lightText} />}
+            ItemSeparatorComponent={() => <Divider color={theme.palette.secondaryText} />}
+            ListFooterComponent={() => <Divider color={theme.palette.secondaryText} />}
         />
     );
 }

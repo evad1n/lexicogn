@@ -18,7 +18,7 @@ type State = {
     word: string,
     searched: boolean,
     loading: boolean,
-    results: WordResult[],
+    results: Partial<WordResult>[],
     suggestions: string[];
     keyboardOpen: boolean;
 };
@@ -115,30 +115,51 @@ export default function Search({ navigation }: SearchRouteProps<'Search'> & Rout
     async function searchWord(text: string) {
         // Clear old results
         setState((state) => ({ ...state, word: text, results: [], searched: true, loading: true }));
-        let newResults: WordResult[] = [];
-        // Build requests
-        let requests = [];
-        for (let i = API_OFFSET; i < APIS.length; i++) {
-            requests.push(APIS[i].get(text));
-        }
-        // Make all requests in one
-        const responses = await axios.all(requests);
-        // Parse responses
-        for (let i = API_OFFSET; i < APIS.length; i++) {
+        let newResults: Partial<WordResult>[] = [];
+        try {
+            // Build requests
+            let requests = [];
+            for (let i = API_OFFSET; i < APIS.length; i++) {
+                requests.push(APIS[i].get(text));
+            }
+            // Make all requests in one
+            const responses = await axios.all(requests);
+            console.log('requests done!');
+            // Parse responses
+            for (let i = API_OFFSET; i < APIS.length; i++) {
+                newResults.push({
+                    word: text,
+                    api: i,
+                    definition: APIS[i].parseResponse(responses[i - API_OFFSET]),
+                });
+            }
+            // Add extra for google images
             newResults.push({
-                word: text,
-                api: i,
-                definition: APIS[i].parseResponse(responses[i - API_OFFSET]),
+                api: 1,
+                word: state.word,
+                definition: "",
             });
-        }
-        // Add extra for google images
-        newResults.push({
-            api: 1,
-            word: state.word,
-            definition: "",
-        });
 
-        setState((state) => ({ ...state, results: newResults, loading: false }));
+            setState((state) => ({ ...state, results: newResults, loading: false }));
+        } catch (error) {
+            // No network
+
+            // Parse responses
+            for (let i = API_OFFSET; i < APIS.length; i++) {
+                newResults.push({
+                    word: text,
+                    api: i,
+                });
+            }
+            // Add extra for google images
+            newResults.push({
+                api: 1,
+                word: state.word,
+                definition: "",
+            });
+
+            setState((state) => ({ ...state, results: newResults, loading: false }));
+        }
     }
 
     async function autoCompleteSuggestions(text: string) {
@@ -159,7 +180,7 @@ export default function Search({ navigation }: SearchRouteProps<'Search'> & Rout
             <View
                 style={[styles.emptyContainer, state.keyboardOpen ? styles.keyboardView : null]}
             >
-                <Text style={[styles.emptyText, { color: theme.primary.lightText }]}>No suggestions for '{state.word}'</Text>
+                <Text style={[styles.emptyText, { color: theme.palette.secondaryText }]}>No suggestions for '{state.word}'</Text>
             </View>
         );
     }
@@ -170,7 +191,7 @@ export default function Search({ navigation }: SearchRouteProps<'Search'> & Rout
                 <View
                     style={[styles.emptyContainer, state.keyboardOpen ? styles.keyboardView : null]}
                 >
-                    <Text style={[styles.emptyText, { color: theme.primary.lightText }]}>Search for a word to see results</Text>
+                    <Text style={[styles.emptyText, { color: theme.palette.secondaryText }]}>Search for a word to see results</Text>
                 </View>
             );
         } else {
@@ -214,7 +235,7 @@ export default function Search({ navigation }: SearchRouteProps<'Search'> & Rout
                 <View
                     style={[styles.emptyContainer, state.keyboardOpen ? styles.keyboardView : null]}
                 >
-                    <ActivityIndicator size={"large"} color={theme.primary.lightText} />
+                    <ActivityIndicator size={"large"} color={theme.palette.secondaryText} />
                 </View>
             );
         } else {

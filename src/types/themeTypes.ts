@@ -1,8 +1,8 @@
 type ColorPalette = {
-    dark: string;
-    darkText: string;
-    light: string;
-    lightText: string;
+    primary: string;
+    primaryText: string;
+    secondary: string;
+    secondaryText: string;
 };
 
 /**
@@ -10,7 +10,7 @@ type ColorPalette = {
  */
 type ThemePalette = {
     dark: boolean;
-    primary: ColorPalette;
+    palette: ColorPalette;
 };
 
 type ThemeKey =

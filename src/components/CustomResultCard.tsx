@@ -33,31 +33,31 @@ export default function CustomResultCard({ word }: CustomResultCardProps) {
 
     return (
         <View style={{ width, flex: 1 }}>
-            <View style={[styles.container, { backgroundColor: theme.primary.dark }]}>
+            <View style={[styles.container, { backgroundColor: theme.palette.primary }]}>
                 <View style={styles.header}>
-                    <Text style={[textStyles.api, { color: theme.primary.darkText }]}>custom</Text>
+                    <Text style={[textStyles.api, { color: theme.palette.primaryText }]}>custom</Text>
                 </View>
                 <View style={styles.content}>
-                    <Text style={[styles.word, { color: theme.primary.darkText }]}>{word}</Text>
+                    <Text style={[styles.word, { color: theme.palette.primaryText }]}>{word}</Text>
                 </View>
-                <View style={[{ backgroundColor: theme.primary.light }, styles.definitionInput]}>
+                <View style={[{ backgroundColor: theme.palette.secondary }, styles.definitionInput]}>
                     <TextInput
                         style={[styles.definition,
-                        { color: theme.primary.lightText },
+                        { color: theme.palette.secondaryText },
                         definition.length === 0 ? textStyles.placeholder : null
                         ]}
                         multiline
-                        placeholderTextColor={theme.primary.lightText}
+                        placeholderTextColor={theme.palette.secondaryText}
                         placeholder="Enter a custom definition here..."
                         onChangeText={(text) => setDefinition(text)}
                         value={definition}
                     />
                 </View>
                 <TouchableOpacity
-                    style={[buttonStyles.container, { backgroundColor: theme.primary.light }]}
+                    style={[buttonStyles.container, { backgroundColor: theme.palette.secondary }]}
                     onPress={() => saveWord()}
                 >
-                    <Text style={[buttonStyles.text, { color: theme.primary.lightText }]}>Save Word</Text>
+                    <Text style={[buttonStyles.text, { color: theme.palette.secondaryText }]}>Save Word</Text>
                 </TouchableOpacity>
             </View>
         </View >

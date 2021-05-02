@@ -9,8 +9,8 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 const RESET_WARNING = "A reset will perform the following actions:";
 
-const RESET_ACTIONS = `
-- Clear local storage (saved themes)
+const RESET_ACTIONS =
+    `- Clear local storage (saved themes)
 - Wipe the database
 - Reload the app`;
 
@@ -55,7 +55,7 @@ export default function Reset() {
         }
     }
 
-    const textColor = { color: theme.primary.lightText };
+    const textColor = { color: theme.palette.secondaryText };
 
     return (
         <View style={styles.container}>

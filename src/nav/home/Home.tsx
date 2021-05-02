@@ -58,11 +58,11 @@ export default function Home({ navigation }: RouteNavProps<'Home'> & HomeRoutePr
     return (
         <View style={styles.container}>
             <View style={styles.titleContainer}>
-                <Text style={[styles.title, { color: theme.primary.lightText }]}>LEXICOGN</Text>
+                <Text style={[styles.title, { color: theme.palette.secondaryText }]}>LEXICOGN</Text>
             </View>
             <SearchBar
-                style={[styles.searchBar, { backgroundColor: theme.primary.dark }]}
-                textColor={theme.primary.darkText}
+                style={[styles.searchBar, { backgroundColor: theme.palette.primary }]}
+                textColor={theme.palette.primaryText}
                 editable={false}
                 placeholder="Look up a word..."
                 blockEvent={() => {
@@ -70,7 +70,7 @@ export default function Home({ navigation }: RouteNavProps<'Home'> & HomeRoutePr
                 }}
             />
             {loaded && <View style={styles.cardContainer}>
-                <Flashcard word={homeWord || NO_WORDS} change={false} />
+                <Flashcard word={homeWord || NO_WORDS} />
             </View>}
         </View >
     );

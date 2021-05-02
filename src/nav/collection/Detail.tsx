@@ -1,10 +1,11 @@
 import ConfirmModal from '@/src/components/widgets/ConfirmModal';
 import SearchBar from '@/src/components/widgets/SearchBar';
+import Spinner from '@/src/components/widgets/Spinner';
 import buttonStyles from '@/src/styles/button';
 import textStyles from '@/src/styles/text';
 import { useFocusEffect } from '@react-navigation/core';
-import React, { useCallback, useEffect, useLayoutEffect, useState } from 'react';
-import { ActivityIndicator, BackHandler, Dimensions, Image, KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import React, { useCallback, useLayoutEffect, useState } from 'react';
+import { BackHandler, Dimensions, Image, KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import { deleteWord as deleteWordDB, getWord, updateDefinition as updateDefinitionDB } from '_db/db';
 import { useCurrentTheme } from '_hooks/theme_provider';
@@ -24,19 +25,23 @@ export default function Detail({ route, navigation }: CollectionRouteProps<'Deta
     const [editing, setEditing] = useState(false);
 
     // Word data
-    // TODO: maybe make this focus
-    useEffect(() => {
-        async function loadWord() {
-            try {
-                let word = await getWord(id);
-                setDefinition(word.definition);
-                setWord(word);
-            } catch (error) {
-                throw Error(error);
-            }
-        }
-        loadWord();
-    }, [route.params]);
+    useFocusEffect(
+        useCallback(
+            () => {
+                async function loadWord() {
+                    try {
+                        let word = await getWord(id);
+                        setDefinition(word.definition);
+                        setWord(word);
+                    } catch (error) {
+                        throw Error(error);
+                    }
+                }
+                loadWord();
+            },
+            [],
+        )
+    );
 
     // Header search bar
     useLayoutEffect(() => {
@@ -50,7 +55,7 @@ export default function Detail({ route, navigation }: CollectionRouteProps<'Deta
                     value={search ?? ""}
                     editable={false}
                     placeholder="Search the collection..."
-                    style={{ backgroundColor: theme.primary.light }}
+                    style={{ backgroundColor: theme.palette.secondary }}
                 />
             ),
             headerTitleContainerStyle: {
@@ -65,6 +70,7 @@ export default function Detail({ route, navigation }: CollectionRouteProps<'Deta
             const onBackPress = () => {
                 if (editing) {
                     setEditing(false);
+                    setDefinition(word.definition);
                     return true;
                 } else {
                     return false;
@@ -122,19 +128,19 @@ export default function Detail({ route, navigation }: CollectionRouteProps<'Deta
         } else {
             return (
                 <TouchableOpacity
-                    style={[buttonStyles.container, { backgroundColor: theme.primary.dark }]}
+                    style={[buttonStyles.container, { backgroundColor: theme.palette.primary }]}
                     onPress={startEditing}
                 >
-                    <Text style={[buttonStyles.text, { color: theme.primary.darkText }]}>Edit</Text>
+                    <Text style={[buttonStyles.text, { color: theme.palette.primaryText }]}>Edit</Text>
                 </TouchableOpacity>
             );
         }
     }
 
     const { width } = Dimensions.get("window");
-    const editingTextBackgroundColor = { backgroundColor: editing ? theme.primary.dark : theme.primary.light };
+    const editingTextBackgroundColor = { backgroundColor: editing ? theme.palette.primary : theme.palette.secondary };
     const editingTextColor = {
-        color: editing ? theme.primary.darkText : theme.primary.lightText,
+        color: editing ? theme.palette.primaryText : theme.palette.secondaryText,
         marginLeft: editing ? 0 : -10
     };
 
@@ -143,7 +149,7 @@ export default function Detail({ route, navigation }: CollectionRouteProps<'Deta
             const total = word.correct + word.incorrect;
             const percent = 100 * (word.correct / total);
             return (
-                <Text style={[styles.ratio, { color: theme.primary.lightText }]}>
+                <Text style={[styles.ratio, { color: theme.palette.secondaryText }]}>
                     {word.correct}/{total}
                     {"\n"}
                     {total > 0 ? `${percent.toFixed(0)}%` : "0%"}
@@ -167,7 +173,7 @@ export default function Detail({ route, navigation }: CollectionRouteProps<'Deta
                             value={definition}
                             onChangeText={(text) => setDefinition(text)}
                             style={[styles.definition, editingTextColor, definition.length === 0 ? textStyles.placeholder : null]}
-                            placeholderTextColor={theme.primary.darkText}
+                            placeholderTextColor={theme.palette.primaryText}
                             editable={editing}
                         />
                     </KeyboardAvoidingView>
@@ -181,7 +187,7 @@ export default function Detail({ route, navigation }: CollectionRouteProps<'Deta
                                 width: 0.9 * width,
                                 height: 0.9 * width
                             }}
-                            source={{ uri: word.definition }}
+                            source={{ uri: word.definition !== "" ? word.definition : "__" }}
                             // NOTE: this won't show up on android develpoment
                             // https://reactnative.dev/docs/image#defaultsource
                             defaultSource={require('_assets/no-image.png')}
@@ -210,7 +216,7 @@ export default function Detail({ route, navigation }: CollectionRouteProps<'Deta
     function renderContent() {
         if (!word) {
             return (
-                <ActivityIndicator size={"large"} color={theme.primary.lightText} />
+                <Spinner />
             );
         } else {
             return (
@@ -223,8 +229,8 @@ export default function Detail({ route, navigation }: CollectionRouteProps<'Deta
                     />
                     <View style={styles.content}>
                         {renderRatio()}
-                        <Text style={[styles.word, { color: theme.primary.lightText }]}>{word.word}</Text>
-                        <Text style={[textStyles.api, { color: theme.primary.lightText }]}>{APIS[word.api].name.replace(/-/g, ' ')}</Text>
+                        <Text style={[styles.word, { color: theme.palette.secondaryText }]}>{word.word}</Text>
+                        <Text style={[textStyles.api, { color: theme.palette.secondaryText }]}>{APIS[word.api].name.replace(/-/g, ' ')}</Text>
                         {renderDefinition()}
                     </View>
                     <View style={styles.actions}>
