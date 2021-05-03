@@ -38,7 +38,6 @@ A mobile app to keep track of and study new vocabulary words.
 
 # TODO
 
-- ? handle no internet connection better
 - better API results...
 
 ## Other

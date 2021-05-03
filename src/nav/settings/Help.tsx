@@ -1,3 +1,4 @@
+import Divider from '@/src/components/layout/Divider';
 import React from 'react';
 import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useCurrentTheme } from '_hooks/theme_provider';
@@ -9,7 +10,11 @@ const INFO =
 const FLASHCARD_HELP =
     `Swipe up to decrease the frequency of a word
 
-    Swipe down to increase the frequency of a word`;
+Swipe down to increase the frequency of a word
+
+Swipe left to see recently studied words
+
+Swipe right to go the most current word`;
 
 const CONTACT =
     `Bugs or suggestions?
@@ -29,6 +34,7 @@ export default function Help({ navigation }: SettingsRouteProps<'Help'>) {
                     <Text style={[styles.header, secondaryText]}>Flashcard Directions</Text>
                     <Text style={[styles.flashcards, secondaryText]}>{FLASHCARD_HELP}</Text>
                 </View>
+                <Divider color={theme.palette.secondaryText} />
                 <Text style={[styles.flashcards, secondaryText]}>{CONTACT}</Text>
             </ScrollView>
         </View>

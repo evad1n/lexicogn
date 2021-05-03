@@ -1,7 +1,7 @@
 import { useNavigation } from '@react-navigation/core';
 import * as WebBrowser from 'expo-web-browser';
 import React, { useState } from 'react';
-import { Dimensions, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Text, TextInput, TouchableOpacity, useWindowDimensions, View } from 'react-native';
 import { insertWord } from '_db/db';
 import { useCurrentTheme } from '_hooks/theme_provider';
 import buttonStyles from '../styles/button';
@@ -13,7 +13,7 @@ interface GoogleImagesResultCardProps {
 
 export default function GoogleImagesResultCard({ word }: GoogleImagesResultCardProps) {
     const theme = useCurrentTheme();
-    const { width } = Dimensions.get('window');
+    const { width } = useWindowDimensions();
     const navigation = useNavigation();
 
     const searchURL = `https://www.google.com/search?tbm=isch&q=${word}`;

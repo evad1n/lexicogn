@@ -4,7 +4,7 @@ import { useCurrentTheme } from "@/src/hooks/theme_provider";
 import { useFocusEffect } from "@react-navigation/core";
 import axios from "axios";
 import React, { useEffect, useLayoutEffect, useState } from "react";
-import { ActivityIndicator, Dimensions, FlatList, Keyboard, ListRenderItemInfo, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, FlatList, Keyboard, ListRenderItemInfo, StyleSheet, Text, useWindowDimensions, View } from "react-native";
 import SearchResultCard from "_components/SearchResultCard";
 import ListItemButton from "_components/widgets/ListItemButton";
 import SearchBar from "_components/widgets/SearchBar";
@@ -36,7 +36,7 @@ const initialState: State = {
 export default function Search({ navigation }: SearchRouteProps<'Search'> & RouteNavProps<'Search'>) {
     const theme = useCurrentTheme();
     // Make result card list fit width
-    const { width } = Dimensions.get('window');
+    const { width } = useWindowDimensions();
 
     const { focus } = useSearchInput();
 

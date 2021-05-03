@@ -79,8 +79,7 @@ export default function Detail({ route, navigation }: CollectionRouteProps<'Deta
 
             BackHandler.addEventListener('hardwareBackPress', onBackPress);
 
-            return () =>
-                BackHandler.removeEventListener('hardwareBackPress', onBackPress);
+            return () => BackHandler.removeEventListener('hardwareBackPress', onBackPress);
         }, [editing])
     );
 

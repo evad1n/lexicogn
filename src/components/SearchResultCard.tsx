@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/core';
 import React from 'react';
-import { Dimensions, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, useWindowDimensions, View } from 'react-native';
 import { insertWord } from '_db/db';
 import { useCurrentTheme } from '_hooks/theme_provider';
 import APIS, { APIType } from '~/api';
@@ -9,7 +9,7 @@ import textStyles from '../styles/text';
 
 export default function SearchResultCard({ item: result }: { item: WordResult; }) {
     const theme = useCurrentTheme();
-    const { width } = Dimensions.get('window');
+    const { width } = useWindowDimensions();
     const navigation = useNavigation();
 
     const API: APIType = APIS[result.api];

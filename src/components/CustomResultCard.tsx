@@ -1,6 +1,6 @@
 import { useNavigation } from '@react-navigation/core';
 import React, { useState } from 'react';
-import { Dimensions, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Text, TextInput, TouchableOpacity, useWindowDimensions, View } from 'react-native';
 import { insertWord } from '_db/db';
 import { useCurrentTheme } from '_hooks/theme_provider';
 import buttonStyles from '../styles/button';
@@ -12,7 +12,7 @@ interface CustomResultCardProps {
 
 export default function CustomResultCard({ word }: CustomResultCardProps) {
     const theme = useCurrentTheme();
-    const { width } = Dimensions.get('window');
+    const { width } = useWindowDimensions();
     const navigation = useNavigation();
 
     const [definition, setDefinition] = useState("");

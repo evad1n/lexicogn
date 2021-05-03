@@ -1,9 +1,10 @@
 import SearchBar from '@/src/components/widgets/SearchBar';
 import Spinner from '@/src/components/widgets/Spinner';
 import { getAllWordsOverview } from '@/src/db/db';
+import layoutStyles from '@/src/styles/layout';
 import { useFocusEffect } from '@react-navigation/core';
 import React, { useCallback, useEffect, useLayoutEffect, useState } from 'react';
-import { FlatList, Keyboard, StyleSheet, Text, View } from 'react-native';
+import { DeviceEventEmitter, FlatList, Keyboard, ListRenderItemInfo, StyleSheet, Text, View } from 'react-native';
 import ListItemButton from "_components/widgets/ListItemButton";
 import useDebounce from '_hooks/debounce';
 import { useSearchInput } from '_hooks/search_input';
@@ -20,7 +21,26 @@ export default function Collection({ route, navigation }: CollectionRouteProps<'
     const debouncedSearch = useDebounce(search, 500);
 
     const [results, setResults] = useState<WordOverivew[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [keyboardOpen, setKeyboardOpen] = useState(true);
 
+    function openKeyboard() {
+        setKeyboardOpen(true);
+    }
+    function closeKeyboard() {
+        setKeyboardOpen(false);
+    }
+
+    useEffect(() => {
+        Keyboard.addListener("keyboardDidShow", openKeyboard);
+        Keyboard.addListener("keyboardDidHide", closeKeyboard);
+
+        // cleanup function
+        return () => {
+            Keyboard.removeListener("keyboardDidShow", openKeyboard);
+            Keyboard.removeListener("keyboardDidHide", closeKeyboard);
+        };
+    }, []);
 
     // Load words
     useFocusEffect(
@@ -30,11 +50,13 @@ export default function Collection({ route, navigation }: CollectionRouteProps<'
                     try {
                         let loadedWords = await getAllWordsOverview();
                         setWords(loadedWords);
+                        setLoading(false);
                     } catch (error) {
                         throw Error(error);
                     }
                 }
                 setWords(undefined!);
+                setLoading(true);
                 loadWords();
             },
             [],
@@ -50,6 +72,8 @@ export default function Collection({ route, navigation }: CollectionRouteProps<'
                     focus();
                 }
                 setSearch(route.params.search ?? "");
+            } else {
+                setSearch("");
             }
         }, [route.params, focus, inputRef])
     );
@@ -79,11 +103,22 @@ export default function Collection({ route, navigation }: CollectionRouteProps<'
                 left: 60,
             },
         });
+
+        // On leave
+        const unsubscribe = navigation.addListener('blur', () => {
+            setSearch("");
+        });
+
+        return () => {
+            unsubscribe();
+        };
     }, [navigation, theme, search]);
 
     // Autocomplete hook
     useEffect(() => {
+        setLoading(true);
         searchCollection(debouncedSearch);
+        setLoading(false);
     }, [debouncedSearch]);
 
     function searchCollection(text: string) {
@@ -116,29 +151,42 @@ export default function Collection({ route, navigation }: CollectionRouteProps<'
         );
     }
 
+    const renderItem = ({ item }: ListRenderItemInfo<WordOverivew>) => (
+        <ListItemButton
+            text={item.word}
+            handlePress={() => {
+                Keyboard.dismiss();
+                navigation.navigate('Detail', {
+                    id: item.id,
+                    search: debouncedSearch
+                });
+            }}
+        />
+    );
+
     function renderContent() {
-        if (!words) {
+        if (loading || search !== debouncedSearch) {
             return (
-                <Spinner />
+                <View style={[layoutStyles.center, keyboardOpen ? styles.keyboardView : null]}>
+                    <Spinner />
+                </View>
             );
         } else {
             return (
+                // TODO: optimize performance here
                 <FlatList
                     keyboardShouldPersistTaps="handled"
                     contentContainerStyle={styles.listContainer}
                     data={search.length === 0 ? words : results}
-                    renderItem={({ item }) => <ListItemButton
-                        text={item.word}
-                        handlePress={() => {
-                            Keyboard.dismiss();
-                            navigation.navigate('Detail', {
-                                id: item.id,
-                                search
-                            });
-                        }}
-                    />}
+                    renderItem={renderItem}
                     keyExtractor={(item, index) => `${index}`}
-                    ListEmptyComponent={search.length !== 0 && words.length !== 0 ? renderNoMatches : renderEmptyText}
+                    ListEmptyComponent={debouncedSearch.length !== 0 && words.length !== 0 ? renderNoMatches : renderEmptyText}
+                    initialNumToRender={30}
+                    updateCellsBatchingPeriod={500}
+                    maxToRenderPerBatch={20}
+                // getItemLayout={(data, index) => (
+                //     { length: 40, offset: 40 * index, index }
+                // )}
                 />
             );
         }
@@ -165,5 +213,8 @@ const styles = StyleSheet.create({
     emptyText: {
         fontSize: 30,
         textAlign: "center"
-    }
+    },
+    keyboardView: {
+        marginBottom: "75%",
+    },
 });

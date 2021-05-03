@@ -1,10 +1,12 @@
+import CurrentStudyCard from '@/src/components/CurrentStudyCard';
 import Flashcard from '@/src/components/Flashcard';
-import { decreaseFrequency, getAllWords, increaseFrequency } from '@/src/db/db';
-import { useCurrentTheme } from '@/src/hooks/theme_provider';
+import { getAllWords } from '@/src/db/db';
+import layoutStyles from '@/src/styles/layout';
 import { getWordWeight } from '@/src/weighting';
 import { useFocusEffect } from '@react-navigation/core';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { Animated, PanResponder, StyleSheet, useWindowDimensions, View } from 'react-native';
+import { ListRenderItemInfo, StyleSheet, useWindowDimensions, View } from 'react-native';
+import { FlatList } from 'react-native-gesture-handler';
 import { StudyRouteProps } from './StudyRoutes';
 
 const NO_WORDS: Partial<WordDocument> = {
@@ -12,31 +14,20 @@ const NO_WORDS: Partial<WordDocument> = {
     definition: "Did you expect something witty here?",
 };
 
-// Differentiatae between tap/swipe
-const SWIPE_THRESHOLD = 200;
-// Time for new card animation
-const NEW_CARD_DURATION = 200;
+// Max number of words in history, including current
+const MAX_HISTORY = 10;
 
 export default function Study({ navigation }: StudyRouteProps<'Study'>) {
     const { width, height } = useWindowDimensions();
-    const theme = useCurrentTheme();
 
     const [words, setWords] = useState<WordDocument[]>(undefined!);
-
-    const [word, setWord] = useState<WordDocument>(undefined!);
     const [weightSum, setWeightSum] = useState(0);
+    const [history, setHistory] = useState<WordDocument[]>([]);
+    const [transitioning, setTransitioning] = useState(false);
 
+    const listRef = useRef<FlatList<WordDocument>>(null);
 
-    useEffect(() => {
-        const unsubscribe = navigation.addListener('blur', () => {
-            // Move card off screen to the right
-            pan.setValue({ x: width, y: 0 });
-        });
-
-        return unsubscribe;
-    }, [navigation]);
-
-    // Load words on focus
+    // Reload words on focus
     useFocusEffect(
         useCallback(
             () => {
@@ -55,18 +46,24 @@ export default function Study({ navigation }: StudyRouteProps<'Study'>) {
         )
     );
 
-    function newCard() {
-        // Move card off screen to the right
-        pan.setValue({ x: width, y: 0 });
-        // Get new word
-        randomWord();
-        Animated.spring(
-            pan, // Auto-multiplexed
-            {
-                toValue: { x: 0, y: 0 },
-                useNativeDriver: false
-            }, // Back to zero
-        ).start();
+    // Adds to history in most recent unique order
+    function addToHistory(word: WordDocument) {
+        setHistory(history => {
+            let newHistory = history;
+            const dupIdx = history.findIndex(el => el.id === word.id);
+            if (dupIdx !== -1) {
+                // Remove old duplicate
+                newHistory.splice(dupIdx, 1);
+            }
+            // Add new word
+            newHistory = newHistory.concat(word);
+            // Truncate if necessary
+            if (newHistory.length > MAX_HISTORY) {
+                newHistory = newHistory.slice(newHistory.length - MAX_HISTORY);
+            }
+
+            return newHistory;
+        });
     }
 
     useEffect(() => {
@@ -78,10 +75,17 @@ export default function Study({ navigation }: StudyRouteProps<'Study'>) {
             total_weights += getWordWeight(word);
         }
         setWeightSum(total_weights);
-        newCard();
     }, [words]);
 
+    useEffect(() => {
+        if (words && weightSum !== 0)
+            randomWord();
+    }, [weightSum]);
+
     function randomWord() {
+        // Hide old card to prevent async DOM flickering
+        setTransitioning(true);
+
         let sum = weightSum;
         let r = Math.floor(Math.random() * sum);
         let i;
@@ -93,173 +97,95 @@ export default function Study({ navigation }: StudyRouteProps<'Study'>) {
         }
         let randWord: WordDocument = words[i];
 
-        setWord(randWord);
+        // Add word to history
+        addToHistory(randWord);
     }
 
-    function swipeUp() {
-        decreaseFrequency(word.id);
-        Animated.parallel(
-            [
-                Animated.timing(
-                    pan, // Auto-multiplexed
-                    {
-                        duration: NEW_CARD_DURATION,
-                        toValue: { x: 0, y: -height },
-                        useNativeDriver: false
-                    }, // Back to zero
-                ),
-                Animated.timing(
-                    border, // Auto-multiplexed
-                    {
-                        duration: NEW_CARD_DURATION,
-                        toValue: 0,
-                        useNativeDriver: false
-                    }, // Back to zero
-                )
-            ]
-        ).start(newCard);
+    useEffect(() => {
+        setTimeout(() => {
+            listRef.current!.scrollToEnd({ animated: false });
+            setTransitioning(false);
+        }, 10);
+
+
+    }, [history]);
+
+    function afterNewCard() {
+        // setTimeout(() => {
+        //     listRef.current!.scrollToEnd({ animated: false });
+        // }, 5);
+        // // // Now unhide previous
+        // setTransitioning(false);
     }
 
-    function swipeDown() {
-        increaseFrequency(word.id);
-        Animated.parallel(
-            [
-                Animated.timing(
-                    pan, // Auto-multiplexed
-                    {
-                        duration: NEW_CARD_DURATION,
-                        toValue: { x: 0, y: height },
-                        useNativeDriver: false
-                    }, // Back to zero
-                ),
-                Animated.timing(
-                    border, // Auto-multiplexed
-                    {
-                        duration: NEW_CARD_DURATION,
-                        toValue: 0,
-                        useNativeDriver: false
-                    }, // Back to zeros
-                )
-            ]
-        ).start(newCard);
-    }
-
-    function swipeThreshold(dy: number, vy: number): boolean {
-        if ((dy + (200 * vy)) > height * 0.25) {
-            return true;
-        }
-        return false;
-    }
-
-
-    // Animation
-    const pan = useRef(new Animated.ValueXY()).current;
-    // Borders
-    const border = useRef(new Animated.Value(0)).current;
-
-    const panResponder = PanResponder.create({
-        onMoveShouldSetPanResponder: (e, gestureState) => {
-            return (Math.pow(gestureState.dx, 2) + Math.pow(gestureState.dy, 2) >= SWIPE_THRESHOLD);
-        },
-        onPanResponderMove: (e, gestureState) => {
-            // Border function
-            word && Animated.event(
-                [
-                    null,
-                    {
-                        dy: border,
-                    }
-                ],
-                {
-                    useNativeDriver: false,
-                },
-            )(e, gestureState);
-            Animated.event(
-                [
-                    null,
-                    {
-                        dx: pan.x,
-                        dy: pan.y,
-                    }
-                ],
-                {
-                    useNativeDriver: false,
-                },
-            )(e, gestureState);
-        },
-        onPanResponderRelease: (e, gestureState) => {
-            if (word && swipeThreshold(-gestureState.dy, -gestureState.vy)) {
-                // UP
-                swipeUp();
-            } else if (word && swipeThreshold(gestureState.dy, gestureState.vy)) {
-                // DOWN
-                swipeDown();
-            } else {
-                Animated.parallel(
-                    [
-                        Animated.spring(
-                            pan, // Auto-multiplexed
-                            {
-                                toValue: { x: 0, y: 0 },
-                                useNativeDriver: false
-                            }, // Back to zero
-                        ),
-                        Animated.timing(
-                            border, // Auto-multiplexed
-                            {
-                                duration: 200,
-                                toValue: 0,
-                                useNativeDriver: false
-                            }, // Back to zero
-                        )
-                    ]
-                ).start();
-            }
-        },
-    });
-
-    const borderInterpolate = border.interpolate({
-        inputRange: [
-            -180,
-            -30,
-            0,
-            30,
-            180,
-        ],
-        outputRange: [
-            "rgba(25,212,32,1)",
-            "rgba(25,212,32,0)",
-            "rgba(0,0,0,0)",
-            "rgba(255,0,0,0)",
-            "rgba(255,0,0,1)",
-        ],
-        extrapolate: "clamp"
-    });
-
-    const borderStyle = {
-        backgroundColor: borderInterpolate
-    };
-
-    function renderContent() {
-        if (words) {
+    function renderCard({ index, item }: ListRenderItemInfo<WordDocument>) {
+        // Display current card as rightmost
+        if (index === history.length - 1) {
             return (
-                <View style={styles.cardContainer}>
-                    <Animated.View
-                        {...panResponder.panHandlers}
-                        style={[styles.cardWrapper, borderStyle, pan.getTranslateTransform()]}
-                    >
-                        <Flashcard
-                            word={word || NO_WORDS}
-                        />
-                    </Animated.View>
-                </View>
+                <CurrentStudyCard
+                    word={item}
+                    onNewCard={randomWord}
+                    onAnimateCard={afterNewCard}
+                />
             );
+        } else {
+            if (index === history.length - 2 && transitioning) {
+                return (
+                    <View style={[layoutStyles.center, { width: width }]}>
+
+                    </View>
+                );
+            } else {
+                return (
+                    <StudyCard word={item} />
+                );
+            }
         }
+    }
+
+    function renderCards() {
+        return (
+            <FlatList
+                ref={listRef}
+                style={{
+                    width: width
+                }}
+                keyboardShouldPersistTaps="handled"
+                removeClippedSubviews={true}
+                alwaysBounceHorizontal
+                horizontal
+                data={history}
+                renderItem={renderCard}
+                keyExtractor={(item, index) => `${index}-api-${item.api}`}
+                getItemLayout={(data, index) => (
+                    { length: width, offset: width * index, index }
+                )}
+            />
+        );
     }
 
     return (
-        <View style={styles.container}>
-            {renderContent()}
+        <React.Fragment>
+            {renderCards()}
+        </React.Fragment>
+    );
+}
+
+interface StudyCardProps {
+    word: WordDocument;
+}
+
+// Old read-only cards (can't swipe up/down )
+function StudyCard({ word }: StudyCardProps) {
+    const { width } = useWindowDimensions();
+
+    return (
+        <View style={[layoutStyles.center, { width: width }]}>
+            <View style={styles.cardContainer}>
+                <Flashcard
+                    word={word || NO_WORDS}
+                />
+            </View>
         </View>
     );
 }
