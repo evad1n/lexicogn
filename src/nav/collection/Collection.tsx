@@ -11,6 +11,16 @@ import { useSearchInput } from '_hooks/search_input';
 import { useCurrentTheme } from '_hooks/theme_provider';
 import { CollectionRouteProps } from './CollectionRoutes';
 
+type State = {
+    results: WordOverivew[];
+    loading: boolean;
+};
+
+const initialState: State = {
+    results: [],
+    loading: false,
+};
+
 export default function Collection({ route, navigation }: CollectionRouteProps<'Collection'>) {
     const theme = useCurrentTheme();
     const { inputRef, focus } = useSearchInput();
@@ -20,8 +30,9 @@ export default function Collection({ route, navigation }: CollectionRouteProps<'
     const [search, setSearch] = useState("");
     const debouncedSearch = useDebounce(search, 500);
 
-    const [results, setResults] = useState<WordOverivew[]>([]);
-    const [loading, setLoading] = useState(true);
+    // Sync loading with results
+    const [state, setState] = useState(initialState);
+
     const [keyboardOpen, setKeyboardOpen] = useState(true);
 
     function openKeyboard() {
@@ -50,13 +61,13 @@ export default function Collection({ route, navigation }: CollectionRouteProps<'
                     try {
                         let loadedWords = await getAllWordsOverview();
                         setWords(loadedWords);
-                        setLoading(false);
+                        setState(state => ({ ...state, loading: false }));
                     } catch (error) {
                         throw Error(error);
                     }
                 }
                 setWords(undefined!);
-                setLoading(true);
+                setState(state => ({ ...state, loading: true }));
                 loadWords();
             },
             [],
@@ -79,6 +90,7 @@ export default function Collection({ route, navigation }: CollectionRouteProps<'
     );
 
     function onChangeSearch(text: string) {
+        setState(state => ({ ...state, loading: true }));
         setSearch(text);
     }
 
@@ -123,17 +135,15 @@ export default function Collection({ route, navigation }: CollectionRouteProps<'
         if (!words || text === "")
             return;
 
-        setLoading(true);
-
-        let hits = [];
+        let hits: WordOverivew[] = [];
         for (const word of words) {
             // Matches if word contains search
             if (word.word.toUpperCase().includes(text.toUpperCase())) {
                 hits.push(word);
             }
         }
-        setResults(hits);
-        setLoading(false);
+
+        setState({ results: hits, loading: false });
     }
 
     function renderEmptyText() {
@@ -166,7 +176,7 @@ export default function Collection({ route, navigation }: CollectionRouteProps<'
     );
 
     function renderContent() {
-        if (loading || search !== debouncedSearch) {
+        if (state.loading || search !== debouncedSearch) {
             return (
                 <View style={[layoutStyles.center, keyboardOpen ? styles.keyboardView : null]}>
                     <Spinner scale={2} />
@@ -177,7 +187,7 @@ export default function Collection({ route, navigation }: CollectionRouteProps<'
                 <FlatList
                     keyboardShouldPersistTaps="handled"
                     contentContainerStyle={styles.listContainer}
-                    data={search.length === 0 ? words : results}
+                    data={search.length === 0 ? words : state.results}
                     renderItem={renderItem}
                     keyExtractor={(item, index) => `${index}`}
                     ListEmptyComponent={search.length !== 0 && words.length !== 0 ? renderNoMatches : renderEmptyText}
