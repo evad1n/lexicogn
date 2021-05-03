@@ -18,7 +18,7 @@ const NO_WORDS: Partial<WordDocument> = {
 const MAX_HISTORY = 10;
 
 export default function Study({ navigation }: StudyRouteProps<'Study'>) {
-    const { width, height } = useWindowDimensions();
+    const { width } = useWindowDimensions();
 
     const [words, setWords] = useState<WordDocument[]>(undefined!);
     const [weightSum, setWeightSum] = useState(0);
@@ -78,7 +78,7 @@ export default function Study({ navigation }: StudyRouteProps<'Study'>) {
     }, [words]);
 
     useEffect(() => {
-        if (words && weightSum !== 0)
+        if (words && weightSum !== 0 && history.length === 0)
             randomWord();
     }, [weightSum]);
 

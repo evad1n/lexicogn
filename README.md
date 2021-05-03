@@ -40,9 +40,6 @@ A mobile app to keep track of and study new vocabulary words.
 
 - better API results...
 
-## Other
-
-- try flashcard as modal for no clipping
 
 ## Deploy Checklist
 

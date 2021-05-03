@@ -7,10 +7,10 @@ import { useCurrentTheme } from '_hooks/theme_provider';
 // ELEVATION TRANSITION CONSTANTS
 const MAX_ELEVATION = 40;
 const DEFAULT_ELEVATION = 5;
-const ELEVATION_TIME = 150;
+const ELEVATION_TIME = 100;
 // FLIP TRANSITION CONSTANTS
 const FLIP_FRICTION = 10;
-const FLIP_TENSION = 5;
+const FLIP_TENSION = 10;
 const FLIP_SPEED_THRESHOLD = 50;
 const FLIP_DISPLACEMENT_THRESHOLD = 30;
 
@@ -24,9 +24,14 @@ export default function Flashcard({ word }: FlashcardProps) {
     const flipValue = useRef(new Animated.Value(0)).current;
     const elevation = useRef(new Animated.Value(DEFAULT_ELEVATION)).current;
 
-    useFocusEffect(() => {
+    // useFocusEffect(() => {
+    //     flipValue.setValue(0);
+    // });
+
+    useEffect(() => {
         flipValue.setValue(0);
-    });
+
+    }, [word]);
 
     let currentFlipValue = 0;
     flipValue.addListener(({ value }) => {
