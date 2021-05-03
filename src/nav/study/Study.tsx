@@ -110,14 +110,6 @@ export default function Study({ navigation }: StudyRouteProps<'Study'>) {
 
     }, [history]);
 
-    function afterNewCard() {
-        // setTimeout(() => {
-        //     listRef.current!.scrollToEnd({ animated: false });
-        // }, 5);
-        // // // Now unhide previous
-        // setTransitioning(false);
-    }
-
     function renderCard({ index, item }: ListRenderItemInfo<WordDocument>) {
         // Display current card as rightmost
         if (index === history.length - 1) {
@@ -125,7 +117,6 @@ export default function Study({ navigation }: StudyRouteProps<'Study'>) {
                 <CurrentStudyCard
                     word={item}
                     onNewCard={randomWord}
-                    onAnimateCard={afterNewCard}
                 />
             );
         } else {

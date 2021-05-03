@@ -1,18 +1,18 @@
 import Flashcard from '@/src/components/Flashcard';
 import SearchBar from '@/src/components/widgets/SearchBar';
 import { getAllWords } from '@/src/db/db';
-import { useCurrentTheme } from '_hooks/theme_provider';
 import { getWordWeight } from '@/src/weighting';
-import React, { useCallback, useEffect, useState } from 'react';
+import { useFocusEffect } from '@react-navigation/core';
+import React, { useCallback, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
+import { useCurrentTheme } from '_hooks/theme_provider';
 import { RouteNavProps } from '../DrawerRoutes';
 import { HomeRouteProps } from './HomeRoutes';
-import { useFocusEffect } from '@react-navigation/core';
 
 // No words card
 const NO_WORDS: Partial<WordDocument> = {
-    word: "A random word!",
-    definition: "At least it would be if you had any saved words...",
+    word: "Welcome to Lexicogn!",
+    definition: "Start searching to start learning!",
 };
 
 export default function Home({ navigation }: RouteNavProps<'Home'> & HomeRouteProps<'home'>) {

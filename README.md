@@ -42,7 +42,6 @@ A mobile app to keep track of and study new vocabulary words.
 
 ## Other
 
-- maybe keep recent flashcard history with swipe left... (flatlist/panresponder?)
 - try flashcard as modal for no clipping
 
 ## Deploy Checklist

@@ -4,7 +4,7 @@ import { getAllWordsOverview } from '@/src/db/db';
 import layoutStyles from '@/src/styles/layout';
 import { useFocusEffect } from '@react-navigation/core';
 import React, { useCallback, useEffect, useLayoutEffect, useState } from 'react';
-import { DeviceEventEmitter, FlatList, Keyboard, ListRenderItemInfo, StyleSheet, Text, View } from 'react-native';
+import { FlatList, Keyboard, ListRenderItemInfo, StyleSheet, Text, View } from 'react-native';
 import ListItemButton from "_components/widgets/ListItemButton";
 import useDebounce from '_hooks/debounce';
 import { useSearchInput } from '_hooks/search_input';
@@ -116,14 +116,14 @@ export default function Collection({ route, navigation }: CollectionRouteProps<'
 
     // Autocomplete hook
     useEffect(() => {
-        setLoading(true);
         searchCollection(debouncedSearch);
-        setLoading(false);
     }, [debouncedSearch]);
 
     function searchCollection(text: string) {
-        if (!words)
+        if (!words || text === "")
             return;
+
+        setLoading(true);
 
         let hits = [];
         for (const word of words) {
@@ -133,6 +133,7 @@ export default function Collection({ route, navigation }: CollectionRouteProps<'
             }
         }
         setResults(hits);
+        setLoading(false);
     }
 
     function renderEmptyText() {
@@ -168,25 +169,21 @@ export default function Collection({ route, navigation }: CollectionRouteProps<'
         if (loading || search !== debouncedSearch) {
             return (
                 <View style={[layoutStyles.center, keyboardOpen ? styles.keyboardView : null]}>
-                    <Spinner />
+                    <Spinner scale={2} />
                 </View>
             );
         } else {
             return (
-                // TODO: optimize performance here
                 <FlatList
                     keyboardShouldPersistTaps="handled"
                     contentContainerStyle={styles.listContainer}
                     data={search.length === 0 ? words : results}
                     renderItem={renderItem}
                     keyExtractor={(item, index) => `${index}`}
-                    ListEmptyComponent={debouncedSearch.length !== 0 && words.length !== 0 ? renderNoMatches : renderEmptyText}
+                    ListEmptyComponent={search.length !== 0 && words.length !== 0 ? renderNoMatches : renderEmptyText}
                     initialNumToRender={30}
                     updateCellsBatchingPeriod={500}
                     maxToRenderPerBatch={20}
-                // getItemLayout={(data, index) => (
-                //     { length: 40, offset: 40 * index, index }
-                // )}
                 />
             );
         }

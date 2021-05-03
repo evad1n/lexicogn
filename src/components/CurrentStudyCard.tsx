@@ -1,7 +1,6 @@
 import Flashcard from '@/src/components/Flashcard';
 import { decreaseFrequency, increaseFrequency } from '@/src/db/db';
-import { useFocusEffect } from '@react-navigation/core';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Animated, PanResponder, StyleSheet, useWindowDimensions, View } from 'react-native';
 import layoutStyles from '../styles/layout';
 
@@ -19,15 +18,13 @@ const NEW_CARD_DURATION = 200;
 interface CurrentCardProps {
     word: WordDocument;
     onNewCard: () => void;
-    onAnimateCard: () => void;
 }
 
-export default function CurrentStudyCard({ word, onNewCard, onAnimateCard }: CurrentCardProps) {
+export default function CurrentStudyCard({ word, onNewCard }: CurrentCardProps) {
     const { width, height } = useWindowDimensions();
 
     // Slide in from right
     useEffect(() => {
-        onAnimateCard();
         animateCard();
     }, [word]);
 
