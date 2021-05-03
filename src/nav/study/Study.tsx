@@ -151,6 +151,9 @@ export default function Study({ navigation }: StudyRouteProps<'Study'>) {
                 getItemLayout={(data, index) => (
                     { length: width, offset: width * index, index }
                 )}
+                ListEmptyComponent={<CurrentStudyCard
+                    onNewCard={randomWord}
+                />}
             />
         );
     }

@@ -1,8 +1,18 @@
 import { useFocusEffect } from '@react-navigation/core';
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import { Animated, Image, StyleSheet, Text, TouchableWithoutFeedback, View } from 'react-native';
 import { useCurrentTheme } from '_hooks/theme_provider';
 
+
+// ELEVATION TRANSITION CONSTANTS
+const MAX_ELEVATION = 40;
+const DEFAULT_ELEVATION = 5;
+const ELEVATION_TIME = 150;
+// FLIP TRANSITION CONSTANTS
+const FLIP_FRICTION = 10;
+const FLIP_TENSION = 5;
+const FLIP_SPEED_THRESHOLD = 50;
+const FLIP_DISPLACEMENT_THRESHOLD = 30;
 
 interface FlashcardProps {
     word: Partial<WordDocument>;
@@ -11,7 +21,8 @@ interface FlashcardProps {
 export default function Flashcard({ word }: FlashcardProps) {
     const theme = useCurrentTheme();
 
-    const flipValue = new Animated.Value(0);
+    const flipValue = useRef(new Animated.Value(0)).current;
+    const elevation = useRef(new Animated.Value(DEFAULT_ELEVATION)).current;
 
     useFocusEffect(() => {
         flipValue.setValue(0);
@@ -36,30 +47,62 @@ export default function Flashcard({ word }: FlashcardProps) {
         transform: [
             { rotateX: frontInterpolate },
             { perspective: 1000 }
-        ]
+        ],
+        elevation
     };
     const backAnimatedStyle = {
         transform: [
             { rotateX: backInterpolate },
             { perspective: 1000 }
-        ]
+        ],
+        elevation
     };
 
     function flipCard() {
         if (currentFlipValue >= 90) {
-            Animated.spring(flipValue, {
-                toValue: 0,
-                friction: 8,
-                tension: 10,
-                useNativeDriver: true
-            }).start();
+            Animated.sequence(
+                [
+                    Animated.timing(elevation, {
+                        toValue: MAX_ELEVATION,
+                        duration: ELEVATION_TIME,
+                        useNativeDriver: true
+                    }),
+                    Animated.spring(flipValue, {
+                        toValue: 0,
+                        friction: FLIP_FRICTION,
+                        tension: FLIP_TENSION,
+                        restSpeedThreshold: FLIP_SPEED_THRESHOLD, restDisplacementThreshold: FLIP_DISPLACEMENT_THRESHOLD,
+                        useNativeDriver: true
+                    }),
+                    Animated.timing(elevation, {
+                        toValue: DEFAULT_ELEVATION,
+                        duration: ELEVATION_TIME,
+                        useNativeDriver: true
+                    }),
+                ]
+            ).start();
         } else {
-            Animated.spring(flipValue, {
-                toValue: 180,
-                friction: 8,
-                tension: 10,
-                useNativeDriver: true
-            }).start();
+            Animated.sequence(
+                [
+                    Animated.timing(elevation, {
+                        toValue: MAX_ELEVATION,
+                        duration: ELEVATION_TIME,
+                        useNativeDriver: true
+                    }),
+                    Animated.spring(flipValue, {
+                        toValue: 180,
+                        friction: FLIP_FRICTION,
+                        tension: FLIP_TENSION,
+                        restSpeedThreshold: FLIP_SPEED_THRESHOLD, restDisplacementThreshold: FLIP_DISPLACEMENT_THRESHOLD,
+                        useNativeDriver: true
+                    }),
+                    Animated.timing(elevation, {
+                        toValue: DEFAULT_ELEVATION,
+                        duration: ELEVATION_TIME,
+                        useNativeDriver: true
+                    }),
+                ]
+            ).start();
         }
     }
 
@@ -88,14 +131,18 @@ export default function Flashcard({ word }: FlashcardProps) {
         }
     }
 
+    const cardStyle = useMemo(() => ({
+        backgroundColor: theme.palette.primary,
+    }), [theme]);
+
 
     return (
         <TouchableWithoutFeedback onPress={flipCard} style={styles.container}>
             <View>
-                <Animated.View style={[frontAnimatedStyle, { backgroundColor: theme.palette.primary }, styles.flipCard]}>
+                <Animated.View style={[frontAnimatedStyle, cardStyle, styles.flipCard]}>
                     <Text adjustsFontSizeToFit style={[{ color: theme.palette.primaryText }, styles.text]}>{word.word}</Text>
                 </Animated.View>
-                <Animated.View style={[backAnimatedStyle, { backgroundColor: theme.palette.primary }, styles.back, styles.flipCard]}>
+                <Animated.View style={[backAnimatedStyle, cardStyle, styles.back, styles.flipCard]}>
                     {renderBack()}
                 </Animated.View>
             </View>

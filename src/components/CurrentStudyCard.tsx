@@ -16,7 +16,7 @@ const NEW_CARD_DURATION = 200;
 
 
 interface CurrentCardProps {
-    word: WordDocument;
+    word?: WordDocument;
     onNewCard: () => void;
 }
 
@@ -45,7 +45,7 @@ export default function CurrentStudyCard({ word, onNewCard }: CurrentCardProps) 
     }
 
     function swipeUp() {
-        decreaseFrequency(word.id);
+        decreaseFrequency(word!.id);
         Animated.parallel(
             [
                 Animated.timing(
@@ -69,7 +69,7 @@ export default function CurrentStudyCard({ word, onNewCard }: CurrentCardProps) 
     }
 
     function swipeDown() {
-        increaseFrequency(word.id);
+        increaseFrequency(word!.id);
         Animated.parallel(
             [
                 Animated.timing(
