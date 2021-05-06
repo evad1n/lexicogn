@@ -20,6 +20,8 @@
       "supportsTablet": true
     },
     "android": {
+      "package": "evad1n.lexicogn",
+      "versionCode": 1,
       "adaptiveIcon": {
         "foregroundImage": "./src/assets/app/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"

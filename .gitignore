@@ -1,5 +1,6 @@
 .expo
 backups
+build
 
 # API keys
 secrets.ts
