@@ -67,8 +67,10 @@ export default function Study({ navigation }: StudyRouteProps<'Study'>) {
     }
 
     useEffect(() => {
-        if (!words)
+        if (!words) {
+            setHistory([]);
             return;
+        }
         // Find sum of weights
         let total_weights = 0;
         for (const word of words) {

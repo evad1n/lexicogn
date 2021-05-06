@@ -24,13 +24,8 @@ export default function Flashcard({ word }: FlashcardProps) {
     const flipValue = useRef(new Animated.Value(0)).current;
     const elevation = useRef(new Animated.Value(DEFAULT_ELEVATION)).current;
 
-    // useFocusEffect(() => {
-    //     flipValue.setValue(0);
-    // });
-
     useEffect(() => {
         flipValue.setValue(0);
-
     }, [word]);
 
     let currentFlipValue = 0;
