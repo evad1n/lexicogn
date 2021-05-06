@@ -34,7 +34,9 @@ export default function Detail({ route, navigation }: CollectionRouteProps<'Deta
                         setDefinition(word.definition);
                         setWord(word);
                     } catch (error) {
-                        throw Error(error);
+                        // Word doesn't exist anymore
+                        // Navigate to collection
+                        navigation.navigate('Collection');
                     }
                 }
                 loadWord();
