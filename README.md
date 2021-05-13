@@ -40,6 +40,7 @@ A mobile app to keep track of and study new vocabulary words.
 
 - FIX wipe db handling
 - better API results...
+- test theme picker on narrow screens
 
 
 ## Deploy Checklist
