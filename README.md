@@ -4,7 +4,7 @@ A mobile app to keep track of and study new vocabulary words.
 
 ### Check it out on:
 
-- **ADD Published app store link**
+- [Google Play](https://play.google.com/store/apps/details?id=evad1n.lexicogn)
 - [Expo](https://expo.io/@evadin/projects/lexicogn)
 
 ---
