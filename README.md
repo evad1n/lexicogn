@@ -38,12 +38,7 @@ A mobile app to keep track of and study new vocabulary words.
 
 # TODO
 
-- FIX wipe db handling
 - better API results...
 - test theme picker on narrow screens
-
-
-## Deploy Checklist
-
-- Remove console.log()
-- sign away my rights to google
+- fix app icon
+- better gesture handling on study
